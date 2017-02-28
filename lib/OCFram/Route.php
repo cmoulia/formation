@@ -1,49 +1,13 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cmoulia
- * Date: 27/02/2017
- * Time: 17:11
- */
-
 namespace OCFram;
 
-
-/**
- * Class Route
- *
- * @package OCFram
- */
 class Route {
-	/**
-	 * @var
-	 */
 	protected $action;
-	/**
-	 * @var
-	 */
 	protected $module;
-	/**
-	 * @var
-	 */
 	protected $url;
-	/**
-	 * @var
-	 */
 	protected $varsNames;
-	/**
-	 * @var array
-	 */
 	protected $vars = [];
 	
-	/**
-	 * Route constructor.
-	 *
-	 * @param       $url
-	 * @param       $module
-	 * @param       $action
-	 * @param array $varsNames
-	 */
 	public function __construct( $url, $module, $action, array $varsNames ) {
 		$this->setUrl( $url );
 		$this->setModule( $module );
@@ -51,18 +15,32 @@ class Route {
 		$this->setVarsNames( $varsNames );
 	}
 	
-	/**
-	 * @return bool
-	 */
+	public function setUrl( $url ) {
+		if ( is_string( $url ) ) {
+			$this->url = $url;
+		}
+	}
+	
+	public function setModule( $module ) {
+		if ( is_string( $module ) ) {
+			$this->module = $module;
+		}
+	}
+	
+	public function setAction( $action ) {
+		if ( is_string( $action ) ) {
+			$this->action = $action;
+		}
+	}
+	
+	public function setVarsNames( array $varsNames ) {
+		$this->varsNames = $varsNames;
+	}
+	
 	public function hasVars() {
 		return !empty( $this->varsNames );
 	}
 	
-	/**
-	 * @param $url
-	 *
-	 * @return bool
-	 */
 	public function match( $url ) {
 		if ( preg_match( '`^' . $this->url . '$`', $url, $matches ) ) {
 			return $matches;
@@ -72,79 +50,23 @@ class Route {
 		}
 	}
 	
-	/**
-	 * @return mixed
-	 */
-	public function getAction() {
+	public function setVars( array $vars ) {
+		$this->vars = $vars;
+	}
+	
+	public function action() {
 		return $this->action;
 	}
 	
-	/**
-	 * @param mixed $action
-	 */
-	public function setAction( $action ) {
-		if ( is_string( $action ) ) {
-			$this->action = $action;
-		}
-	}
-	
-	/**
-	 * @return mixed
-	 */
-	public function getModule() {
+	public function module() {
 		return $this->module;
 	}
 	
-	/**
-	 * @param mixed $module
-	 */
-	public function setModule( $module ) {
-		if ( is_string( $module ) ) {
-			$this->module = $module;
-		}
-	}
-	
-	/**
-	 * @return mixed
-	 */
-	public function getUrl() {
-		return $this->url;
-	}
-	
-	/**
-	 * @param mixed $url
-	 */
-	public function setUrl( $url ) {
-		if ( is_string( $url ) ) {
-			$this->url = $url;
-		}
-	}
-	
-	/**
-	 * @return mixed
-	 */
-	public function getVarsNames() {
-		return $this->varsNames;
-	}
-	
-	/**
-	 * @param mixed $varsNames
-	 */
-	public function setVarsNames( array $varsNames ) {
-		$this->varsNames = $varsNames;
-	}
-	
-	/**
-	 * @return array
-	 */
-	public function getVars() {
+	public function vars() {
 		return $this->vars;
 	}
 	
-	/**
-	 * @param array $vars
-	 */
-	public function setVars( array $vars ) {
-		$this->vars = $vars;
+	public function varsNames() {
+		return $this->varsNames;
 	}
 }

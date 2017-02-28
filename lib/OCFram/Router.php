@@ -1,57 +1,35 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cmoulia
- * Date: 27/02/2017
- * Time: 17:10
- */
-
 namespace OCFram;
 
-
-/**
- * Class Router
- *
- * @package OCFram
- */
 class Router {
-	/**
-	 *
-	 */
 	const NO_ROUTE = 1;
-	/**
-	 * @var array
-	 */
 	protected $routes = [];
 	
-	/**
-	 * @param Route $route
-	 */
 	public function addRoute( Route $route ) {
 		if ( !in_array( $route, $this->routes ) ) {
 			$this->routes[] = $route;
 		}
 	}
 	
-	/**
-	 * @param $url
-	 *
-	 * @return mixed
-	 */
 	public function getRoute( $url ) {
 		foreach ( $this->routes as $route ) {
-			//			Si correspond
+			// Si la route correspond à l'URL
 			if ( ( $varsValues = $route->match( $url ) ) !== false ) {
+				// Si elle a des variables
 				if ( $route->hasVars() ) {
-					$varsNames = $route->getVarsNames();
+					$varsNames = $route->varsNames();
 					$listVars  = [];
 					
+					// On crée un nouveau tableau clé/valeur
+					// (clé = nom de la variable, valeur = sa valeur)
 					foreach ( $varsValues as $key => $match ) {
+						// La première valeur contient entièrement la chaine capturée (voir la doc sur preg_match)
 						if ( $key !== 0 ) {
 							$listVars[ $varsNames[ $key - 1 ] ] = $match;
 						}
 					}
 					
+					// On assigne ce tableau de variables � la route
 					$route->setVars( $listVars );
 				}
 				

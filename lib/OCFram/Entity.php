@@ -1,104 +1,59 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cmoulia
- * Date: 27/02/2017
- * Time: 18:30
- */
-
 namespace OCFram;
 
-
-/**
- * Class Entity
- *
- * @package OCFram
- */
 abstract class Entity implements \ArrayAccess {
-	/**
-	 * @var array
-	 */
 	protected $erreurs = [], $id;
 	
-	/**
-	 * Entity constructor.
-	 *
-	 * @param array $donnees
-	 */
 	public function __construct( array $donnees = [] ) {
 		if ( !empty( $donnees ) ) {
 			$this->hydrate( $donnees );
 		}
 	}
 	
-	/**
-	 * @param array $donnees
-	 */
 	public function hydrate( array $donnees ) {
 		foreach ( $donnees as $attribut => $valeur ) {
-			$method = 'set' . ucfirst( $attribut );
+			$methode = 'set' . ucfirst( $attribut );
 			
 			if ( is_callable( [
 				$this,
-				$method,
+				$methode,
 			] ) ) {
-				$this->$method( $valeur );
+				$this->$methode( $valeur );
 			}
 		}
 	}
 	
-	/**
-	 * @return bool
-	 */
 	public function isNew() {
 		return empty( $this->id );
 	}
 	
-	/**
-	 * @return array
-	 */
-	public function getErreurs() {
+	public function erreurs() {
 		return $this->erreurs;
 	}
 	
-	/**
-	 * @return mixed
-	 */
-	public function getId() {
+	public function id() {
 		return $this->id;
 	}
 	
-	/**
-	 * @param mixed $id
-	 */
 	public function setId( $id ) {
 		$this->id = (int)$id;
 	}
 	
-	/**
-	 * @param mixed $offset
-	 *
-	 * @return mixed
-	 */
-	public function offsetGet( $offset ) {
-		if ( isset( $this->$offset )
+	public function offsetGet( $var ) {
+		if ( isset( $this->$var )
 			 && is_callable( [
 				$this,
-				$offset,
+				$var,
 			] )
 		) {
-			return $this->$offset();
+			return $this->$var();
 		}
 	}
 	
-	/**
-	 * @param mixed $offset
-	 * @param mixed $value
-	 */
-	public function offsetSet( $offset, $value ) {
-		$method = 'set' . ucfirst( $offset );
+	public function offsetSet( $var, $value ) {
+		$method = 'set' . ucfirst( $var );
 		
-		if ( isset( $this->$offset )
+		if ( isset( $this->$var )
 			 && is_callable( [
 				$this,
 				$method,
@@ -108,25 +63,15 @@ abstract class Entity implements \ArrayAccess {
 		}
 	}
 	
-	/**
-	 * @param mixed $offset
-	 *
-	 * @return bool
-	 */
-	public function offsetExists( $offset ) {
-		return isset( $this->$offset )
+	public function offsetExists( $var ) {
+		return isset( $this->$var )
 			   && is_callable( [
 				$this,
-				$offset,
+				$var,
 			] );
 	}
 	
-	/**
-	 * @param mixed $offset
-	 *
-	 * @throws \Exception
-	 */
-	public function offsetUnset( $offset ) {
+	public function offsetUnset( $var ) {
 		throw new \Exception( 'Impossible de supprimer une quelconque valeur' );
 	}
 }

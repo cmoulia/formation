@@ -35,13 +35,6 @@
  * @author  Kris Wallsmith <kris.wallsmith@gmail.com>
  * @author  Fabien Potencier <fabien.potencier@symfony-project.org>
  */
-
-
-/**
- * Class SplClassLoader
- *
- * @package OCFram
- */
 class SplClassLoader {
 	private $_fileExtension      = '.php';
 	private $_namespace;
@@ -53,7 +46,6 @@ class SplClassLoader {
 	 * specified namespace.
 	 *
 	 * @param string $ns The namespace to use.
-	 * @param null   $includePath
 	 */
 	public function __construct( $ns = null, $includePath = null ) {
 		$this->_namespace   = $ns;
@@ -63,7 +55,7 @@ class SplClassLoader {
 	/**
 	 * Gets the namespace seperator used by classes in the namespace of this class loader.
 	 *
-	 * @return string
+	 * @return void
 	 */
 	public function getNamespaceSeparator() {
 		return $this->_namespaceSeparator;
@@ -138,7 +130,6 @@ class SplClassLoader {
 	 * Loads the given class or interface.
 	 *
 	 * @param string $className The name of the class to load.
-	 *
 	 * @return void
 	 */
 	public function loadClass( $className ) {

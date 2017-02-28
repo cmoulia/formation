@@ -1,63 +1,20 @@
 <?php
-
-/**
- * Created by PhpStorm.
- * User: cmoulia
- * Date: 28/02/2017
- * Time: 11:32
- */
-
 namespace Entity;
 
-use OCFram\Entity;
+use \OCFram\Entity;
 
-/**
- * Class News
- *
- * @package Entity
- */
 class News extends Entity {
 	const AUTEUR_INVALIDE  = 1;
 	const TITRE_INVALIDE   = 2;
 	const CONTENU_INVALIDE = 3;
-	/**
-	 * @var string
-	 */
-	protected $auteur;
-	/**
-	 * @var string
-	 */
-	protected $titre;
-	/**
-	 * @var string
-	 */
-	protected $contenu;
-	/**
-	 * @var \DateTime
-	 */
-	protected $dateAjout;
-	/**
-	 * @var \DateTime
-	 */
-	protected $dateModif;
+	protected $auteur, $titre, $contenu, $dateAjout, $dateModif;
 	
-	/**
-	 * @return bool
-	 */
 	public function isValid() {
 		return !( empty( $this->auteur ) || empty( $this->titre ) || empty( $this->contenu ) );
 	}
 	
-	/**
-	 * @return string
-	 */
-	public function getAuteur() {
-		return $this->auteur;
-	}
+	// SETTERS //
 	
-	/**
-	 * @param string $auteur
-	 */
 	public function setAuteur( $auteur ) {
 		if ( !is_string( $auteur ) || empty( $auteur ) ) {
 			$this->erreurs[] = self::AUTEUR_INVALIDE;
@@ -66,16 +23,6 @@ class News extends Entity {
 		$this->auteur = $auteur;
 	}
 	
-	/**
-	 * @return string
-	 */
-	public function getTitre() {
-		return $this->titre;
-	}
-	
-	/**
-	 * @param string $titre
-	 */
 	public function setTitre( $titre ) {
 		if ( !is_string( $titre ) || empty( $titre ) ) {
 			$this->erreurs[] = self::TITRE_INVALIDE;
@@ -84,16 +31,6 @@ class News extends Entity {
 		$this->titre = $titre;
 	}
 	
-	/**
-	 * @return string
-	 */
-	public function getContenu() {
-		return $this->contenu;
-	}
-	
-	/**
-	 * @param string $contenu
-	 */
 	public function setContenu( $contenu ) {
 		if ( !is_string( $contenu ) || empty( $contenu ) ) {
 			$this->erreurs[] = self::CONTENU_INVALIDE;
@@ -102,31 +39,33 @@ class News extends Entity {
 		$this->contenu = $contenu;
 	}
 	
-	/**
-	 * @return \DateTime
-	 */
-	public function getDateAjout() {
-		return $this->dateAjout;
-	}
-	
-	/**
-	 * @param \DateTime $dateAjout
-	 */
-	public function setDateAjout( $dateAjout ) {
+	public function setDateAjout( \DateTime $dateAjout ) {
 		$this->dateAjout = $dateAjout;
 	}
 	
-	/**
-	 * @return \DateTime
-	 */
-	public function getDateModif() {
-		return $this->dateModif;
+	public function setDateModif( \DateTime $dateModif ) {
+		$this->dateModif = $dateModif;
 	}
 	
-	/**
-	 * @param \DateTime $dateModif
-	 */
-	public function setDateModif( $dateModif ) {
-		$this->dateModif = $dateModif;
+	// GETTERS //
+	
+	public function auteur() {
+		return $this->auteur;
+	}
+	
+	public function titre() {
+		return $this->titre;
+	}
+	
+	public function contenu() {
+		return $this->contenu;
+	}
+	
+	public function dateAjout() {
+		return $this->dateAjout;
+	}
+	
+	public function dateModif() {
+		return $this->dateModif;
 	}
 }
