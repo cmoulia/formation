@@ -55,7 +55,7 @@ abstract class Application {
 		$router = new Router();
 		
 		$xml = new \DOMDocument();
-		$xml->load( __DIR__ . '/../../app/' . $this->name . '/config/routes.xml' );
+		$xml->load( __DIR__ . '/../../App/' . $this->name . '/Config/routes.xml' );
 		
 		$routes = $xml->getElementsByTagName( 'route' );
 		
@@ -71,6 +71,7 @@ abstract class Application {
 		}
 		
 		try {
+			/** @var Route $matchedRoute */
 			$matchedRoute = $router->getRoute( $this->httpRequest->requestURI() );
 		}
 		catch ( \RuntimeException $e ) {
@@ -79,11 +80,11 @@ abstract class Application {
 			}
 		}
 		
-		$_GET = array_merge( $_GET, $matchedRoute->vars() );
+		$_GET = array_merge( $_GET, $matchedRoute->getVars() );
 		
-		$controllerClass = 'app\\' . $this->name . '\\modules\\' . $matchedRoute->module() . '\\' . $matchedRoute->module() . 'Controller';
+		$controllerClass = 'App\\' . $this->name . '\\Modules\\' . $matchedRoute->getModule() . '\\' . $matchedRoute->getModule() . 'Controller';
 		
-		return new $controllerClass( $this, $matchedRoute->module(), $matchedRoute->action() );
+		return new $controllerClass( $this, $matchedRoute->getModule(), $matchedRoute->getAction() );
 	}
 	
 	/**

@@ -16,7 +16,7 @@ namespace OCFram;
  */
 abstract class Manager {
 	/**
-	 * @var
+	 * @var \PDO
 	 */
 	protected $dao;
 	

@@ -44,14 +44,15 @@ class Page extends ApplicationComponent {
 			throw new \RuntimeException( 'La vue spécifiée n\'existe pas' );
 		}
 		
-		extract( $this->vars );
+		$user = $this->app->getUser();
 		
+		extract( $this->vars );
 		ob_start();
 		require $this->contentFile;
 		$content = ob_get_clean();
 		
 		ob_start();
-		require __DIR__ . '/../../app/' . $this->app->getName() . '/templates/layout.php';
+		require __DIR__ . '/../../App/' . $this->app->getName() . '/Templates/layout.php';
 		
 		return ob_get_clean();
 	}

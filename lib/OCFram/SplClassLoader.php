@@ -36,7 +36,6 @@
  * @author  Fabien Potencier <fabien.potencier@symfony-project.org>
  */
 
-namespace OCFram;
 
 /**
  * Class SplClassLoader
