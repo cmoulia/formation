@@ -8,6 +8,7 @@ use \Entity\Comment;
 use \Entity\News;
 use \FormBuilder\CommentFormBuilder;
 use \FormBuilder\NewsFormBuilder;
+use \OCFram\FormHandler;
 
 class NewsController extends BackController {
 	public function executeIndex( HTTPRequest $request ) {
@@ -52,8 +53,9 @@ class NewsController extends BackController {
 		
 		$form = $formBuilder->form();
 		
-		if ( $request->method() == 'POST' && $form->isValid() ) {
-			$this->managers->getManagerOf( 'News' )->save( $news );
+		$formHandler = new FormHandler( $form, $this->managers->getManagerOf( 'Comments' ), $request );
+		
+		if ( $formHandler->process() ) {
 			$this->app->user()->setFlash( $news->isNew() ? 'La news a bien été ajoutée !' : 'La news a bien été modifiée !' );
 			$this->app->httpResponse()->redirect( '/admin/' );
 		}
@@ -97,8 +99,9 @@ class NewsController extends BackController {
 		
 		$form = $formBuilder->form();
 		
-		if ( $request->method() == 'POST' && $form->isValid() ) {
-			$this->managers->getManagerOf( 'Comments' )->save( $comment );
+		$formHandler = new FormHandler( $form, $this->managers->getManagerOf( 'Comments' ), $request );
+		
+		if ( $formHandler->process() ) {
 			$this->app->user()->setFlash( 'Le commentaire a bien été modifié' );
 			$this->app->httpResponse()->redirect( '/admin/' );
 		}

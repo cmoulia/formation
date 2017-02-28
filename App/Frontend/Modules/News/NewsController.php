@@ -6,6 +6,7 @@ use \OCFram\BackController;
 use \OCFram\HTTPRequest;
 use \Entity\Comment;
 use \FormBuilder\CommentFormBuilder;
+use \OCFram\FormHandler;
 
 class NewsController extends BackController {
 	public function executeIndex( HTTPRequest $request ) {
@@ -63,8 +64,9 @@ class NewsController extends BackController {
 		
 		$form = $formBuilder->form();
 		
-		if ( $request->method() == 'POST' && $form->isValid() ) {
-			$this->managers->getManagerOf( 'Comments' )->save( $comment );
+		$formHandler = new FormHandler( $form, $this->managers->getManagerOf( 'Comments' ), $request );
+		
+		if ( $formHandler->process() ) {
 			$this->app->user()->setFlash( 'Le commentaire a bien été ajouté, merci !' );
 			$this->app->httpResponse()->redirect( 'news-' . $request->getData( 'news' ) . '.html' );
 		}
