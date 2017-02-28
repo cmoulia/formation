@@ -9,22 +9,48 @@
 namespace OCFram;
 
 
+/**
+ * Class Application
+ *
+ * @package OCFram
+ */
 abstract class Application {
+	/**
+	 * @var HTTPRequest
+	 */
 	protected $httpRequest;
+	/**
+	 * @var HTTPResponse
+	 */
 	protected $httpResponse;
+	/**
+	 * @var string
+	 */
 	protected $name;
+	/**
+	 * @var User
+	 */
 	protected $user;
+	/**
+	 * @var Config
+	 */
 	protected $config;
 	
+	/**
+	 * Application constructor.
+	 */
 	public function __construct() {
 		$this->httpRequest  = new HTTPRequest( $this );
 		$this->httpResponse = new HTTPResponse( $this );
 		$this->user         = new User( $this );
 		$this->config       = new Config( $this );
 		
-		$this->name         = '';
+		$this->name = '';
 	}
 	
+	/**
+	 * @return mixed
+	 */
 	public function getController() {
 		$router = new Router();
 		
@@ -33,6 +59,7 @@ abstract class Application {
 		
 		$routes = $xml->getElementsByTagName( 'route' );
 		
+		/** @var \DOMElement $route */
 		foreach ( $routes as $route ) {
 			$vars = [];
 			
@@ -59,6 +86,9 @@ abstract class Application {
 		return new $controllerClass( $this, $matchedRoute->module(), $matchedRoute->action() );
 	}
 	
+	/**
+	 * @return mixed
+	 */
 	abstract public function run();
 	
 	/**

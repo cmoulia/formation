@@ -9,15 +9,31 @@
 namespace OCFram;
 
 
+/**
+ * Class Entity
+ *
+ * @package OCFram
+ */
 abstract class Entity implements \ArrayAccess {
+	/**
+	 * @var array
+	 */
 	protected $erreurs = [], $id;
 	
+	/**
+	 * Entity constructor.
+	 *
+	 * @param array $donnees
+	 */
 	public function __construct( array $donnees = [] ) {
 		if ( !empty( $donnees ) ) {
 			$this->hydrate( $donnees );
 		}
 	}
 	
+	/**
+	 * @param array $donnees
+	 */
 	public function hydrate( array $donnees ) {
 		foreach ( $donnees as $attribut => $valeur ) {
 			$method = 'set' . ucfirst( $attribut );
@@ -31,6 +47,9 @@ abstract class Entity implements \ArrayAccess {
 		}
 	}
 	
+	/**
+	 * @return bool
+	 */
 	public function isNew() {
 		return empty( $this->id );
 	}
@@ -56,6 +75,11 @@ abstract class Entity implements \ArrayAccess {
 		$this->id = (int)$id;
 	}
 	
+	/**
+	 * @param mixed $offset
+	 *
+	 * @return mixed
+	 */
 	public function offsetGet( $offset ) {
 		if ( isset( $this->$offset )
 			 && is_callable( [
@@ -67,6 +91,10 @@ abstract class Entity implements \ArrayAccess {
 		}
 	}
 	
+	/**
+	 * @param mixed $offset
+	 * @param mixed $value
+	 */
 	public function offsetSet( $offset, $value ) {
 		$method = 'set' . ucfirst( $offset );
 		
@@ -80,6 +108,11 @@ abstract class Entity implements \ArrayAccess {
 		}
 	}
 	
+	/**
+	 * @param mixed $offset
+	 *
+	 * @return bool
+	 */
 	public function offsetExists( $offset ) {
 		return isset( $this->$offset )
 			   && is_callable( [
@@ -88,6 +121,11 @@ abstract class Entity implements \ArrayAccess {
 			] );
 	}
 	
+	/**
+	 * @param mixed $offset
+	 *
+	 * @throws \Exception
+	 */
 	public function offsetUnset( $offset ) {
 		throw new \Exception( 'Impossible de supprimer une quelconque valeur' );
 	}

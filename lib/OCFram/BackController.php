@@ -9,13 +9,40 @@
 namespace OCFram;
 
 
+/**
+ * Class BackController
+ *
+ * @package OCFram
+ */
 class BackController extends ApplicationComponent {
-	protected $action   = '';
-	protected $module   = '';
-	protected $page     = null;
-	protected $view     = '';
+	/**
+	 * @var string
+	 */
+	protected $action = '';
+	/**
+	 * @var string
+	 */
+	protected $module = '';
+	/**
+	 * @var null|Page
+	 */
+	protected $page = null;
+	/**
+	 * @var string
+	 */
+	protected $view = '';
+	/**
+	 * @var null|Managers
+	 */
 	protected $managers = null;
 	
+	/**
+	 * BackController constructor.
+	 *
+	 * @param Application $app
+	 * @param             $module
+	 * @param             $action
+	 */
 	public function __construct( Application $app, $module, $action ) {
 		parent::__construct( $app );
 		
@@ -59,6 +86,9 @@ class BackController extends ApplicationComponent {
 		$this->page->setContentFile( __DIR__ . '/../../app/' . $this->app->getName() . '/modules/' . $this->module . 'views' . $this->view . '.php' );
 	}
 	
+	/**
+	 *
+	 */
 	public function execute() {
 		$method = 'execute' . ucfirst( $this->action );
 		

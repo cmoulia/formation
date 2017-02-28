@@ -38,6 +38,11 @@
 
 namespace OCFram;
 
+/**
+ * Class SplClassLoader
+ *
+ * @package OCFram
+ */
 class SplClassLoader {
 	private $_fileExtension      = '.php';
 	private $_namespace;

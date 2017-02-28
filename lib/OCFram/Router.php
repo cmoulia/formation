@@ -9,8 +9,19 @@
 namespace OCFram;
 
 
+/**
+ * Class Router
+ *
+ * @package OCFram
+ */
 class Router {
+	/**
+	 *
+	 */
 	const NO_ROUTE = 1;
+	/**
+	 * @var array
+	 */
 	protected $routes = [];
 	
 	/**

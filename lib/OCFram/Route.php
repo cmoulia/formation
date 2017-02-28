@@ -15,12 +15,35 @@ namespace OCFram;
  * @package OCFram
  */
 class Route {
+	/**
+	 * @var
+	 */
 	protected $action;
+	/**
+	 * @var
+	 */
 	protected $module;
+	/**
+	 * @var
+	 */
 	protected $url;
+	/**
+	 * @var
+	 */
 	protected $varsNames;
+	/**
+	 * @var array
+	 */
 	protected $vars = [];
 	
+	/**
+	 * Route constructor.
+	 *
+	 * @param       $url
+	 * @param       $module
+	 * @param       $action
+	 * @param array $varsNames
+	 */
 	public function __construct( $url, $module, $action, array $varsNames ) {
 		$this->setUrl( $url );
 		$this->setModule( $module );
@@ -28,10 +51,18 @@ class Route {
 		$this->setVarsNames( $varsNames );
 	}
 	
+	/**
+	 * @return bool
+	 */
 	public function hasVars() {
 		return !empty( $this->varsNames );
 	}
 	
+	/**
+	 * @param $url
+	 *
+	 * @return bool
+	 */
 	public function match( $url ) {
 		if ( preg_match( '`^' . $this->url . '$`', $url, $matches ) ) {
 			return $matches;

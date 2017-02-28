@@ -9,9 +9,22 @@
 namespace OCFram;
 
 
+/**
+ * Class Manager
+ *
+ * @package OCFram
+ */
 abstract class Manager {
+	/**
+	 * @var
+	 */
 	protected $dao;
 	
+	/**
+	 * Manager constructor.
+	 *
+	 * @param $dao
+	 */
 	public function __construct( $dao ) {
 		$this->dao = $dao;
 	}

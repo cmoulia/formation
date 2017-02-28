@@ -9,14 +9,28 @@
 namespace OCFram;
 
 
+/**
+ * Class HTTPResponse
+ *
+ * @package OCFram
+ */
 class HTTPResponse extends ApplicationComponent {
+	/**
+	 * @var Page
+	 */
 	protected $page;
 	
+	/**
+	 * @param $location
+	 */
 	public function redirect( $location ) {
 		header( 'Location' . $location );
 		exit();
 	}
 	
+	/**
+	 *
+	 */
 	public function redirect404() {
 		$this->page = new Page( $this->app );
 		$this->page->setContentFile( __DIR__ . '/../../errors/404.html' );
@@ -24,14 +38,29 @@ class HTTPResponse extends ApplicationComponent {
 		$this->send();
 	}
 	
+	/**
+	 * @param $header
+	 */
 	public function addHeader( $header ) {
 		header( $header );
 	}
 	
+	/**
+	 *
+	 */
 	public function send() {
 		exit( $this->page->getGeneratedPage() );
 	}
 	
+	/**
+	 * @param        $name
+	 * @param string $value
+	 * @param int    $expire
+	 * @param null   $path
+	 * @param null   $domain
+	 * @param bool   $secure
+	 * @param bool   $httpOnly
+	 */
 	public function setCookie( $name, $value = '', $expire = 0, $path = null, $domain = null, $secure = false, $httpOnly = true ) {
 		setcookie( $name, $value, $expire, $path, $domain, $secure, $httpOnly );
 	}
