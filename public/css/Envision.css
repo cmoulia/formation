@@ -104,7 +104,7 @@ blockquote {
 	margin     : 10px;
 	padding    : 0 0 0 28px;
 	border     : 1px solid #f2f2f2;
-	background : #fafafa url(../images/quote.gif) no-repeat 5px 5px;
+	background : #fafafa url(../img/quote.gif) no-repeat 5px 5px;
 	}
 
 /* start - table */
@@ -198,7 +198,7 @@ input.button {
 	margin     : 0;
 	padding    : 2px 3px;
 	color      : #ffffff;
-	background : #8eb50c url(../images/button-bg.jpg) repeat-x 0 0;
+	background : #8eb50c url(../img/button-bg.jpg) repeat-x 0 0;
 	border     : none;
 	}
 
@@ -237,7 +237,7 @@ input.button {
 ********************************************/
 #wrap {
 	width      : 820px;
-	background : #cccccc url(../images/content.jpg) repeat-y center top;
+	background : #cccccc url(../img/content.jpg) repeat-y center top;
 	margin     : 0 auto;
 	text-align : left;
 	}
@@ -253,7 +253,7 @@ header {
 	width      : 820px;
 	position   : relative;
 	height     : 103px;
-	background : #cccccc url(../images/header.jpg) no-repeat center top;
+	background : #cccccc url(../img/header.jpg) no-repeat center top;
 	padding    : 0;
 	color      : #ffffff;
 	}
@@ -314,7 +314,7 @@ nav {
 	clear      : both;
 	margin     : 0 auto;
 	padding    : 0;
-	background : url(../images/menu.jpg) repeat-x 0 0;
+	background : url(../img/menu.jpg) repeat-x 0 0;
 	font       : bold 12px/37px Verdana, Arial, Tahoma, Sans-serif;
 	height     : 37px;
 	width      : 780px;
@@ -366,7 +366,7 @@ nav ul li#current a {
 	color          : #88ac0b;
 	padding        : 5px 0 5px 25px;
 	border-bottom  : 1px solid #eff0f1;
-	background     : #ffffff url(../images/square-green.png) no-repeat 3px 50%;
+	background     : #ffffff url(../img/square-green.png) no-repeat 3px 50%;
 	text-transform : none;
 	}
 
@@ -377,7 +377,7 @@ nav ul li#current a {
 	}
 
 #main ul li {
-	list-style-image : url(../images/bullet.gif);
+	list-style-image : url(../img/bullet.gif);
 	}
 
 .post-footer {
@@ -389,19 +389,19 @@ nav ul li#current a {
 	}
 
 .post-footer .date {
-	background   : url(../images/clock.gif) no-repeat left center;
+	background   : url(../img/clock.gif) no-repeat left center;
 	padding-left : 20px;
 	margin       : 0 10px 0 5px;
 	}
 
 .post-footer .comments {
-	background   : url(../images/comment.gif) no-repeat left center;
+	background   : url(../img/comment.gif) no-repeat left center;
 	padding-left : 20px;
 	margin       : 0 10px 0 5px;
 	}
 
 .post-footer .readmore {
-	background   : url(../images/page.gif) no-repeat left center;
+	background   : url(../img/page.gif) no-repeat left center;
 	padding-left : 20px;
 	margin       : 0 10px 0 5px;
 	}
@@ -428,12 +428,12 @@ nav ul li#current a {
 	margin          : 7px 4px 8px 0;
 	padding         : 0;
 	text-decoration : none;
-	background      : url(../images/dots.jpg) repeat-x left top;
+	background      : url(../img/dots.jpg) repeat-x left top;
 	}
 
 #sidebar ul.sidemenu li {
 	list-style : none;
-	background : url(../images/dots.jpg) repeat-x left bottom;
+	background : url(../img/dots.jpg) repeat-x left bottom;
 	padding    : 4px 0 4px 5px;
 	margin     : 0 2px;
 	color      : #68774a;
@@ -465,7 +465,7 @@ nav ul li#current a {
 /* Footer */
 footer {
 	color      : #c6ddee;
-	background : #cccccc url(../images/footer.jpg) no-repeat center top;
+	background : #cccccc url(../img/footer.jpg) no-repeat center top;
 	clear      : both;
 	width      : 820px;
 	height     : 65px;

@@ -17,6 +17,7 @@ use OCFram\User;
 		<meta http-equiv="X-UA-Compatible" content="ie=edge">
 		<title><?= isset( $title ) ? $title : 'Formation PHP' ?></title>
 		<link rel="icon" href="/favicon.ico">
+		<!--		<link rel="stylesheet" href="/css/bootstrap.min.css" type="text/css">-->
 		<link rel="stylesheet" href="/css/Envision.css" type="text/css">
 	</head>
 	<body>
@@ -48,5 +49,6 @@ use OCFram\User;
 			</div>
 			
 			<footer></footer>
+			<script href="/js/bootstrap.min.js"></script>
 	</body>
 </html>
