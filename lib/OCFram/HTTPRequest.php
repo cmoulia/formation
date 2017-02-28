@@ -9,7 +9,7 @@
 namespace OCFram;
 
 
-class HTTPRequest {
+class HTTPRequest extends ApplicationComponent {
 	public function cookieData( $key ) {
 		return isset( $_COOKIE[ $key ] ) ? $_COOKIE[ $key ] : null;
 	}

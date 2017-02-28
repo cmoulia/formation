@@ -55,6 +55,8 @@ class BackController extends ApplicationComponent {
 			throw new \InvalidArgumentException( 'La vue doit être une chaine de caractères valide' );
 		}
 		$this->view = $view;
+		
+		$this->page->setContentFile( __DIR__ . '/../../app/' . $this->app->getName() . '/modules/' . $this->module . 'views' . $this->view . '.php' );
 	}
 	
 	public function execute() {

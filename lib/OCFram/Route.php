@@ -9,6 +9,11 @@
 namespace OCFram;
 
 
+/**
+ * Class Route
+ *
+ * @package OCFram
+ */
 class Route {
 	protected $action;
 	protected $module;
@@ -16,7 +21,7 @@ class Route {
 	protected $varsNames;
 	protected $vars = [];
 	
-	public function __construct( $url, $module, $action, $varsNames ) {
+	public function __construct( $url, $module, $action, array $varsNames ) {
 		$this->setUrl( $url );
 		$this->setModule( $module );
 		$this->setAction( $action );
@@ -94,7 +99,7 @@ class Route {
 	/**
 	 * @param mixed $varsNames
 	 */
-	public function setVarsNames( $varsNames ) {
+	public function setVarsNames( array $varsNames ) {
 		$this->varsNames = $varsNames;
 	}
 	
@@ -108,7 +113,7 @@ class Route {
 	/**
 	 * @param array $vars
 	 */
-	public function setVars( $vars ) {
+	public function setVars( array $vars ) {
 		$this->vars = $vars;
 	}
 }
