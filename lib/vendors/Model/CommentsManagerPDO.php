@@ -10,7 +10,8 @@ class CommentsManagerPDO extends CommentsManager {
 			throw new \InvalidArgumentException( 'L\'identifiant de la news passé doit être un nombre entier valide' );
 		}
 		
-		$q = $this->dao->prepare( 'SELECT id, news, auteur, contenu, date FROM comments WHERE news = :news' );
+		/** @var \PDOStatement $q */
+		$q = $this->dao->prepare( 'SELECT id, news, auteur, contenu, date FROM T_NEW_commentc WHERE news = :news' );
 		$q->bindValue( ':news', $news, \PDO::PARAM_INT );
 		$q->execute();
 		
@@ -18,6 +19,7 @@ class CommentsManagerPDO extends CommentsManager {
 		
 		$comments = $q->fetchAll();
 		
+		/** @var Comment $comment */
 		foreach ( $comments as $comment ) {
 			$comment->setDate( new \DateTime( $comment->date() ) );
 		}
@@ -26,7 +28,8 @@ class CommentsManagerPDO extends CommentsManager {
 	}
 	
 	public function get( $id ) {
-		$q = $this->dao->prepare( 'SELECT id, news, auteur, contenu FROM comments WHERE id = :id' );
+		/** @var \PDOStatement $q */
+		$q = $this->dao->prepare( 'SELECT id, news, auteur, contenu FROM T_NEW_commentc WHERE id = :id' );
 		$q->bindValue( ':id', (int)$id, \PDO::PARAM_INT );
 		$q->execute();
 		
@@ -36,15 +39,16 @@ class CommentsManagerPDO extends CommentsManager {
 	}
 	
 	public function delete( $id ) {
-		$this->dao->exec( 'DELETE FROM comments WHERE id = ' . (int)$id );
+		$this->dao->exec( 'DELETE FROM T_NEW_commentc WHERE id = ' . (int)$id );
 	}
 	
 	public function deleteFromNews( $news ) {
-		$this->dao->exec( 'DELETE FROM comments WHERE news = ' . (int)$news );
+		$this->dao->exec( 'DELETE FROM T_NEW_commentc WHERE news = ' . (int)$news );
 	}
 	
 	protected function add( Comment $comment ) {
-		$q = $this->dao->prepare( 'INSERT INTO comments SET news = :news, auteur = :auteur, contenu = :contenu, date = NOW()' );
+		/** @var \PDOStatement $q */
+		$q = $this->dao->prepare( 'INSERT INTO T_NEW_commentc SET news = :news, auteur = :auteur, contenu = :contenu, date = NOW()' );
 		
 		$q->bindValue( ':news', $comment->news(), \PDO::PARAM_INT );
 		$q->bindValue( ':auteur', $comment->auteur() );
@@ -56,7 +60,8 @@ class CommentsManagerPDO extends CommentsManager {
 	}
 	
 	protected function modify( Comment $comment ) {
-		$q = $this->dao->prepare( 'UPDATE comments SET auteur = :auteur, contenu = :contenu WHERE id = :id' );
+		/** @var \PDOStatement $q */
+		$q = $this->dao->prepare( 'UPDATE T_NEW_commentc SET auteur = :auteur, contenu = :contenu WHERE id = :id' );
 		
 		$q->bindValue( ':auteur', $comment->auteur() );
 		$q->bindValue( ':contenu', $comment->contenu() );

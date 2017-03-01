@@ -11,6 +11,7 @@ class Config extends ApplicationComponent {
 			
 			$elements = $xml->getElementsByTagName( 'define' );
 			
+			/** @var \DOMElement $element */
 			foreach ( $elements as $element ) {
 				$this->vars[ $element->getAttribute( 'var' ) ] = $element->getAttribute( 'value' );
 			}

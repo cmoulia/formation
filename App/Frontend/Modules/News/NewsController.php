@@ -2,7 +2,9 @@
 
 namespace App\Frontend\Modules\News;
 
+use \Entity\News;
 use \OCFram\BackController;
+use \OCFram\Form;
 use \OCFram\HTTPRequest;
 use \Entity\Comment;
 use \FormBuilder\CommentFormBuilder;
@@ -21,6 +23,7 @@ class NewsController extends BackController {
 		
 		$listeNews = $manager->getList( 0, $nombreNews );
 		
+		/** @var News $news */
 		foreach ( $listeNews as $news ) {
 			if ( strlen( $news->contenu() ) > $nombreCaracteres ) {
 				$debut = substr( $news->contenu(), 0, $nombreCaracteres );
@@ -35,6 +38,7 @@ class NewsController extends BackController {
 	}
 	
 	public function executeShow( HTTPRequest $request ) {
+		/** @var News $news */
 		$news = $this->managers->getManagerOf( 'News' )->getUnique( $request->getData( 'id' ) );
 		
 		if ( empty( $news ) ) {
@@ -62,6 +66,7 @@ class NewsController extends BackController {
 		$formBuilder = new CommentFormBuilder( $comment );
 		$formBuilder->build();
 		
+		/** @var Form $form */
 		$form = $formBuilder->form();
 		
 		$formHandler = new FormHandler( $form, $this->managers->getManagerOf( 'Comments' ), $request );
