@@ -2,7 +2,8 @@
 
 namespace FormBuilder;
 
-use OCFram\EqualsValidator;
+use \OCFram\EqualsValidator;
+use OCFram\ExistingUserValidator;
 use \OCFram\FormBuilder;
 use \OCFram\StringField;
 use \OCFram\DateField;
@@ -18,6 +19,8 @@ class UserFormBuilder extends FormBuilder {
 			'validators' => [
 				new MaxLengthValidator( 'Le nom d\'utilisateur spécifié est trop long (20 caractères maximum)', 20 ),
 				new NotNullValidator( 'Merci de spécifier votre nom d\'utilisateur' ),
+// @TODO: Vérifier que l'username n'existe pas déjà
+//				new ExistingUserValidator( 'Le nom d\'utilisateur n\'est pas disponible',  ),
 			],
 		] ) )->add( new StringField( [
 			'label'      => 'Mot de passe',
@@ -46,6 +49,9 @@ class UserFormBuilder extends FormBuilder {
 			'validators' => [
 				new MaxLengthValidator( 'L\'adresse email spécifié est trop longue (100 caractères maximum)', 100 ),
 				new NotNullValidator( 'Merci de spécifier l\'adresse email' ),
+// @TODO: Vérifier que l'adresse email n'existe pas déjà
+//				new ExistingUserValidator( 'L\'adresse email n\'est pas disponible', $this->controller->managers->getManagerOf('User') ),
+			
 			],
 		] ) )->add( new StringField( [
 			'label'      => 'Confirmation de l\'email',

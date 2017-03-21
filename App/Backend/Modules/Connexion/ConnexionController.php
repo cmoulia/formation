@@ -111,7 +111,7 @@ class ConnexionController extends BackController {
 			}
 		}
 		
-		$formBuilder = new UserFormBuilder( $user );
+		$formBuilder = new UserFormBuilder( $user, $this );
 		$formBuilder->build();
 		
 		$form = $formBuilder->form();
@@ -120,6 +120,7 @@ class ConnexionController extends BackController {
 		
 		if ( $formHandler->process() ) {
 			$this->app->user()->setFlash( $user->isNew() ? 'L\'utilisateur a bien été ajouté !' : 'L\'utilisateur a bien été modifié !' );
+			// @TODO : Connecter automatiquement un nouvel utilisateur
 			$this->app->httpResponse()->redirect( '/admin/' );
 		}
 		

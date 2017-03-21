@@ -2,16 +2,17 @@
 
 namespace OCFram;
 
-class EqualsValidator extends Validator {
-	protected $value;
+class ExistingUserValidator extends Validator {
+	protected $users;
 	
 	public function __construct( $errorMessage, $manager ) {
 		parent::__construct( $errorMessage );
 		
-		$this->value = $manager->value();
+		$users = $manager->getList();
+		$this->users = $users;
 	}
 	
 	public function isValid( $value ) {
-		return $value == $this->value;
+		return in_array($value, $this->users);
 	}
 }
