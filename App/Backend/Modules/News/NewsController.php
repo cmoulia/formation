@@ -2,6 +2,7 @@
 
 namespace App\Backend\Modules\News;
 
+use Model\NewsManager;
 use \OCFram\BackController;
 use \OCFram\HTTPRequest;
 use \Entity\Comment;
@@ -14,6 +15,7 @@ class NewsController extends BackController {
 	public function executeIndex( HTTPRequest $request ) {
 		$this->page->addVar( 'title', 'Gestion des news' );
 		
+		/** @var NewsManager $manager */
 		$manager = $this->managers->getManagerOf( 'News' );
 		
 		$this->page->addVar( 'listeNews', $manager->getList() );

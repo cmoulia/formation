@@ -16,7 +16,7 @@ class BackendApplication extends Application {
 			$controller = $this->getController();
 		}
 		else {
-			$controller = new Modules\Connexion\ConnexionController( $this, 'Connexion', 'index' );
+			$controller = new Modules\Connexion\ConnexionController( $this, 'Connexion', 'login' );
 		}
 		
 		$controller->execute();

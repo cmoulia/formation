@@ -35,6 +35,7 @@ use OCFram\User;
 					if ( $user->isAuthenticated() ) { ?>
 						<li><a href="/admin/logout">D&eacute;connexion</a></li>
 						<li><a href="/admin/news-insert.html">Ajouter une news</a></li>
+						<li><a href="/admin/user.html">Liste des utilisateurs</a></li>
 					<?php } ?>
 				</ul>
 			</nav>

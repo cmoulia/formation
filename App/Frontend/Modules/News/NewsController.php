@@ -25,11 +25,11 @@ class NewsController extends BackController {
 		
 		/** @var News $news */
 		foreach ( $listeNews as $news ) {
-			if ( strlen( $news->contenu() ) > $nombreCaracteres ) {
-				$debut = substr( $news->contenu(), 0, $nombreCaracteres );
+			if ( strlen( $news->content() ) > $nombreCaracteres ) {
+				$debut = substr( $news->content(), 0, $nombreCaracteres );
 				$debut = substr( $debut, 0, strrpos( $debut, ' ' ) ) . '...';
 				
-				$news->setContenu( $debut );
+				$news->setContent( $debut );
 			}
 		}
 		
@@ -45,7 +45,7 @@ class NewsController extends BackController {
 			$this->app->httpResponse()->redirect404();
 		}
 		
-		$this->page->addVar( 'title', $news->titre() );
+		$this->page->addVar( 'title', $news->title() );
 		$this->page->addVar( 'news', $news );
 		$this->page->addVar( 'comments', $this->managers->getManagerOf( 'Comments' )->getListOf( $news->id() ) );
 	}

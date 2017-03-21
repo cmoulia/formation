@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS `comments` (
 -- Contenu de la table `comments`
 --
 
-INSERT INTO T_NEW_commentc (`id`, `news`, `auteur`, `contenu`, `date`)
+INSERT INTO T_NEW_commentc (id, news, author, content, dateadd)
 VALUES
 (2, 5, 'Tom', 'Commentaire', '2017-02-28 17:09:12'),
 (3, 5, 'Tom', 'Commentaire', '2017-03-21 07:31:38'),
@@ -489,7 +489,7 @@ VALUES
 (470, 750, '8ed74fe5eb92e1408aa1cdb28d535d7b', 'a5129b89013ff8a618b9dc20efb25844892d7665', '2017-02-03 10:56:00'),
 (471, 1460, 'd11b52710a31664dc8ed9da61f8d77fa', '15c2141cb2f5df95c8ae7971f7e5188173d233f2', '2017-02-25 08:24:52'),
 (472, 277, 'b222c7f7df11efa8190831c8a17c6efb', '73a6640442a34727bb393ae683ef6577ad1f1715', '2017-02-09 09:21:47');
-INSERT INTO T_NEW_commentc (`id`, `news`, `auteur`, `contenu`, `date`)
+INSERT INTO T_NEW_commentc (id, news, author, content, dateadd)
 VALUES
 (473, 759, '3368063c947ded440a0ff134f3c446e4', '5bbcfd5201a7ad5187ef05c6f87a272554f87876', '2017-02-21 10:04:46'),
 (474, 1459, '2e3ae367ce7fb3c802e356c09702b4f1', '81ef1cfc5bca7c1d13fadca45bddb5177a5a0739', '2017-02-25 10:53:24'),
@@ -931,7 +931,7 @@ VALUES
 (941, 665, '2b87d8db6625497e99ee8134e15cb3f6', '766457117efc7541ce2c4f050f3d2122974d0ab4', '2017-02-01 09:11:31'),
 (942, 505, 'df8549fc8dbf4d83cb0e71f91dbc8688', 'ab215cbdcaaaff8c14d8cb5596687abda58df259', '2017-02-07 08:53:00'),
 (943, 1136, 'dff75969f4f0dc083df6320d4293700a', '979dfe700bdbc0317a4ae334d82813f1e844fbe6', '2017-01-31 09:45:55');
-INSERT INTO T_NEW_commentc (`id`, `news`, `auteur`, `contenu`, `date`)
+INSERT INTO T_NEW_commentc (id, news, author, content, dateadd)
 VALUES
 (944, 294, 'bcae4207b5de627c90edd2c0ea0265ac', '185b7be697636cc93b270703e6805daf72b3698d', '2017-03-01 09:54:36'),
 (945, 1576, 'cb0587a946a3a70ec926c7d31737937a', '71e9110d7f136ff8f771622c1ec98d3d65f16e4c', '2017-03-01 09:26:22'),
@@ -1369,7 +1369,7 @@ VALUES
 (1440, 1300, '6b11b2e97b9a399d751fa3dcdd56e0b2', '531ceda8a75c15b6d32c9cd1655870eb9bbd4368', '2017-02-21 09:18:08'),
 (1441, 163, 'eff5a51d5878c026ef241750ca011a58', '40ce26db398a3c97794473fb08fce2d3fddea467', '2017-03-01 10:13:57'),
 (1442, 1177, '690e0cc469adb02aa071e494d3b013e2', '1e02fa784eac3705636915507f800b2e33bddca1', '2017-02-16 08:46:32');
-INSERT INTO T_NEW_commentc (`id`, `news`, `auteur`, `contenu`, `date`)
+INSERT INTO T_NEW_commentc (id, news, author, content, dateadd)
 VALUES
 (1443, 74, '37d4ab992ba182a282f774aea3872786', '4f6d674b53b6830aa87c8d0fac9550669874ec0b', '2017-02-09 08:01:39'),
 (1444, 568, '0b715bfe1f0358bb18a036ae250261bf', 'e4808531f133602780d05dd3b60bc4a712bf6aac', '2017-02-01 08:05:56'),
@@ -1807,7 +1807,7 @@ VALUES
 (1876, 4, 'bf631ec851038acd8af70d28491cd243', 'a55a9ba0dcabac21f460d8a3c4732a100015913f', '2017-02-13 08:43:47'),
 (1877, 1621, '329f6d34e930e994b32c7b47e7b0e1eb', '41cefd944732c2a5f414025506c16be770c453c9', '2017-02-09 10:22:49'),
 (1878, 1049, 'dba6795be5a33fb9f65aede8e210e1c8', 'd3ba328b4a6b3a469c7e3a07add2bf2074315b21', '2017-02-07 10:50:53');
-INSERT INTO T_NEW_commentc (`id`, `news`, `auteur`, `contenu`, `date`)
+INSERT INTO T_NEW_commentc (id, news, author, content, dateadd)
 VALUES
 (1879, 189, 'e65ed3fd242d065f17dcb54aa36c877b', 'f11691beb79ed3e06676ff516169350b6d33fc8d', '2017-02-03 10:26:58'),
 (1880, 682, '8f586c9a3841d919c9b549e89de26f81', '6ee8201a1ee0f6ef6865c6754085d97e99190fcf', '2017-02-22 10:12:43'),
@@ -2245,7 +2245,7 @@ VALUES
 (2439, 1301, '9bd1258f00a1c58d4dad28d754749cb5', '94a49821ff9a01f1a68128e644e05b09bea4d332', '2017-02-13 08:32:04'),
 (2440, 1417, '6f98414334da2017258c71e620403ed9', '08df353818cff35b41e0ca87d9e3284005aa3b58', '2017-02-17 08:42:43'),
 (2441, 1104, '41b60ff0a691ae0b357b0f9969446a3d', '08b54bb061eb46f0709a9b76a81776c80ec2f48e', '2017-02-24 09:49:50');
-INSERT INTO T_NEW_commentc (`id`, `news`, `auteur`, `contenu`, `date`)
+INSERT INTO T_NEW_commentc (id, news, author, content, dateadd)
 VALUES
 (2442, 294, '3c7c12ef8a2e591ba1739f7eb7f97846', '80836b38047e08bf3cbaf4ecb65e0da9c78ea1a9', '2017-02-04 08:15:29'),
 (2443, 623, '61b7ceb91b27767a8441041f13449c08', 'e7ce24caa37ac7ba7cc483148bb98669ed96112d', '2017-02-02 09:30:25'),
@@ -2683,7 +2683,7 @@ VALUES
 (2875, 1531, 'ba96dcc946e79acced370dbaa816aa1c', '174b6d19afcb9c9ed1840316a32c65d23cf394b5', '2017-02-09 09:07:06'),
 (2876, 156, 'a22ebbc39c57c1c21dfafc90557c0be6', '1c12d4819ab0e5abe104acf3767e0ab3fd1a6661', '2017-02-18 09:01:57'),
 (2877, 620, '92487092e13d386c18e4d1f9a11ad087', '831e68c24a29d37c68f452242807d285fde526c0', '2017-03-01 10:08:12');
-INSERT INTO T_NEW_commentc (`id`, `news`, `auteur`, `contenu`, `date`)
+INSERT INTO T_NEW_commentc (id, news, author, content, dateadd)
 VALUES
 (2878, 1269, '3566c37864dd05d3fb91d78c0846cc7e', '5376b1e3d51521c64ee5365384b4b6184f7c92bd', '2017-02-19 10:03:22'),
 (2879, 1209, '5dd7731189aa98f491942a3a4108eaf2', '7e8d5ae1faf7a1b58fbf677bdbaada86e12d5c61', '2017-02-22 08:28:43'),
@@ -3121,7 +3121,7 @@ VALUES
 (3311, 801, 'eb2bed2cef48c498f598f02fe8ba53bf', 'cb8277ef8f0401ccb21e51cb2f40923c62267858', '2017-03-01 10:22:12'),
 (3312, 1176, '920fba667be8bd44b738f85134b590a9', 'bbf65539976816b0406e212b1cf925a207929fec', '2017-02-20 10:01:51'),
 (3313, 37, 'ef0c83d50f7d8e099dd6eedd0285d96b', '73bafda5cf0421c7735e362978d554589b1b4a15', '2017-02-08 08:21:47');
-INSERT INTO T_NEW_commentc (`id`, `news`, `auteur`, `contenu`, `date`)
+INSERT INTO T_NEW_commentc (id, news, author, content, dateadd)
 VALUES
 (3314, 1480, '2d0e6408916d51fb4b00408af64f4d3f', 'f56b21e707cb1e9dd84abce08084eecc5cef4ff6', '2017-02-28 08:38:46'),
 (3315, 645, 'b26b68f7d49e167136732de23242b7cf', '33b85dd93ef9f652bd2343f891917f7a8883f5ea', '2017-02-23 10:11:12'),
@@ -3558,7 +3558,7 @@ VALUES
 (3746, 1330, '04c2f8f23c5f081333db50258ffbe284', '7e02cf4be0b7ada61c5f12e6ccad1e0def59e870', '2017-02-14 09:19:28'),
 (3747, 1291, '45908451d32074285c1e927e7a1ed0e0', '075752ea6e423acb5acdfc707360f782e10c6fc2', '2017-02-21 08:34:53'),
 (3748, 674, 'bc9ec75e90f52c9cac85ba628277901c', 'e5ec7e2cb2d549b3546a2802ec464c5e5c4b9a6a', '2017-02-03 08:16:44');
-INSERT INTO T_NEW_commentc (`id`, `news`, `auteur`, `contenu`, `date`)
+INSERT INTO T_NEW_commentc (id, news, author, content, dateadd)
 VALUES
 (3749, 5, '74dd5dd96223eb636070fed0ca55df5c', 'a176c3a1c18e14dde59d4126dc9bb8f2879caefe', '2017-02-07 09:45:05'),
 (3750, 365, '9981a8ca02dbbac9266d7fa51f016639', '2d2b042a9947e6f7cf35c692bc9f6aa822b7fb71', '2017-01-31 08:40:55'),
@@ -3996,7 +3996,7 @@ VALUES
 (4437, 1433, '14bfa2fa92aa15e0a6d4101d6e3a8001', '2ce9b2335fcbf4dc9120a0ccf2f25cd1433e4a13', '2017-02-05 10:54:13'),
 (4438, 1403, '266edd5ac9846c2f0fe461e6620dd662', '6aa7b71af66d75cb17d0bb40963cc289f89c4851', '2017-02-06 10:33:59'),
 (4439, 1147, '7ea365f9a595cb0195193ba6764ebaf1', '239b2cd254f043df25b75867254da7d2139af952', '2017-02-14 08:47:18');
-INSERT INTO T_NEW_commentc (`id`, `news`, `auteur`, `contenu`, `date`)
+INSERT INTO T_NEW_commentc (id, news, author, content, dateadd)
 VALUES
 (4440, 604, '778f4becc1c4f74b041a4093ec4f2457', '0fbe2a32738593159b982257796bacb3076a4fec', '2017-02-13 09:09:02'),
 (4441, 123, '906e11fb1e465d936216f6a257114ff6', '2bed0496538314224461cce1f6257a283d145b92', '2017-02-19 08:25:14'),
@@ -4434,7 +4434,7 @@ VALUES
 (4873, 1246, 'c320c7bacf2862bf76f005b51875384a', '4d54e97a01f017dbe7b381868cb4838e1e889f54', '2017-02-13 10:01:51'),
 (4874, 398, '3ea342a446eae5be52a135569297127e', '5dde66c357843ccd693dcddb9d903fa541f95b96', '2017-02-20 10:08:58'),
 (4875, 407, 'b22557826b892d057f3d0721907850cd', '5ef7d15f9618e4e47e01bb850c2f60445d1879ba', '2017-02-06 08:58:08');
-INSERT INTO T_NEW_commentc (`id`, `news`, `auteur`, `contenu`, `date`)
+INSERT INTO T_NEW_commentc (id, news, author, content, dateadd)
 VALUES
 (4876, 777, 'a6ede4c3c32431def76f0e734784ff90', '65d9bc15faf7b2b0dff2612e91fc2e6c19337a14', '2017-02-20 09:01:23'),
 (4877, 1611, '7f67fd1a13cba134e65613db83c25bf9', '5be8bdbb058564a11a6a75c7365a32fd7b3d32e3', '2017-02-20 09:41:17'),
@@ -4872,7 +4872,7 @@ VALUES
 (5309, 1558, '0e3344dd77e09f25e303cddde57251d5', '0260eb72c28b31b7e2a9f89ce2fd69aa9e4990f1', '2017-02-01 08:31:35'),
 (5310, 576, '0de1ff44b9c295b5a5db7e8ddf2093b0', '8689e0ed17779718b6ce4f67a794ba5f577f6c61', '2017-02-08 09:11:01'),
 (5311, 1457, 'a1e997d85b84f4486d71054ec00c338f', 'ec17e44b54d95ed7e41996119f6bb5849fca908c', '2017-02-02 09:01:20');
-INSERT INTO T_NEW_commentc (`id`, `news`, `auteur`, `contenu`, `date`)
+INSERT INTO T_NEW_commentc (id, news, author, content, dateadd)
 VALUES
 (5312, 1078, 'f8e615e78b4ab50a529999d448077a8d', '743065279883da9866a1ff5d6404700514105f48', '2017-02-23 08:50:25'),
 (5313, 1045, 'efafe8ab6caeecac6c6abe3dc817eb89', '3faebb6305fc806d53771fbe1f8bf58a26b15214', '2017-02-10 10:01:42'),
@@ -5310,7 +5310,7 @@ VALUES
 (5745, 708, 'c803270f10646a29a900aeb1ce968e4d', 'ee5c3affb99dae687c4101de24332bec0f08cd94', '2017-02-07 09:05:59'),
 (5746, 184, '26be9c0297fa7981d9640c93bbf69181', '830a105cad0eb9dc1c566af5a3c8b3d9f71a8095', '2017-02-03 10:52:58'),
 (5747, 1252, 'ecae11924e49da8a764d6fc7e0302101', 'ab7f2d6e6ea4e7944a677acb40b137fe39db7091', '2017-02-28 08:17:54');
-INSERT INTO T_NEW_commentc (`id`, `news`, `auteur`, `contenu`, `date`)
+INSERT INTO T_NEW_commentc (id, news, author, content, dateadd)
 VALUES
 (5748, 293, '3486d7c8895bb806210fe563bc499526', 'c60a3c1c202ddce332e5cd73571f3d6d0dd29a52', '2017-02-19 10:08:47'),
 (5749, 1559, '0c16772ee3d85128b2fb90fcb2ea3c49', '1a428e3bc900655ebfabb3c9bd233c0b681bb411', '2017-02-11 09:21:20'),
@@ -5748,7 +5748,7 @@ VALUES
 (6181, 1646, '57b0d15c90f878529641d224b14c6978', '6126d84e54c0b7319e7242624babf9f7807039c4', '2017-02-11 09:35:15'),
 (6182, 1165, '75b6eb83604da8f6c9722dd15e0f1c6e', 'dafa71510fcd785cad6fc00bb35bec17c0bbac94', '2017-02-03 09:53:03'),
 (6183, 1111, '7e3eb57a78a16247c744606a94b23e37', '274e62c199dcd73861bb89d8d063fb2d194f0854', '2017-02-09 10:04:40');
-INSERT INTO T_NEW_commentc (`id`, `news`, `auteur`, `contenu`, `date`)
+INSERT INTO T_NEW_commentc (id, news, author, content, dateadd)
 VALUES
 (6184, 1372, '9f44c4aed6f31a09c21cd37dcfe78266', '63d72bf346a3f30635713fe20966cc1407ab13fe', '2017-02-16 10:13:03'),
 (6185, 61, 'c916d50abd90d367f808cf372bbd3a2d', 'a2d456e8778ec34073f45d5e073002b5365af41b', '2017-02-06 10:06:05'),
@@ -6186,7 +6186,7 @@ VALUES
 (6617, 1232, '14fba698a9e2814175ae664aa30c67ad', '8cf221b1c398c36d31650f4c95027a9428c7e38c', '2017-02-04 08:50:13'),
 (6618, 1176, 'afa83462428b5afc1c64366231b0984d', '4e294936a368134f1159f1b49263416feb3738a5', '2017-02-23 08:19:35'),
 (6619, 1227, 'c570a6ff965103b383e58fdde1667f7b', 'fc28e1b22bf8b043d43774b946dae511bb437dd2', '2017-01-31 10:33:23');
-INSERT INTO T_NEW_commentc (`id`, `news`, `auteur`, `contenu`, `date`)
+INSERT INTO T_NEW_commentc (id, news, author, content, dateadd)
 VALUES
 (6620, 156, '4affb495d4c69d81c522237515314d99', 'e19ff04113f2eaf55c2efd524ea5ba24a9b0b647', '2017-02-15 10:44:55'),
 (6621, 1090, '832808f20af43372a59ec61a5d2fdf3c', 'd682646961f5859596f1fb57d58c5294008c7ef9', '2017-02-10 09:46:36'),
@@ -6624,7 +6624,7 @@ VALUES
 (7053, 157, 'a31ab9ff6296f0e87715dd24fc58b270', '1af6d4eaca14141f923d188b456740f43e20ccca', '2017-02-12 08:59:24'),
 (7054, 683, '9f8c33b86e07f0c05e700175b4703a6b', '1cfe8f3d6c9864c92496def8868481217558634d', '2017-02-27 10:18:08'),
 (7055, 1338, 'fc8e93a669c8133870786b5b8982dc7b', '8903389fcfe0040230f60e738a6974158f558abb', '2017-03-01 10:13:46');
-INSERT INTO T_NEW_commentc (`id`, `news`, `auteur`, `contenu`, `date`)
+INSERT INTO T_NEW_commentc (id, news, author, content, dateadd)
 VALUES
 (7056, 1258, '7d9f5fbfd44d32c509bfe776fcdce2a8', '1b6da5a33f23a6ac7048457181cf8fdd4a1c2369', '2017-02-13 10:27:01'),
 (7057, 1473, '576281a2e92b076ecf08fc7111b6aa5f', 'b526e4cd70177011fc8976d353d51eed444d378a', '2017-02-06 08:01:56'),
@@ -7062,7 +7062,7 @@ VALUES
 (7489, 393, '728db9f3d9b1fce3369481e5a912a070', 'fe45a4c2ec3bb38f737c04d5a0a8552ce2c003ed', '2017-02-25 09:23:18'),
 (7490, 1534, '6c7e8a7baa6f3e29d1b7a9190ab428b6', '6b48345351e020420ad5b1995cc8deed3149def9', '2017-02-16 08:44:20'),
 (7491, 1406, 'b47b423eacdb48d84e60eb63a4da45e9', '580df78477fcba24467327d3a6069a71145a161b', '2017-01-31 10:35:50');
-INSERT INTO T_NEW_commentc (`id`, `news`, `auteur`, `contenu`, `date`)
+INSERT INTO T_NEW_commentc (id, news, author, content, dateadd)
 VALUES
 (7492, 1497, 'ce0a5038d690fb51625280c09576c833', '0c25b46deea3ad23a6e6f602a2dc99f91dd96c4c', '2017-02-01 10:21:31'),
 (7493, 197, '786be97864042611c4b465755e5ddcc2', '1c5d5e92e56b98898e691d9b2b76e0138acb8d58', '2017-02-28 09:10:59'),
@@ -7266,7 +7266,7 @@ CREATE TABLE IF NOT EXISTS `news` (
 -- Contenu de la table `news`
 --
 
-INSERT INTO T_NEW_newsc (`id`, `auteur`, `titre`, `contenu`, `dateAjout`, `dateModif`)
+INSERT INTO T_NEW_newsc (id, author, title, content, dateadd, dateupdate)
 VALUES
 (1, 'Journaliste 1', 'Top 5 des façons les plus marrantes de se fail en PHP', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod\r\ntempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,\r\nquis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo\r\nconsequat. Duis aute irure dolor in reprehenderit in voluptate velit esse\r\ncillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non\r\nproident, sunt in culpa qui officia deserunt mollit anim id est laborum.', '2017-02-28 14:32:56', '2017-02-28 14:32:56'),
 (2, 'Journaliste 2', 'Vous n\'en croirai pas vos yeux lorsque vous découvrirez comment cet homme à ', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod\r\ntempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,\r\nquis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo\r\nconsequat. Duis aute irure dolor in reprehenderit in voluptate velit esse\r\ncillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non\r\nproident, sunt in culpa qui officia deserunt mollit anim id est laborum.', '2017-02-28 14:32:56', '2017-02-28 14:32:56'),

@@ -11,7 +11,7 @@ class NewsManagerPDO extends NewsManager {
 	 * @return mixed
 	 */
 	public function getList( $debut = -1, $limite = -1 ) {
-		$sql = 'SELECT id, auteur, titre, contenu, dateAjout, dateModif FROM T_NEW_newsc ORDER BY dateAjout DESC';
+		$sql = 'SELECT id, author, title, content, dateadd, dateupdate FROM T_NEW_newsc ORDER BY dateadd DESC';
 		
 		if ( $debut != -1 || $limite != -1 ) {
 			$sql .= ' LIMIT ' . (int)$limite . ' OFFSET ' . (int)$debut;
@@ -25,8 +25,8 @@ class NewsManagerPDO extends NewsManager {
 		
 		/** @var News $news */
 		foreach ( $listeNews as $news ) {
-			$news->setDateAjout( new \DateTime( $news->dateAjout() ) );
-			$news->setDateModif( new \DateTime( $news->dateModif() ) );
+			$news->setDateadd( new \DateTime( $news->dateadd() ) );
+			$news->setDateupdate( new \DateTime( $news->dateupdate() ) );
 		}
 		
 		$requete->closeCursor();
@@ -36,15 +36,15 @@ class NewsManagerPDO extends NewsManager {
 	
 	public function getUnique( $id ) {
 		/** @var \PDOStatement $requete */
-		$requete = $this->dao->prepare( 'SELECT id, auteur, titre, contenu, dateAjout, dateModif FROM T_NEW_newsc WHERE id = :id' );
+		$requete = $this->dao->prepare( 'SELECT id, author, title, content, dateadd, dateupdate FROM T_NEW_newsc WHERE id = :id' );
 		$requete->bindValue( ':id', (int)$id, \PDO::PARAM_INT );
 		$requete->execute();
 		
 		$requete->setFetchMode( \PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\News' );
 		
 		if ( $news = $requete->fetch() ) {
-			$news->setDateAjout( new \DateTime( $news->dateAjout() ) );
-			$news->setDateModif( new \DateTime( $news->dateModif() ) );
+			$news->setDateadd( new \DateTime( $news->dateadd() ) );
+			$news->setDateupdate( new \DateTime( $news->dateupdate() ) );
 			
 			return $news;
 		}
@@ -64,9 +64,9 @@ class NewsManagerPDO extends NewsManager {
 		/** @var \PDOStatement $requete */
 		$requete = $this->dao->prepare( 'INSERT INTO T_NEW_newsc SET auteur = :auteur, titre = :titre, contenu = :contenu, dateAjout = NOW(), dateModif = NOW()' );
 		
-		$requete->bindValue( ':titre', $news->titre() );
-		$requete->bindValue( ':auteur', $news->auteur() );
-		$requete->bindValue( ':contenu', $news->contenu() );
+		$requete->bindValue( ':titre', $news->title() );
+		$requete->bindValue( ':auteur', $news->author() );
+		$requete->bindValue( ':contenu', $news->content() );
 		
 		$requete->execute();
 	}
@@ -75,9 +75,9 @@ class NewsManagerPDO extends NewsManager {
 		/** @var \PDOStatement $requete */
 		$requete = $this->dao->prepare( 'UPDATE T_NEW_newsc SET auteur = :auteur, titre = :titre, contenu = :contenu, dateModif = NOW() WHERE id = :id' );
 		
-		$requete->bindValue( ':titre', $news->titre() );
-		$requete->bindValue( ':auteur', $news->auteur() );
-		$requete->bindValue( ':contenu', $news->contenu() );
+		$requete->bindValue( ':titre', $news->title() );
+		$requete->bindValue( ':auteur', $news->author() );
+		$requete->bindValue( ':contenu', $news->content() );
 		$requete->bindValue( ':id', $news->id(), \PDO::PARAM_INT );
 		
 		$requete->execute();

@@ -2,7 +2,8 @@
 namespace OCFram;
 
 abstract class Entity implements \ArrayAccess {
-	protected $erreurs = [], $id;
+	protected $errors = [], $id;
+	protected               $prefix;
 	
 	public function __construct( array $donnees = [] ) {
 		if ( !empty( $donnees ) ) {
@@ -13,12 +14,42 @@ abstract class Entity implements \ArrayAccess {
 	// Utilisation du trait Hydrator pour que nos entités puissent être hydratées
 	use Hydrator;
 	
-	public function isNew() {
-		return empty( $this->id );
+	/*// Essai pour changer la colonne en setter correct
+	public function __set( $name, $value ) {
+		$var = str_replace($this->prefix,'',$name);
+		$method = 'set' . ucfirst( $var );
+		
+		var_dump('prefix: '.$this->prefix);
+		var_dump('$name: '.$name);
+		var_dump('$var: '.$var);
+		var_dump('$method: '.$method);
+		var_dump('$value: '.$value);
+		var_dump(isset($this->$var));
+		var_dump(is_callable([$this, $method]));
+		var_dump($this);
+		die;
+		
+		if ( isset( $this->$var )
+			 && is_callable( [
+				$this,
+				$method,
+			] )
+		) {
+			$this->$method( $value );
+		}
 	}
 	
-	public function erreurs() {
-		return $this->erreurs;
+	public function prefix() {
+		return $this->prefix;
+	}
+	*/
+	
+	public function isNew() {
+		return empty( $this->NNC_id );
+	}
+	
+	public function errors() {
+		return $this->errors;
 	}
 	
 	public function id() {
