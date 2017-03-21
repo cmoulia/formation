@@ -8,11 +8,12 @@ class User extends Entity {
 	const PRENOM_INVALIDE = 1;
 	const NOM_INVALIDE    = 2;
 	const PSEUDO_INVALIDE = 3;
+	const EMAIL_INVALIDE = 4;
 	protected $prefix = 'MMC_';
 	protected $firstname, $lastname, $email, $username, $password, $birthdate, $dateregister;
 	
 	public function isValid() {
-		return !( empty( $this->username ) || empty( $this->firstname ) || empty( $this->dateregister ) );
+		return !( empty( $this->username ) || empty( $this->firstname ) );
 	}
 	
 	// SETTERS //
@@ -33,12 +34,24 @@ class User extends Entity {
 		$this->lastname = $lastname;
 	}
 	
+	public function setEmail( $email ) {
+		if ( !is_string( $email ) || empty( $email ) ) {
+			$this->errors[] = self::EMAIL_INVALIDE;
+		}
+		
+		$this->email = $email;
+	}
+	
 	public function setUsername( $username ) {
 		if ( !is_string( $username ) || empty( $username ) ) {
 			$this->errors[] = self::PSEUDO_INVALIDE;
 		}
 		
 		$this->username = $username;
+	}
+	
+	public function setPassword( $password ) {
+		$this->password = $password;
 	}
 	
 	public function setBirthdate( \DateTime $birthdate ) {

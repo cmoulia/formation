@@ -37,26 +37,13 @@ class NewsController extends BackController {
 		$this->page->addVar( 'listeNews', $listeNews );
 	}
 	
-	public function executeShow( HTTPRequest $request ) {
-		/** @var News $news */
-		$news = $this->managers->getManagerOf( 'News' )->getUnique( $request->getData( 'id' ) );
-		
-		if ( empty( $news ) ) {
-			$this->app->httpResponse()->redirect404();
-		}
-		
-		$this->page->addVar( 'title', $news->title() );
-		$this->page->addVar( 'news', $news );
-		$this->page->addVar( 'comments', $this->managers->getManagerOf( 'Comments' )->getListOf( $news->id() ) );
-	}
-	
 	public function executeInsertComment( HTTPRequest $request ) {
 		// Si le formulaire a été envoyé.
 		if ( $request->method() == 'POST' ) {
 			$comment = new Comment( [
-				'news'    => $request->getData( 'news' ),
-				'auteur'  => $request->postData( 'auteur' ),
-				'contenu' => $request->postData( 'contenu' ),
+				'fk_NNC'  => $request->getData( 'news' ),
+				'author'  => $request->postData( 'author' ),
+				'content' => $request->postData( 'content' ),
 			] );
 		}
 		else {
@@ -79,5 +66,18 @@ class NewsController extends BackController {
 		$this->page->addVar( 'comment', $comment );
 		$this->page->addVar( 'form', $form->createView() );
 		$this->page->addVar( 'title', 'Ajout d\'un commentaire' );
+	}
+	
+	public function executeShow( HTTPRequest $request ) {
+		/** @var News $news */
+		$news = $this->managers->getManagerOf( 'News' )->getUnique( $request->getData( 'id' ) );
+		
+		if ( empty( $news ) ) {
+			$this->app->httpResponse()->redirect404();
+		}
+		
+		$this->page->addVar( 'title', $news->title() );
+		$this->page->addVar( 'news', $news );
+		$this->page->addVar( 'comments', $this->managers->getManagerOf( 'Comments' )->getListOf( $news->id() ) );
 	}
 }

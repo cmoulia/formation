@@ -44,11 +44,11 @@ abstract class CommentsManager extends Manager {
 	/**
 	 * Méthode permettant de récupérer une liste de commentaires.
 	 *
-	 * @param News $news La news sur laquelle on veut récupérer les commentaires
+	 * @param News $newsId La news sur laquelle on veut récupérer les commentaires
 	 *
 	 * @return array
 	 */
-	abstract public function getListOf( $news );
+	abstract public function getListOf( $newsId );
 	
 	/**
 	 * Méthode permettant d'obtenir un commentaire spécifique.
@@ -58,6 +58,15 @@ abstract class CommentsManager extends Manager {
 	 * @return Comment
 	 */
 	abstract public function get( $id );
+	
+	/**
+	 * Méthode permettant d'obtenir l\'identifiant de la news d\'un commentaire spécifique.
+	 *
+	 * @param int $id L'identifiant du commentaire
+	 *
+	 * @return int
+	 */
+	abstract public function getNews( $id );
 	
 	/**
 	 * Méthode permettant de supprimer un commentaire.
@@ -71,9 +80,9 @@ abstract class CommentsManager extends Manager {
 	/**
 	 * Méthode permettant de supprimer tous les commentaires liés à une news
 	 *
-	 * @param int $news L'identifiant de la news dont les commentaires doivent être supprimés
+	 * @param int $newsId L'identifiant de la news dont les commentaires doivent être supprimés
 	 *
 	 * @return void
 	 */
-	abstract public function deleteFromNews($news);
+	abstract public function deleteFromNews($newsId);
 }

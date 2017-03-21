@@ -56,7 +56,7 @@ class UserManagerPDO extends UserManager {
 		$requete->bindValue( ':email', $login );
 		$requete->execute();
 		
-		return $requete->fetch();
+		return $requete->fetchColumn();
 	}
 	
 	public function count() {
@@ -69,14 +69,14 @@ class UserManagerPDO extends UserManager {
 	
 	protected function add( User $user ) {
 		/** @var \PDOStatement $requete */
-		$requete = $this->dao->prepare( 'INSERT INTO T_MEM_memberc SET firstname = :firstname, dateregister = NOW()' );
+		$requete = $this->dao->prepare( 'INSERT INTO T_MEM_memberc SET firstname = :firstname, lastname = :lastname, email = :email, username = :username, password = :password, birthdate = :birthdate, dateregister = NOW()' );
 		
 		$requete->bindValue( ':firstname', $user->firstname() );
 		$requete->bindValue( ':lastname', $user->lastname() );
 		$requete->bindValue( ':email', $user->email() );
 		$requete->bindValue( ':username', $user->username() );
 		$requete->bindValue( ':password', $user->password() );
-		$requete->bindValue( ':birthdate', $user->birthdate() );
+		$requete->bindValue( ':birthdate', $user->birthdate()->format("Y-m-d H:i:s") );
 		
 		$requete->execute();
 	}
@@ -87,7 +87,7 @@ class UserManagerPDO extends UserManager {
 		
 		$requete->bindValue( ':firstname', $user->firstname() );
 		$requete->bindValue( ':lastname', $user->lastname() );
-		$requete->bindValue( ':birthdate', $user->birthdate() );
+		$requete->bindValue( ':birthdate', $user->birthdate()->format("Y-m-d H:i:s") );
 		$requete->bindValue( ':id', $user->id(), \PDO::PARAM_INT );
 		
 		$requete->execute();

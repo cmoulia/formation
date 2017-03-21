@@ -45,7 +45,7 @@ abstract class Entity implements \ArrayAccess {
 	*/
 	
 	public function isNew() {
-		return empty( $this->NNC_id );
+		return empty( $this->id );
 	}
 	
 	public function errors() {
@@ -69,6 +69,7 @@ abstract class Entity implements \ArrayAccess {
 		) {
 			return $this->$var();
 		}
+		return null;
 	}
 	
 	public function offsetSet( $var, $value ) {

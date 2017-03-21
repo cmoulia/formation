@@ -1,14 +1,4 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: cmoulia
- * Date: 27/02/2017
- * Time: 16:28
- */
-use OCFram\User;
-
-?>
-<!doctype html>
+<!DOCTYPE HTML>
 <!--suppress HtmlUnknownTarget -->
 <html lang="fr">
 	<head>
@@ -29,13 +19,16 @@ use OCFram\User;
 			
 			<nav>
 				<ul>
-					<li><a href="/">Accueil</a></li>
-					<li><a href="/admin/">Admin</a></li>
-					<?php /** @var User $user */
+					<?php /** @var \OCFram\User $user */
 					if ( $user->isAuthenticated() ) { ?>
+						<li><a href="/">Front Office</a></li>
+						<li><a href="/admin/">Back Office</a></li>
 						<li><a href="/admin/logout">D&eacute;connexion</a></li>
 						<li><a href="/admin/news-insert.html">Ajouter une news</a></li>
-						<li><a href="/admin/user.html">Liste des utilisateurs</a></li>
+						<li><a href="/admin/user">Liste des utilisateurs</a></li>
+					<?php }else { ?>
+						<li><a href="/">Accueil</a></li>
+						<li><a href="/admin/">Connexion</a></li>
 					<?php } ?>
 				</ul>
 			</nav>

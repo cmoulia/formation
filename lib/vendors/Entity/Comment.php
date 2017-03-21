@@ -14,7 +14,7 @@ class Comment extends Entity {
 		return !( empty( $this->author ) || empty( $this->content ) );
 	}
 	
-	public function setFkNNC( $fk_NNC ) {
+	public function setFk_NNC( $fk_NNC ) {
 		$this->fk_NNC = (int)$fk_NNC;
 	}
 	
