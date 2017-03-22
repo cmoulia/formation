@@ -19,8 +19,8 @@
 			<td><?= $listeUser[ 'email' ] ?></td>
 			<td><?= $listeUser[ 'firstname' ] . ' ' . $listeUser[ 'lastname' ] ?></td>
 			<td><?= $listeUser[ 'dateregister' ]->format( 'd/m/Y à H\hi' ) ?></td>
-			<td><a href="user-update-<?= $listeUser[ 'id' ] ?>.html"><img src="/img/update.png" alt="Modifier" /></a>
-				<a href="user-delete-<?= $listeUser[ 'id' ] ?>.html"><img src="/img/delete.png" alt="Supprimer" /></a></td>
+			<td><a href="user-update-<?= $listeUser[ 'id' ] ?>"><img src="/img/update.png" alt="Modifier" /></a>
+				<a href="user-delete-<?= $listeUser[ 'id' ] ?>"><img src="/img/delete.png" alt="Supprimer" /></a></td>
 		</tr>
 	<?php } ?>
 </table>

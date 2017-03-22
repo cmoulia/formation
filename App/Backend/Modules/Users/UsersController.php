@@ -1,15 +1,14 @@
 <?php
 
-namespace App\Backend\Modules\Connexion;
+namespace App\Backend\Modules\Users;
 
 use Entity\User;
 use FormBuilder\UserFormBuilder;
-use Model\UserManager;
 use \OCFram\BackController;
-use OCFram\FormHandler;
+use \OCFram\FormHandler;
 use \OCFram\HTTPRequest;
 
-class ConnexionController extends BackController {
+class UsersController extends BackController {
 	public function executeDelete( HTTPRequest $request ) {
 		$userId = $request->getData( 'id' );
 		
@@ -17,13 +16,13 @@ class ConnexionController extends BackController {
 		
 		$this->app->user()->setFlash( 'L\'utilisateur a bien été supprimé !' );
 		
-		$this->app->httpResponse()->redirect( '.' );
+		$this->app->httpResponse()->redirect( '/admin/users' );
 	}
 	
 	public function executeIndex( HTTPRequest $request ) {
 		$this->page->addVar( 'title', 'Liste des Utilisateurs' );
 		
-		// On récupère le manager des news.
+		// On récupère le manager des user.
 		$manager = $this->managers->getManagerOf( 'User' );
 		
 		// On ajoute la variable $listeUsers à la vue.
@@ -35,47 +34,6 @@ class ConnexionController extends BackController {
 		$this->processForm( $request );
 		
 		$this->page->addVar( 'title', 'Ajout d\'un utilisateur' );
-	}
-	
-	public function executeLogin( HTTPRequest $request ) {
-		$this->page->addVar( 'title', 'Connexion' );
-		
-		if ( $request->postExists( 'login' ) ) {
-			$login    = $request->postData( 'login' );
-			$password = $request->postData( 'password' );
-			
-			/** @var UserManager $manager */
-			$manager = $this->managers->getManagerOf( 'User' );
-			
-			if ( $id = $manager->getIdByUsernameOrEmail( $login ) ) {
-				/** @var User $user */
-				$user = $manager->getUnique( $id );
-				if ( $password == $user->password() ) {
-					$this->app->user()->setAuthenticated( true );
-					$this->app->user()->setFlash( 'Connexion réussie' );
-					$this->app->httpResponse()->redirect( '.' );
-				}
-				else {
-					$this->app->user()->setFlash( 'Le pseudo ou le mot de passe est incorrect.' );
-				}
-			}
-			else {
-				$this->app->user()->setFlash( 'Le pseudo ou le mot de passe est incorrect.' );
-			}
-			/*			if ( $login == $this->app->config()->get( 'login' ) && $password == $this->app->config()->get( 'pass' ) ) {
-							$this->app->user()->setAuthenticated( true );
-							$this->app->httpResponse()->redirect( '.' );
-						}
-						else {
-							$this->app->user()->setFlash( 'Le pseudo ou le mot de passe est incorrect.' );
-						}*/
-		}
-	}
-	
-	public function executeLogout( HTTPRequest $request ) {
-		session_unset();
-		session_destroy();
-		$this->app->httpResponse()->redirect( '/' );
 	}
 	
 	public function executeUpdate( HTTPRequest $request ) {
@@ -120,7 +78,6 @@ class ConnexionController extends BackController {
 		
 		if ( $formHandler->process() ) {
 			$this->app->user()->setFlash( $user->isNew() ? 'L\'utilisateur a bien été ajouté !' : 'L\'utilisateur a bien été modifié !' );
-			// @TODO : Connecter automatiquement un nouvel utilisateur
 			$this->app->httpResponse()->redirect( '/admin/' );
 		}
 		

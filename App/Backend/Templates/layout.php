@@ -14,17 +14,18 @@
 		<div id="wrap">
 			<header>
 				<h1><a href="/">Mon super site</a></h1>
-				<p>Comment ça, il n'y a presque rien ?</p>
+				<p><?= isset($username) ? 'Bienvenue '.$username : 'Username' ?></p>
 			</header>
 			
 			<nav>
 				<ul>
 					<?php /** @var \OCFram\User $user */
-					if ( $user->isAuthenticated() ) { ?>
+					if ( $user->isAuthenticated() && $user->isAdmin() ) { ?>
 						<li><a href="/">Front Office</a></li>
 						<li><a href="/admin/">Back Office</a></li>
-						<li><a href="/admin/logout">D&eacute;connexion</a></li>
-						<li><a href="/admin/news-insert.html">Ajouter une news</a></li>
+						<li><a href="/logout">D&eacute;connexion</a></li>
+						<li><a href="/news-insert">Ajouter une news</a></li>
+						<li><a href="/admin/roles">Liste des r&ocirc;les</a></li>
 						<li><a href="/admin/users">Liste des utilisateurs</a></li>
 					<?php } ?>
 				</ul>

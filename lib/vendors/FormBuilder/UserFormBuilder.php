@@ -2,15 +2,23 @@
 
 namespace FormBuilder;
 
+use App\Backend\Modules\Users\UsersController;
+use Model\UserManager;
+use OCFram\Entity;
 use \OCFram\EqualsValidator;
 use OCFram\ExistingUserValidator;
 use \OCFram\FormBuilder;
+use OCFram\Manager;
 use \OCFram\StringField;
 use \OCFram\DateField;
 use \OCFram\MaxLengthValidator;
 use \OCFram\NotNullValidator;
 
 class UserFormBuilder extends FormBuilder {
+	public function __construct( Entity $entity, UserManager $manager ) {
+		parent::__construct( $entity, $manager );
+	}
+	
 	public function build() {
 		$this->form->add( new StringField( [
 			'label'      => 'Nom d\'utilisateur',
@@ -19,8 +27,7 @@ class UserFormBuilder extends FormBuilder {
 			'validators' => [
 				new MaxLengthValidator( 'Le nom d\'utilisateur spécifié est trop long (20 caractères maximum)', 20 ),
 				new NotNullValidator( 'Merci de spécifier votre nom d\'utilisateur' ),
-// @TODO: Vérifier que l'username n'existe pas déjà
-//				new ExistingUserValidator( 'Le nom d\'utilisateur n\'est pas disponible',  ),
+				new ExistingUserValidator( 'Le nom d\'utilisateur n\'est pas disponible', $this->manager->getList() ),
 			],
 		] ) )->add( new StringField( [
 			'label'      => 'Mot de passe',
@@ -49,8 +56,7 @@ class UserFormBuilder extends FormBuilder {
 			'validators' => [
 				new MaxLengthValidator( 'L\'adresse email spécifié est trop longue (100 caractères maximum)', 100 ),
 				new NotNullValidator( 'Merci de spécifier l\'adresse email' ),
-// @TODO: Vérifier que l'adresse email n'existe pas déjà
-//				new ExistingUserValidator( 'L\'adresse email n\'est pas disponible', $this->controller->managers->getManagerOf('User') ),
+				new ExistingUserValidator( 'L\'adresse email n\'est pas disponible', $this->manager->getList() ),
 			
 			],
 		] ) )->add( new StringField( [

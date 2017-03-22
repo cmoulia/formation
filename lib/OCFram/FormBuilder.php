@@ -2,32 +2,41 @@
 
 namespace OCFram;
 
-use App\Backend\Modules\Connexion\ConnexionController;
 
 abstract class FormBuilder {
 	protected $form;
-	protected $controller;
+	protected $manager;
+	protected $authenticated;
 	
-	public function __construct( Entity $entity, ConnexionController $controller ) {
+	public function __construct( Entity $entity, Manager $manager, $authenticated ) {
 		$this->setForm( new Form( $entity ) );
-		$this->setController( $controller );
+		$this->setManager($manager);
+		$this->setAuthenticated($authenticated);
 	}
+	
+	abstract public function build();
 	
 	public function setForm( Form $form ) {
 		$this->form = $form;
 	}
 	
-	public function setController( ConnexionController $controller ) {
-		$this->controller = $controller;
+	public function setManager( Manager $manager ) {
+		$this->manager = $manager;
 	}
 	
-	abstract public function build();
+	public function setAuthenticated( $authenticated ) {
+		$this->authenticated = $authenticated;
+	}
 	
 	public function form() {
 		return $this->form;
 	}
 	
-	public function controller() {
-		return $this->form;
+	public function manager() {
+		return $this->manager;
 	}
+	public function authenticated() {
+		return $this->authenticated;
+	}
+	
 }

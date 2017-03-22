@@ -8,9 +8,11 @@ class User extends Entity {
 	const PRENOM_INVALIDE = 1;
 	const NOM_INVALIDE    = 2;
 	const PSEUDO_INVALIDE = 3;
-	const EMAIL_INVALIDE = 4;
-	protected $prefix = 'MMC_';
-	protected $firstname, $lastname, $email, $username, $password, $birthdate, $dateregister;
+	const EMAIL_INVALIDE  = 4;
+	const FK_ROLE_INVALID = 5;
+	
+	protected $prefix = 'MEM_';
+	protected $firstname, $fk_MRC, $lastname, $email, $username, $password, $birthdate, $dateregister;
 	
 	public function isValid() {
 		return !( empty( $this->username ) || empty( $this->firstname ) );
@@ -32,6 +34,14 @@ class User extends Entity {
 		}
 		
 		$this->lastname = $lastname;
+	}
+	
+	public function setFk_MRC( $id) {
+		if (!is_int( $id) || empty($id)){
+			$this->errors[] = self::FK_ROLE_INVALID;
+		}
+		
+		$this->fk_MRC = $id;
 	}
 	
 	public function setEmail( $email ) {
@@ -66,6 +76,10 @@ class User extends Entity {
 	
 	public function firstname() {
 		return $this->firstname;
+	}
+	
+	public function fk_MRC() {
+		return $this->fk_MRC;
 	}
 	
 	public function lastname() {

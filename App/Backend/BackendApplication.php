@@ -12,11 +12,11 @@ class BackendApplication extends Application {
 	}
 	
 	public function run() {
-		if ( $this->user->isAuthenticated() ) {
+		if ( $this->user->isAuthenticated() && $this->user->isAdmin()) {
 			$controller = $this->getController();
 		}
 		else {
-			$controller = new Modules\Connexion\ConnexionController( $this, 'Connexion', 'login' );
+			$this->httpResponse()->redirect('/login');
 		}
 		
 		$controller->execute();

@@ -2,13 +2,11 @@
 
 namespace App\Backend\Modules\News;
 
+use Entity\Comment;
+use FormBuilder\CommentFormBuilder;
 use \OCFram\BackController;
+use OCFram\FormHandler;
 use \OCFram\HTTPRequest;
-use \Entity\Comment;
-use \Entity\News;
-use \FormBuilder\CommentFormBuilder;
-use \FormBuilder\NewsFormBuilder;
-use \OCFram\FormHandler;
 
 class NewsController extends BackController {
 	public function executeDelete( HTTPRequest $request ) {
@@ -28,29 +26,18 @@ class NewsController extends BackController {
 		
 		$this->app->user()->setFlash( 'Le commentaire a bien été supprimé !' );
 		
-		$this->app->httpResponse()->redirect( '/news-' . $newsId . '.html' );
+		$this->app->httpResponse()->redirect( '/news-' . $newsId );
 	}
 	
 	public function executeIndex( HTTPRequest $request ) {
 		$this->page->addVar( 'title', 'Gestion des news' );
+		$this->page->addVar( 'username', $this->app->user()->getAttribute('username') );
 		
 		/** @var \Model\NewsManager $manager */
 		$manager = $this->managers->getManagerOf( 'News' );
 		
 		$this->page->addVar( 'listeNews', $manager->getList() );
 		$this->page->addVar( 'nombreNews', $manager->count() );
-	}
-	
-	public function executeInsert( HTTPRequest $request ) {
-		$this->processForm( $request );
-		
-		$this->page->addVar( 'title', 'Ajout d\'une news' );
-	}
-	
-	public function executeUpdate( HTTPRequest $request ) {
-		$this->processForm( $request );
-		
-		$this->page->addVar( 'title', 'Modification d\'une news' );
 	}
 	
 	public function executeUpdateComment( HTTPRequest $request ) {
@@ -69,7 +56,7 @@ class NewsController extends BackController {
 		}
 		
 		
-		$formBuilder = new CommentFormBuilder( $comment );
+		$formBuilder = new CommentFormBuilder( $comment, $this->managers->getManagerOf('Comments'), $this->app->user()->isAuthenticated() );
 		$formBuilder->build();
 		
 		$form = $formBuilder->form();
@@ -78,47 +65,10 @@ class NewsController extends BackController {
 		
 		if ( $formHandler->process() ) {
 			$this->app->user()->setFlash( 'Le commentaire a bien été modifié' );
-			$this->app->httpResponse()->redirect( '/news-' . $comment->fk_NNC() . '.html' );
+			$this->app->httpResponse()->redirect( '/news-' . $comment->fk_NNC() );
 		}
 		
 		$this->page->addVar( 'form', $form->createView() );
 	}
-	
-	public function processForm( HTTPRequest $request ) {
-		if ( $request->method() == 'POST' ) {
-			$news = new News( [
-				'author'  => $request->postData( 'author' ),
-				'title'   => $request->postData( 'title' ),
-				'content' => $request->postData( 'content' ),
-			] );
-			
-			if ( $request->getExists( 'id' ) ) {
-				$news->setId( $request->getData( 'id' ) );
-			}
-		}
-		else {
-			// L'identifiant de la news est transmis si on veut la modifier
-			if ( $request->getExists( 'id' ) ) {
-				$news = $this->managers->getManagerOf( 'News' )->getUnique( $request->getData( 'id' ) );
-			}
-			else {
-				$news = new News;
-			}
-		}
-		
-		$formBuilder = new NewsFormBuilder( $news );
-		$formBuilder->build();
-		
-		
-		$form = $formBuilder->form();
-		
-		$formHandler = new FormHandler( $form, $this->managers->getManagerOf( 'News' ), $request );
-		
-		if ( $formHandler->process() ) {
-			$this->app->user()->setFlash( $news->isNew() ? 'La news a bien été ajoutée !' : 'La news a bien été modifiée !' );
-			$this->app->httpResponse()->redirect( '/' );
-		}
-		
-		$this->page->addVar( 'form', $form->createView() );
-	}
+
 }

@@ -3,16 +3,21 @@
 namespace OCFram;
 
 class ExistingUserValidator extends Validator {
-	protected $users;
+	protected $user_a;
 	
-	public function __construct( $errorMessage, $manager ) {
+	public function __construct( $errorMessage, $user_a ) {
 		parent::__construct( $errorMessage );
 		
-		$users = $manager->getList();
-		$this->users = $users;
+		$this->user_a = $user_a;
 	}
 	
 	public function isValid( $value ) {
-		return in_array($value, $this->users);
+		$userinfo = [];
+		foreach ( $this->user_a as $key => $user ) {
+			$userinfo[] = $user['username'];
+			$userinfo[] = $user['email'];
+		}
+		return !in_array($value,$userinfo);
+		
 	}
 }

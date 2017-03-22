@@ -8,12 +8,12 @@ abstract class UserManager extends Manager {
 	/**
 	 * Méthode retournant une liste des utilisateurs.
 	 *
-	 * @param int $debut  Le premier utilisateur à sélectionner
-	 * @param int $limite Le nombre d'utilisateurs à sélectionner
+	 * @param int $offset Le premier utilisateur à sélectionner
+	 * @param int $limit  Le nombre d'utilisateurs à sélectionner
 	 *
 	 * @return array La liste des utilisateurs. Chaque entrée est une instance de User.
 	 */
-	abstract public function getList( $debut = -1, $limite = -1 );
+	abstract public function getList( $offset = -1, $limit = -1 );
 	
 	/**
 	 * Méthode retournant un user précis.
@@ -31,7 +31,7 @@ abstract class UserManager extends Manager {
 	 *
 	 * @return User L'user demandé
 	 */
-	abstract public function getIdByUsernameOrEmail( $login );
+	abstract public function getUniqueByUsernameOrEmail( $login );
 	
 	/**
 	 * Méthode renvoyant le nombre d'utilisateurs total.
