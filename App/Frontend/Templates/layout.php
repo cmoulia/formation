@@ -9,6 +9,7 @@
 		<link rel="icon" href="/favicon.ico">
 		<!--		<link rel="stylesheet" href="/css/bootstrap.min.css" type="text/css">-->
 		<link rel="stylesheet" href="/css/Envision.css" type="text/css">
+		<link rel="stylesheet" href="/css/style.css" type="text/css">
 	</head>
 	<body>
 		<div id="wrap">
