@@ -3,7 +3,9 @@
 namespace App\Backend\Modules\News;
 
 use Entity\Comment;
+use Entity\News;
 use FormBuilder\CommentFormBuilder;
+use FormBuilder\NewsFormBuilder;
 use \OCFram\BackController;
 use OCFram\FormHandler;
 use \OCFram\HTTPRequest;
@@ -38,6 +40,48 @@ class NewsController extends BackController {
 		
 		$this->page->addVar( 'listeNews', $manager->getList() );
 		$this->page->addVar( 'nombreNews', $manager->count() );
+	}
+	
+	public function executeUpdate( HTTPRequest $request ) {
+		$this->page->addVar( 'title', 'Modification d\'une news' );
+		
+		if ( $request->method() == 'POST' ) {
+			$news = new News( [
+				// TODO: Modifier pour gérer la modération d'une news, ne pas changer l'auteur, nouveau champ admin à créer
+				'author'  => $this->app->user()->getAttribute( 'username' ),
+				'title'   => $request->postData( 'title' ),
+				'content' => $request->postData( 'content' ),
+			] );
+			
+			if ( $request->getExists( 'id' ) ) {
+				$news->setId( $request->getData( 'id' ) );
+			}
+		}
+		else {
+			// L'identifiant de la news est transmis si on veut la modifier
+			if ( $request->getExists( 'id' ) ) {
+				$news = $this->managers->getManagerOf( 'News' )->getUnique( $request->getData( 'id' ) );
+			}
+			else {
+				$news = new News;
+			}
+		}
+		
+		$formBuilder = new NewsFormBuilder( $news, $this->managers->getManagerOf( 'News' ), $this->app->user()->isAuthenticated() );
+		$formBuilder->build();
+		
+		
+		$form = $formBuilder->form();
+		
+		$formHandler = new FormHandler( $form, $this->managers->getManagerOf( 'News' ), $request );
+		
+		if ( $formHandler->process() ) {
+			$this->app->user()->setFlash( $news->isNew() ? 'La news a bien été ajoutée !' : 'La news a bien été modifiée !' );
+			$this->app->httpResponse()->redirect( '/' );
+		}
+		
+		
+		$this->page->addVar( 'form', $form->createView() );
 	}
 	
 	public function executeUpdateComment( HTTPRequest $request ) {
