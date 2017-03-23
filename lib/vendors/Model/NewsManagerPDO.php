@@ -11,7 +11,7 @@ class NewsManagerPDO extends NewsManager {
 	 * @return mixed
 	 */
 	public function getList( $debut = -1, $limite = -1 ) {
-		$sql = 'SELECT NNC_id, NNC_author, NNC_title, NNC_content, NNC_dateadd, NNC_dateupdate FROM T_NEW_newsc ORDER BY NNC_dateadd DESC';
+		$sql = 'SELECT NNC_id, NNC_author, NNC_admin, NNC_title, NNC_content, NNC_dateadd, NNC_dateupdate FROM T_NEW_newsc ORDER BY NNC_dateadd DESC';
 		
 		if ( $debut != -1 || $limite != -1 ) {
 			$sql .= ' LIMIT ' . (int)$limite . ' OFFSET ' . (int)$debut;
@@ -36,7 +36,7 @@ class NewsManagerPDO extends NewsManager {
 	
 	public function getUnique( $id ) {
 		/** @var \PDOStatement $requete */
-		$requete = $this->dao->prepare( 'SELECT NNC_id, NNC_author, NNC_title, NNC_content, NNC_dateadd, NNC_dateupdate FROM T_NEW_newsc WHERE NNC_id = :id' );
+		$requete = $this->dao->prepare( 'SELECT NNC_id, NNC_author, NNC_admin, NNC_title, NNC_content, NNC_dateadd, NNC_dateupdate FROM T_NEW_newsc WHERE NNC_id = :id' );
 		$requete->bindValue( ':id', (int)$id, \PDO::PARAM_INT );
 		$requete->execute();
 		$requete->setFetchMode(\PDO::FETCH_ASSOC);
@@ -72,9 +72,10 @@ class NewsManagerPDO extends NewsManager {
 	
 	protected function modify( News $news ) {
 		/** @var \PDOStatement $requete */
-		$requete = $this->dao->prepare( 'UPDATE T_NEW_newsc SET NNC_author = :author, NNC_title = :title, NNC_content = :content, NNC_dateupdate = NOW() WHERE NNC_id = :id' );
+		$requete = $this->dao->prepare( 'UPDATE T_NEW_newsc SET NNC_author = :author, NNC_admin = :admin, NNC_title = :title, NNC_content = :content, NNC_dateupdate = NOW() WHERE NNC_id = :id' );
 		
 		$requete->bindValue( ':author', $news->author() );
+		$requete->bindValue( ':admin', $news->admin() );
 		$requete->bindValue( ':title', $news->title() );
 		$requete->bindValue( ':content', $news->content() );
 		$requete->bindValue( ':id', $news->id(), \PDO::PARAM_INT );

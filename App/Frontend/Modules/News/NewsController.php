@@ -69,7 +69,7 @@ class NewsController extends BackController {
 		if ( $request->method() == 'POST' ) {
 			$comment = new Comment( [
 				'fk_NNC'  => $request->getData( 'news' ),
-				'author'  => ( $this->app->user()->getAttribute( 'username' ) ) ? $this->app->user()->getAttribute( 'username' ) : $request->postData( 'author' ),
+				'author'  => ( $this->app->user()->getAttribute( 'user' )['username'] ) ? $this->app->user()->getAttribute( 'user' )['username'] : $request->postData( 'author' ),
 				'content' => $request->postData( 'content' ),
 			] );
 		}
@@ -120,7 +120,7 @@ class NewsController extends BackController {
 		if ( $request->method() == 'POST' ) {
 			$comment = new Comment( [
 				'id'      => $request->getData( 'id' ),
-				'author'  => $request->postData( 'author' ),
+				'author'  => $this->app->user()->getAttribute('user')['username'],
 				'content' => $request->postData( 'content' ),
 			] );
 			$comment->setFk_NNC( $this->managers->getManagerOf( 'Comments' )->getNews( $comment->id() ) );

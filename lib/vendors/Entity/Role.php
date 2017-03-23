@@ -26,7 +26,7 @@ class Role extends Entity {
 		if (!is_string($description) || empty($description))
 			$this->errors[] = self::INVALID_DESCRIPTION;
 		
-		$this->name = $description;
+		$this->description = $description;
 	}
 	
 	public function name(){

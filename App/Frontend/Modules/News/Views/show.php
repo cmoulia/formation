@@ -1,11 +1,16 @@
 <?php
 /** @var \Entity\News $news */
 /** @var \OCFram\User $user */
+
 ?>
 
 <p>Par <em><?= $news[ 'author' ] ?></em>, le <?= $news[ 'dateadd' ]->format( 'd/m/Y à H\hi' ) ?></p>
+<?php if ($news['admin']){ ?>
+	<p>Modéré par <em><?= $news[ 'admin' ] ?></em></p>
+<?php } ?>
 
-<?php if ( $user->isAuthenticated() && $news[ 'author' ] == $user->getAttribute( 'username' ) ) { ?>
+<?php if ( $user->isAuthenticated() && $news[ 'author' ] == $user->getAttribute( 'user' )['username'] ) { ?>
+	<a href="news-update-<?= $news[ 'id' ] ?>">Modifier la news</a>
 	<a href="news-delete-<?= $news[ 'id' ] ?>">Supprimer la news</a>
 <?php } ?>
 
@@ -17,7 +22,6 @@
 		<small><em>Modifiée le <?= $news[ 'dateupdate' ]->format( 'd/m/Y à H\hi' ) ?></em></small>
 	</p>
 <?php } ?>
-
 
 <p><a href="news-comment-<?= $news[ 'id' ] ?>">Ajouter un commentaire</a></p>
 
@@ -33,7 +37,7 @@ foreach ( $comments as $comment ) { ?>
 		<?php if ( $user->isAuthenticated() && $user->isAdmin() ) { ?> -
 		<a href="admin/news-comment-update-<?= $comment[ 'id' ] ?>">Modérer</a> |
 		<a href="admin/news-comment-delete-<?= $comment[ 'id' ] ?>">Supprimer</a>
-		<?php } if ( $user->isAuthenticated() && !$user->isAdmin() && $comment[ 'author' ] == $user->getAttribute( 'username' ) ) { ?> -
+		<?php } if ( $user->isAuthenticated() && !$user->isAdmin() && $comment[ 'author' ] == $user->getAttribute( 'user' )['username'] ) { ?> -
 			<a href="news-comment-update-<?= $comment[ 'id' ] ?>">Modifier</a> |
 			<a href="news-comment-delete-<?= $comment[ 'id' ] ?>">Supprimer</a>
 		<?php } ?>

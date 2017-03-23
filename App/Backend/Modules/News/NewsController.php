@@ -33,7 +33,7 @@ class NewsController extends BackController {
 	
 	public function executeIndex( HTTPRequest $request ) {
 		$this->page->addVar( 'title', 'Gestion des news' );
-		$this->page->addVar( 'username', $this->app->user()->getAttribute('username') );
+		$this->page->addVar( 'username', $this->app->user()->getAttribute( 'username' ) );
 		
 		/** @var \Model\NewsManager $manager */
 		$manager = $this->managers->getManagerOf( 'News' );
@@ -48,13 +48,14 @@ class NewsController extends BackController {
 		if ( $request->method() == 'POST' ) {
 			$news = new News( [
 				// TODO: Modifier pour gérer la modération d'une news, ne pas changer l'auteur, nouveau champ admin à créer
-				'author'  => $this->app->user()->getAttribute( 'username' ),
+				'admin'   => $this->app->user()->getAttribute( 'username' ),
 				'title'   => $request->postData( 'title' ),
 				'content' => $request->postData( 'content' ),
 			] );
 			
 			if ( $request->getExists( 'id' ) ) {
 				$news->setId( $request->getData( 'id' ) );
+				$news->setAuthor($this->managers->getManagerOf('News')->getUnique($news->id())->author());
 			}
 		}
 		else {
@@ -100,7 +101,7 @@ class NewsController extends BackController {
 		}
 		
 		
-		$formBuilder = new CommentFormBuilder( $comment, $this->managers->getManagerOf('Comments'), $this->app->user()->isAuthenticated() );
+		$formBuilder = new CommentFormBuilder( $comment, $this->managers->getManagerOf( 'Comments' ), $this->app->user()->isAuthenticated() );
 		$formBuilder->build();
 		
 		$form = $formBuilder->form();
@@ -114,5 +115,4 @@ class NewsController extends BackController {
 		
 		$this->page->addVar( 'form', $form->createView() );
 	}
-
 }

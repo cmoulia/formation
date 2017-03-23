@@ -53,7 +53,7 @@ class RoleController extends BackController {
 			}
 		}
 		
-		$formBuilder = new RoleFormBuilder( $role, $this );
+		$formBuilder = new RoleFormBuilder( $role, $this->managers->getManagerOf('Role'),$this->app->user()->isAuthenticated() );
 		$formBuilder->build();
 		
 		$form = $formBuilder->form();

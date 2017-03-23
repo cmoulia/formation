@@ -1,3 +1,5 @@
+<?php /** @var \OCFram\User $user */ ?>
+
 <!DOCTYPE HTML>
 <!--suppress HtmlUnknownTarget -->
 <html lang="fr">
@@ -15,13 +17,12 @@
 		<div id="wrap">
 			<header>
 				<h1><a href="/">Mon super site</a></h1>
-				<p>Comment ça, il n'y a presque rien ?</p>
+				<p><?= ($user->getAttribute('user')) ? 'Bienvenue '.$user->getAttribute('user')['firstname'].' '.$user->getAttribute('user')['lastname'] : 'Bienvenue sur mon blog collaboratif !' ?></p>
 			</header>
 			
 			<nav>
 				<ul>
-					<?php /** @var \OCFram\User $user */
-					if ( $user->isAuthenticated() && $user->isAdmin()) { ?>
+					<?php if ( $user->isAuthenticated() && $user->isAdmin()) { ?>
 						<li><a href="/">Front Office</a></li>
 						<li><a href="/admin/">Back Office</a></li>
 						<li><a href="/logout">D&eacute;connexion</a></li>

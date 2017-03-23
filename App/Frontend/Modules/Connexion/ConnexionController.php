@@ -32,7 +32,8 @@ class ConnexionController extends BackController {
 			if ( $user = $manager->getUniqueByUsernameOrEmail( $login ) ) {
 				if ( $password == $user->password() ) {
 					$this->app->user()->setAuthenticated( true );
-					$this->app->user()->setAttribute('username', $user->username());
+					$this->app->user()->setAttribute('user', $user);
+					
 					$this->app->user()->setFlash( 'Connexion réussie' );
 					if ( ( $user->fk_MRC() == 1 ) ) {
 						$this->app->user()->setRole( 'admin' );
@@ -106,7 +107,8 @@ class ConnexionController extends BackController {
 		if ( $formHandler->process() ) {
 			$this->app->user()->setFlash( $user->isNew() ? 'L\'inscription s\'est bien déroulé !' : 'La modification de vos informations s\'est bien déroulé !' );
 			if ($user->isNew()) $this->app->user()->setAuthenticated(true);
-			$this->app->user()->setAttribute('username', $user->username());
+			$this->app->user()->setAttribute('user', $user);
+			
 			$this->app->httpResponse()->redirect( '/admin/' );
 		}
 		

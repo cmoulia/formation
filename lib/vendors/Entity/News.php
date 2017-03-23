@@ -9,10 +9,10 @@ class News extends Entity {
 	const TITRE_INVALIDE   = 2;
 	const CONTENU_INVALIDE = 3;
 	protected $prefix = 'NNC_';
-	protected $author, $title, $content, $dateadd, $dateupdate;
+	protected $author, $admin, $title, $content, $dateadd, $dateupdate;
 	
 	public function isValid() {
-		return !( empty( $this->author ) || empty( $this->title ) || empty( $this->content ) );
+		return !(( empty( $this->author ) && empty( $this->admin )) || empty( $this->title ) || empty( $this->content ) );
 	}
 	
 	// SETTERS //
@@ -23,6 +23,14 @@ class News extends Entity {
 		}
 		
 		$this->author = $author;
+	}
+	
+	public function setAdmin( $admin ) {
+		if ( !is_string( $admin ) || empty( $admin ) ) {
+			$this->errors[] = self::AUTEUR_INVALIDE;
+		}
+		
+		$this->admin = $admin;
 	}
 	
 	public function setTitle( $title ) {
@@ -53,6 +61,10 @@ class News extends Entity {
 	
 	public function author() {
 		return $this->author;
+	}
+	
+	public function admin() {
+		return $this->admin;
 	}
 	
 	public function title() {
