@@ -32,7 +32,7 @@
 						<li><a href="/">Accueil</a></li>
 						<li><a href="/logout">D&eacute;connexion</a></li>
 						<li><a href="/news-insert">Ajouter une news</a></li>
-						<li><a href="/myaccount">Mon compte</a></li>
+<!--						<li><a href="/myaccount">Mon compte</a></li>-->
 					<?php else: ?>
 						<li><a href="/">Accueil</a></li>
 						<li><a href="/login">Connexion</a></li>

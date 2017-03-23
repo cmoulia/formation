@@ -106,6 +106,7 @@ class ConnexionController extends BackController {
 		if ( $formHandler->process() ) {
 			$this->app->user()->setFlash( $user->isNew() ? 'L\'inscription s\'est bien déroulé !' : 'La modification de vos informations s\'est bien déroulé !' );
 			if ($user->isNew()) $this->app->user()->setAuthenticated(true);
+			$this->app->user()->setRole();
 			$this->app->user()->setAttribute('user', $user);
 			
 			$this->app->httpResponse()->redirect( '/admin/' );
