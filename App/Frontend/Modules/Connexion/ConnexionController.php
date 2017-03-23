@@ -39,7 +39,7 @@ class ConnexionController extends BackController {
 						$this->app->httpResponse()->redirect( '/admin/' );
 					}
 				else {
-						$this->app->user()->setRole( 'user' );
+						$this->app->user()->setRole();
 						$this->app->httpResponse()->redirect( '.' );
 					}
 				}
@@ -73,6 +73,7 @@ class ConnexionController extends BackController {
 	
 	public function processForm( HTTPRequest $request ) {
 		if ( $request->method() == 'POST' ) {
+			$isNew=true;
 			$user = new User( [
 				'firstname'  => $request->postData( 'firstname' ),
 				'lastname'   => $request->postData( 'lastname' ),
@@ -87,6 +88,7 @@ class ConnexionController extends BackController {
 			}
 		}
 		else {
+			$isNew=false;
 			// L'identifiant de l\'utilisateur est transmis si on veut le modifier
 			if ( $request->getExists( 'id' ) ) {
 				$user = $this->managers->getManagerOf( 'User' )->getUnique( $request->getData( 'id' ) );
@@ -104,7 +106,7 @@ class ConnexionController extends BackController {
 		$formHandler = new FormHandler( $form, $this->managers->getManagerOf( 'User' ), $request );
 		
 		if ( $formHandler->process() ) {
-			$this->app->user()->setFlash( $user->isNew() ? 'L\'inscription s\'est bien déroulé !' : 'La modification de vos informations s\'est bien déroulé !' );
+			$this->app->user()->setFlash( $isNew ? 'L\'inscription s\'est bien déroulé !' : 'La modification de vos informations s\'est bien déroulé !' );
 			if ($user->isNew()) $this->app->user()->setAuthenticated(true);
 			$this->app->user()->setRole();
 			$this->app->user()->setAttribute('user', $user);

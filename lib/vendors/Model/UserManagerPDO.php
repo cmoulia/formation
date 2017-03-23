@@ -116,6 +116,8 @@ class UserManagerPDO extends UserManager {
 		$requete->bindValue( ':birthdate', $user->birthdate()->format("Y-m-d H:i:s") );
 		
 		$requete->execute();
+		
+		$user->setId( $this->dao->lastInsertId() );
 	}
 	
 	/**

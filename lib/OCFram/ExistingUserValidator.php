@@ -14,13 +14,14 @@ class ExistingUserValidator extends Validator {
 	}
 	
 	public function setUser_a( $user_a ) {
-		if ( !is_array( $user_a ) )
+		if ( !is_array( $user_a ) ) {
 			throw new \InvalidArgumentException( 'La variable renseignée doit être un tableau' );
+		}
 		$this->user_a = $user_a;
 	}
 	
 	public function isValid( $value ) {
-		$userinfo = [];
+		$userinfo        = [];
 		$currentuserinfo = [
 			$this->currentuser->username(),
 			$this->currentuser->email(),
@@ -29,6 +30,9 @@ class ExistingUserValidator extends Validator {
 			$userinfo[] = $user[ 'username' ];
 			$userinfo[] = $user[ 'email' ];
 		}
+		
+//		var_dump( in_array( $value, $currentuserinfo ) || !in_array( $value, $userinfo ) );
+//		var_dump($value,$userinfo,$currentuserinfo);
 		
 		return ( in_array( $value, $currentuserinfo ) || !in_array( $value, $userinfo ) );
 	}

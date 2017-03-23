@@ -3,6 +3,7 @@
 namespace FormBuilder;
 
 use App\Backend\Modules\Users\UsersController;
+use Entity\User;
 use Model\UserManager;
 use OCFram\Entity;
 use \OCFram\EqualsValidator;
@@ -23,7 +24,7 @@ class UserFormBuilder extends FormBuilder {
 			'validators' => [
 				new MaxLengthValidator( 'Le nom d\'utilisateur spécifié est trop long (20 caractères maximum)', 20 ),
 				new NotNullValidator( 'Merci de spécifier votre nom d\'utilisateur' ),
-				new ExistingUserValidator( 'Le nom d\'utilisateur n\'est pas disponible', $this->manager->getList(),$this->entity ),
+				new ExistingUserValidator( 'Le nom d\'utilisateur n\'est pas disponible', $this->manager->getList(),($this->authenticated)?$this->entity:new User ),
 			],
 		] ) )->add( new StringField( [
 			'label'      => 'Mot de passe',
@@ -55,7 +56,7 @@ class UserFormBuilder extends FormBuilder {
 			'validators' => [
 				new MaxLengthValidator( 'L\'adresse email spécifié est trop longue (100 caractères maximum)', 100 ),
 				new NotNullValidator( 'Merci de spécifier l\'adresse email' ),
-				new ExistingUserValidator( 'L\'adresse email n\'est pas disponible', $this->manager->getList(),$this->entity ),
+				new ExistingUserValidator( 'L\'adresse email n\'est pas disponible', $this->manager->getList(),($this->authenticated)?$this->entity:new User ),
 			
 			],
 		] ) )->add( new StringField( [
