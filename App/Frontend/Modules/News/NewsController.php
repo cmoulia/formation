@@ -15,15 +15,18 @@ class NewsController extends BackController {
 	public function executeDelete( HTTPRequest $request ) {
 		$newsId = $request->getData( 'id' );
 		
+		// We first delete the comments, then the news itself
 		$this->managers->getManagerOf( 'Comments' )->deleteFromNews( $newsId );
 		$this->managers->getManagerOf( 'News' )->delete( $newsId );
 		
 		$this->app->user()->setFlash( 'La news a bien été supprimée !' );
 		
+		// We redirect to the same page: HomePage
 		$this->app->httpResponse()->redirect( '.' );
 	}
 	
 	public function executeDeleteComment( HTTPRequest $request ) {
+		// We first get the newsId from the comment, to redirect the user after
 		$newsId = $this->managers->getManagerOf( 'Comments' )->getNews( $request->getData( 'id' ) );
 		$this->managers->getManagerOf( 'Comments' )->delete( $request->getData( 'id' ) );
 		
@@ -33,124 +36,90 @@ class NewsController extends BackController {
 	}
 	
 	public function executeIndex( HTTPRequest $request ) {
-		$nombreNews       = $this->app->config()->get( 'nombre_news' );
+		$countNews        = $this->app->config()->get( 'nombre_news' );
 		$nombreCaracteres = $this->app->config()->get( 'nombre_caracteres' );
 		
 		// On ajoute une définition pour le titre.
-		$this->page->addVar( 'title', 'Liste des ' . $nombreNews . ' dernières news' );
+		$this->page->addVar( 'title', 'Liste des ' . $countNews . ' dernières news' );
 		
 		// On récupère le manager des news.
 		$manager = $this->managers->getManagerOf( 'News' );
 		
-		$news_a = $manager->getList( 0, $nombreNews );
+		$news_a = $manager->getList( $countNews );
 		
 		/** @var News $news */
 		foreach ( $news_a as $news ) {
 			if ( strlen( $news->content() ) > $nombreCaracteres ) {
-				$debut = substr( $news->content(), 0, $nombreCaracteres );
-				$debut = substr( $debut, 0, strrpos( $debut, ' ' ) ) . '...';
+				$content = substr( $news->content(), 0, $nombreCaracteres );
+				$content = substr( $content, 0, strrpos( $content, ' ' ) ) . '...';
 				
-				$news->setContent( $debut );
+				$news->setContent( $content );
+				
+				// We get the data linked to the foreign key
+				$news[ 'fk_MEM_author' ] = $this->managers->getManagerOf( 'User' )->getUnique( $news[ 'fk_MEM_author' ] );
+				$news[ 'fk_MEM_admin' ]  = $this->managers->getManagerOf( 'User' )->getUnique( $news[ 'fk_MEM_admin' ] );
 			}
 		}
 		
-		// On ajoute la variable $listeNews à la vue.
-		$this->page->addVar( 'listeNews', $news_a );
+		// On ajoute la variable $news_a à la vue.
+		$this->page->addVar( 'news_a', $news_a );
 	}
 	
 	public function executeInsert( HTTPRequest $request ) {
-		$this->processForm( $request );
+		$this->processNewsForm( $request );
 		
 		$this->page->addVar( 'title', 'Ajout d\'une news' );
 	}
 	
 	public function executeInsertComment( HTTPRequest $request ) {
-		// Si le formulaire a été envoyé.
-		if ( $request->method() == 'POST' ) {
-			$comment = new Comment( [
-				'fk_NNC'  => $request->getData( 'news' ),
-				'author'  => ( $this->app->user()->getAttribute( 'user' )['username'] ) ? $this->app->user()->getAttribute( 'user' )['username'] : $request->postData( 'author' ),
-				'content' => $request->postData( 'content' ),
-			] );
-		}
-		else {
-			$comment = new Comment;
-		}
-		
-		$formBuilder = new CommentFormBuilder( $comment, $this->managers->getManagerOf( 'User' ), $this->app->user()->isAuthenticated() );
-		$formBuilder->build();
-		
-		/** @var Form $form */
-		$form = $formBuilder->form();
-		
-		$formHandler = new FormHandler( $form, $this->managers->getManagerOf( 'Comments' ), $request );
-		
-		if ( $formHandler->process() ) {
-			$this->app->user()->setFlash( 'Le commentaire a bien été ajouté, merci !' );
-			$this->app->httpResponse()->redirect( 'news-' . $request->getData( 'news' ) );
-		}
-		
-		$this->page->addVar( 'comment', $comment );
-		$this->page->addVar( 'form', $form->createView() );
 		$this->page->addVar( 'title', 'Ajout d\'un commentaire' );
+		
+		$this->processCommentForm( $request );
 	}
 	
 	public function executeShow( HTTPRequest $request ) {
 		/** @var News $news */
 		$news = $this->managers->getManagerOf( 'News' )->getUnique( $request->getData( 'id' ) );
 		
+		// We get the data linked to the foreign key
+		$news[ 'fk_MEM_author' ] = $this->managers->getManagerOf( 'User' )->getUnique( $news[ 'fk_MEM_author' ] );
+		$news[ 'fk_MEM_admin' ]  = $this->managers->getManagerOf( 'User' )->getUnique( $news[ 'fk_MEM_admin' ] );
+		
 		if ( empty( $news ) ) {
 			$this->app->httpResponse()->redirect404();
 		}
 		
+		$comment_a = $this->managers->getManagerOf( 'Comments' )->getListOf( $news->id() );
+		// We get the data linked to the foreign key
+		foreach ( $comment_a as $comment ) {
+			$comment[ 'fk_MEM_author' ] = $this->managers->getManagerOf( 'User' )->getUnique( $comment[ 'fk_MEM_author' ] );
+			$comment[ 'fk_MEM_admin' ]  = $this->managers->getManagerOf( 'User' )->getUnique( $comment[ 'fk_MEM_admin' ] );
+		}
+		
 		$this->page->addVar( 'title', $news->title() );
 		$this->page->addVar( 'news', $news );
-		$this->page->addVar( 'comments', $this->managers->getManagerOf( 'Comments' )->getListOf( $news->id() ) );
+		$this->page->addVar( 'comment_a', $comment_a );
 	}
 	
 	public function executeUpdate( HTTPRequest $request ) {
-		$this->processForm( $request );
+		$this->processNewsForm( $request );
 		
 		$this->page->addVar( 'title', 'Modification d\'une news' );
 	}
 	
 	public function executeUpdateComment( HTTPRequest $request ) {
+		$this->processCommentForm( $request );
+		
 		$this->page->addVar( 'title', 'Modification d\'un commentaire' );
-		
-		if ( $request->method() == 'POST' ) {
-			$comment = new Comment( [
-				'id'      => $request->getData( 'id' ),
-				'author'  => $this->app->user()->getAttribute('user')['username'],
-				'content' => $request->postData( 'content' ),
-			] );
-			$comment->setFk_NNC( $this->managers->getManagerOf( 'Comments' )->getNews( $comment->id() ) );
-		}
-		else {
-			$comment = $this->managers->getManagerOf( 'Comments' )->get( $request->getData( 'id' ) );
-		}
-		
-		
-		$formBuilder = new CommentFormBuilder( $comment, $this->managers->getManagerOf( 'User' ), $this->app->user()->isAuthenticated() );
-		$formBuilder->build();
-		
-		$form = $formBuilder->form();
-		
-		$formHandler = new FormHandler( $form, $this->managers->getManagerOf( 'Comments' ), $request );
-		
-		if ( $formHandler->process() ) {
-			$this->app->user()->setFlash( 'Le commentaire a bien été modifié' );
-			$this->app->httpResponse()->redirect( '/news-' . $comment->fk_NNC() );
-		}
-		
-		$this->page->addVar( 'form', $form->createView() );
 	}
 	
-	public function processForm( HTTPRequest $request ) {
+	public function processNewsForm( HTTPRequest $request ) {
 		if ( $request->method() == 'POST' ) {
 			$news = new News( [
-				'author'  => $this->app->user()->getAttribute( 'username' ),
-				'title'   => $request->postData( 'title' ),
-				'content' => $request->postData( 'content' ),
+				// a news is created by an user, so we get the value from $_SESSION
+				'fk_MEM_author' => $this->app->user()->getAttribute( 'user' )[ 'id' ],
+				'title'         => $request->postData( 'title' ),
+				'content'       => $request->postData( 'content' ),
 			] );
 			
 			if ( $request->getExists( 'id' ) ) {
@@ -170,7 +139,6 @@ class NewsController extends BackController {
 		$formBuilder = new NewsFormBuilder( $news, $this->managers->getManagerOf( 'News' ), $this->app->user()->isAuthenticated() );
 		$formBuilder->build();
 		
-		
 		$form = $formBuilder->form();
 		
 		$formHandler = new FormHandler( $form, $this->managers->getManagerOf( 'News' ), $request );
@@ -180,6 +148,48 @@ class NewsController extends BackController {
 			$this->app->httpResponse()->redirect( '/' );
 		}
 		
+		$this->page->addVar( 'form', $form->createView() );
+	}
+	
+	public function processCommentForm( HTTPRequest $request ) {
+		if ( $request->method() == 'POST' ) {
+			$comment = new Comment( [
+				'fk_NNC'        => $request->getData( 'news' ),
+				'author'        => $request->postData( 'author' ),
+				'fk_MEM_author' => $this->app->user()->getAttribute( 'user' )[ 'id' ],
+				'content'       => $request->postData( 'content' ),
+			] );
+			$isNew   = true;
+			
+			if ( $request->getExists( 'id' ) ) {
+				$comment->setId( $request->getData( 'id' ) );
+			}
+			
+			if ( !$comment->fk_NNC() ) {
+				$comment->setFk_NNC( $this->managers->getManagerOf( 'Comments' )->getNews( $comment->id() ) );
+			}
+		}
+		else {
+			if ( $request->getExists( 'id' ) ) {
+				$comment = $this->managers->getManagerOf( 'Comments' )->getUnique( $request->getData( 'id' ) );
+			}
+			else {
+				$comment = new Comment;
+			}
+			$isNew = false;
+		}
+		
+		$formBuilder = new CommentFormBuilder( $comment, $this->managers->getManagerOf( 'User' ), $this->app->user()->isAuthenticated() );
+		$formBuilder->build();
+		
+		$form = $formBuilder->form();
+		
+		$formHandler = new FormHandler( $form, $this->managers->getManagerOf( 'Comments' ), $request );
+		
+		if ( $formHandler->process() ) {
+			$this->app->user()->setFlash( $isNew ? 'Le commentaire a bien été ajouté' : 'Le commentaire a bien été modifié' );
+			$this->app->httpResponse()->redirect( '/news-' . $comment->fk_NNC() );
+		}
 		
 		$this->page->addVar( 'form', $form->createView() );
 	}

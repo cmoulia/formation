@@ -1,11 +1,12 @@
 <?php
+
 namespace OCFram;
 
 abstract class BackController extends ApplicationComponent {
-	protected $action = '';
-	protected $module = '';
-	protected $page = null;
-	protected $view = '';
+	protected $action   = '';
+	protected $module   = '';
+	protected $page     = null;
+	protected $view     = '';
 	protected $managers = null;
 	
 	public function __construct( Application $app, $module, $action ) {
@@ -21,7 +22,7 @@ abstract class BackController extends ApplicationComponent {
 	
 	public function setModule( $module ) {
 		if ( !is_string( $module ) || empty( $module ) ) {
-			throw new \InvalidArgumentException( 'Le module doit être une chaine de caractères valide' );
+			throw new \InvalidArgumentException( 'Module has to be a valid string' );
 		}
 		
 		$this->module = $module;
@@ -29,7 +30,7 @@ abstract class BackController extends ApplicationComponent {
 	
 	public function setAction( $action ) {
 		if ( !is_string( $action ) || empty( $action ) ) {
-			throw new \InvalidArgumentException( 'L\'action doit être une chaine de caractères valide' );
+			throw new \InvalidArgumentException( 'Action has to be a valid string' );
 		}
 		
 		$this->action = $action;
@@ -37,7 +38,7 @@ abstract class BackController extends ApplicationComponent {
 	
 	public function setView( $view ) {
 		if ( !is_string( $view ) || empty( $view ) ) {
-			throw new \InvalidArgumentException( 'La vue doit être une chaine de caractères valide' );
+			throw new \InvalidArgumentException( 'View has to be a valid string' );
 		}
 		
 		$this->view = $view;
@@ -53,7 +54,7 @@ abstract class BackController extends ApplicationComponent {
 			$method,
 		] )
 		) {
-			throw new \RuntimeException( 'L\'action "' . $this->action . '" n\'est pas définie sur ce module' );
+			throw new \RuntimeException( 'Action "' . $this->action . '" is not defined for this module: '.$this->module );
 		}
 		
 		$this->$method( $this->app->httpRequest() );

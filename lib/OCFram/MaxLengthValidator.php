@@ -12,14 +12,10 @@ class MaxLengthValidator extends Validator {
 	}
 	
 	public function setMaxLength( $maxLength ) {
-		$maxLength = (int)$maxLength;
-		
-		if ( $maxLength > 0 ) {
-			$this->maxLength = $maxLength;
+		if ( !is_int( $maxLength ) || $maxLength <= 0 ) {
+			throw new \InvalidArgumentException( 'MaxLength attribute should be an integer and greater than 0' );
 		}
-		else {
-			throw new \RuntimeException( 'La longueur maximale doit être un nombre supérieur à 0' );
-		}
+		$this->maxLength = $maxLength;
 	}
 	
 	public function isValid( $value ) {

@@ -5,11 +5,25 @@ namespace Model;
 use Entity\Role;
 
 class RoleManagerPDO extends RoleManager {
-	public function getList( $offset = -1, $limit = -1 ) {
+	/**
+	 * @param int $limit
+	 * @param int $offset
+	 *
+	 * @return \Entity\Role[]
+	 */
+	public function getList( $limit = -1, $offset = -1 ) {
+//		SELECT everything from T_MEM_rolec
 		$sql = 'SELECT MRC_id, MRC_name, MRC_description FROM T_MEM_rolec';
 		
-		if ( $offset != -1 || $limit != -1 ) {
-			$sql .= ' LIMIT ' . (int)$limit . ' OFFSET ' . (int)$offset;
+		//		If we want the top X
+		if ( $limit != -1 ) {
+			$sql .= ' LIMIT ' . (int)$limit;
+			
+			//			If we want the data starting at a certain point
+			if ( $offset != -1 ) {
+				$sql .= ' OFFSET ' . (int)$offset;
+			}
+			
 		}
 		
 		/** @var \PDOStatement $query */
@@ -26,6 +40,11 @@ class RoleManagerPDO extends RoleManager {
 		return $role_a;
 	}
 	
+	/**
+	 * @param int $id
+	 *
+	 * @return Role|null
+	 */
 	public function getUnique( $id ) {
 		/** @var \PDOStatement $query */
 		$query = $this->dao->prepare( 'SELECT MRC_id, MRC_name, MRC_description FROM T_MEM_rolec WHERE MRC_id = :id' );
@@ -40,10 +59,16 @@ class RoleManagerPDO extends RoleManager {
 		return null;
 	}
 	
+	/**
+	 * @return mixed
+	 */
 	protected function count() {
 		return $this->dao->query( 'SELECT COUNT(*) FROM T_MEM_rolec' )->fetchColumn();
 	}
 	
+	/**
+	 * @param Role $role
+	 */
 	protected function add( Role $role ) {
 		/** @var \PDOStatement $query */
 		$query = $this->dao->prepare( 'INSERT INTO T_MEM_rolec SET MRC_name = :name, MRC_description = :description' );
@@ -53,6 +78,9 @@ class RoleManagerPDO extends RoleManager {
 		$query->execute();
 	}
 	
+	/**
+	 * @param Role $role
+	 */
 	protected function modify( Role $role ) {
 		/** @var \PDOStatement $query */
 		$query = $this->dao->prepare( 'UPDATE T_MEM_rolec SET MRC_name = :name, MRC_description = :description WHERE MRC_id = :id' );
@@ -63,6 +91,9 @@ class RoleManagerPDO extends RoleManager {
 		$query->execute();
 	}
 	
+	/**
+	 * @param int $id
+	 */
 	public function delete( $id ) {
 		$this->dao->exec( 'DELETE FROM T_MEM_rolec WHERE MRC_id = ' . (int)$id );
 	}

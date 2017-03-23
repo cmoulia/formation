@@ -1,7 +1,7 @@
 <p style="text-align: center">Il y a actuellement <?= $nombreUsers ?> utilisateurs. En voici la liste :</p>
 
-<p><a href="user-insert.html"><img src="/img/update.png" alt="Ajouter" />Ajouter un utilisateur</a></p>
-
+<p><a href="user-insert"><img src="/img/update.png" alt="Ajouter" />Ajouter un utilisateur</a></p>
+<?php  ?>
 <table>
 	<tr>
 		<th>Username</th>
@@ -24,3 +24,4 @@
 		</tr>
 	<?php } ?>
 </table>
+<?php ?>

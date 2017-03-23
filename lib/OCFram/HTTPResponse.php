@@ -2,6 +2,7 @@
 namespace OCFram;
 
 class HTTPResponse extends ApplicationComponent {
+	/** @var Page $page */
 	protected $page;
 	
 	public function redirect( $location ) {

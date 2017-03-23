@@ -19,7 +19,7 @@ abstract class Entity implements \ArrayAccess {
 		}
 	}
 	
-	// Utilisation du trait Hydrator pour que nos entités puissent être hydratées
+	// Use of the Hydrator trait, so each of our entities can be hydrated
 	use Hydrator;
 	
 	public function isNew() {
@@ -73,6 +73,6 @@ abstract class Entity implements \ArrayAccess {
 	}
 	
 	public function offsetUnset( $var ) {
-		throw new \Exception( 'Impossible de supprimer une quelconque valeur' );
+		throw new \Exception( 'Unable to delete the value' );
 	}
 }

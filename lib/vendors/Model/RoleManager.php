@@ -7,6 +7,14 @@ use Entity\Role;
 use OCFram\Manager;
 
 abstract class RoleManager extends Manager {
+	/**
+	 * Method to get all Roles
+	 *
+	 * @param int $offset
+	 * @param int $limit
+	 *
+	 * @return mixed
+	 */
 	abstract public function getList($offset = -1, $limit = -1);
 	
 	/**

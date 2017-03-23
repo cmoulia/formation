@@ -53,8 +53,6 @@ class UsersController extends BackController {
 				'birthdate' => new \DateTime($request->postData( 'birthdate' )),
 			] );
 			
-//			var_dump($user);die;
-			
 			if ( $request->getExists( 'id' ) ) {
 				$user->setId( $request->getData( 'id' ) );
 			}
@@ -69,7 +67,7 @@ class UsersController extends BackController {
 			}
 		}
 		
-		$formBuilder = new UserFormBuilder( $user, $this );
+		$formBuilder = new UserFormBuilder( $user, $this->managers->getManagerOf('User'), $this->app->user()->isAuthenticated() );
 		$formBuilder->build();
 		
 		$form = $formBuilder->form();
@@ -78,7 +76,7 @@ class UsersController extends BackController {
 		
 		if ( $formHandler->process() ) {
 			$this->app->user()->setFlash( $user->isNew() ? 'L\'utilisateur a bien été ajouté !' : 'L\'utilisateur a bien été modifié !' );
-			$this->app->httpResponse()->redirect( '/admin/' );
+			$this->app->httpResponse()->redirect( '/admin/users' );
 		}
 		
 		$this->page->addVar( 'form', $form->createView() );

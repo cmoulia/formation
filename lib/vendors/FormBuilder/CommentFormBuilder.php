@@ -2,6 +2,7 @@
 
 namespace FormBuilder;
 
+use Entity\User;
 use \OCFram\ExistingUserValidator;
 use \OCFram\FormBuilder;
 use \OCFram\StringField;
@@ -11,6 +12,7 @@ use \OCFram\NotNullValidator;
 
 class CommentFormBuilder extends FormBuilder {
 	public function build() {
+		// If the user is already connected, don't ask him his name, we already know it
 		if ( !$this->authenticated() ) {
 			$this->form->add( new StringField( [
 				'label'      => 'Auteur',
@@ -19,7 +21,8 @@ class CommentFormBuilder extends FormBuilder {
 				'validators' => [
 					new MaxLengthValidator( 'L\'auteur spécifié est trop long (50 caractères maximum)', 50 ),
 					new NotNullValidator( 'Merci de spécifier l\'auteur du commentaire' ),
-					new ExistingUserValidator( 'L\'utilisateur n\'est pas disponible', $this->manager->getList() ),
+					// errorMessage, array containing the list of all users, and a new instance of User, cause the class need one (supposed to be the current user, here we have no user
+					new ExistingUserValidator( 'L\'utilisateur n\'est pas disponible', $this->manager->getList(), new User ),
 				],
 			] ) );
 		}

@@ -9,7 +9,6 @@ class Page extends ApplicationComponent {
 		if ( !is_string( $var ) || is_numeric( $var ) || empty( $var ) ) {
 			throw new \InvalidArgumentException( 'Le nom de la variable doit être une chaine de caractères non nulle' );
 		}
-		
 		$this->vars[ $var ] = $value;
 	}
 	
@@ -18,10 +17,11 @@ class Page extends ApplicationComponent {
 			throw new \RuntimeException( 'La vue spécifiée n\'existe pas: '.$this->contentFile );
 		}
 		
+		/** @var User $user */
 		$user = $this->app->user();
 		
 		extract( $this->vars );
-		
+
 		ob_start();
 		require $this->contentFile;
 		$content = ob_get_clean();

@@ -10,10 +10,11 @@ use \OCFram\NotNullValidator;
 
 class NewsFormBuilder extends FormBuilder {
 	public function build() {
+		// If the user is already connected, don't ask him his name, we already know it
 		if ( !$this->authenticated() ) {
 			$this->form->add( new StringField( [
 				'label'      => 'Auteur',
-				'name'       => 'author',
+				'name'       => 'fk_MEM_author',
 				'maxLength'  => 20,
 				'validators' => [
 					new MaxLengthValidator( 'L\'auteur spécifié est trop long (20 caractères maximum)', 20 ),

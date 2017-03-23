@@ -31,25 +31,7 @@ abstract class Field {
 		return true;
 	}
 	
-	public function label() {
-		return $this->label;
-	}
-	
-	public function length() {
-		return $this->length;
-	}
-	
-	public function name() {
-		return $this->name;
-	}
-	
-	public function validators() {
-		return $this->validators;
-	}
-	
-	public function value() {
-		return $this->value;
-	}
+	// SETTERS //
 	
 	public function setLabel( $label ) {
 		if ( is_string( $label ) ) {
@@ -83,5 +65,27 @@ abstract class Field {
 		if ( is_string( $value ) ) {
 			$this->value = $value;
 		}
+	}
+	
+	// GETTERS //
+	
+	public function label() {
+		return $this->label;
+	}
+	
+	public function length() {
+		return $this->length;
+	}
+	
+	public function name() {
+		return $this->name;
+	}
+	
+	public function validators() {
+		return $this->validators;
+	}
+	
+	public function value() {
+		return $this->value;
 	}
 }

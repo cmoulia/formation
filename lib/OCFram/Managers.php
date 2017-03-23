@@ -13,7 +13,7 @@ class Managers {
 	
 	public function getManagerOf( $module ) {
 		if ( !is_string( $module ) || empty( $module ) ) {
-			throw new \InvalidArgumentException( 'Le module spécifié est invalide' );
+			throw new \InvalidArgumentException( 'Module "'.htmlspecialchars($module).'" requested is invalid' );
 		}
 		
 		if ( !isset( $this->managers[ $module ] ) ) {

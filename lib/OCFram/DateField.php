@@ -11,10 +11,12 @@ class DateField extends Field {
 		}
 		
 		$widget .= '<label>' . $this->label . '</label><input type="date" name="' . $this->name . '" ';
-		if (!empty($this->value)){
-			$widget .= ' value="'.date_format(new \DateTime($this->value),"Y-m-d").'"';
+		if ( !empty( $this->value ) ) {
+			$widget .= ' value="' . date_format( new \DateTime( $this->value ), "Y-m-d" ) . '"';
 		}
 		
-		return $widget.=' />';
+		$widget .= ' />';
+		
+		return $widget;
 	}
 }

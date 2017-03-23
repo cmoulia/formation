@@ -33,12 +33,17 @@ class NewsController extends BackController {
 	
 	public function executeIndex( HTTPRequest $request ) {
 		$this->page->addVar( 'title', 'Gestion des news' );
-		$this->page->addVar( 'username', $this->app->user()->getAttribute( 'username' ) );
 		
 		/** @var \Model\NewsManager $manager */
 		$manager = $this->managers->getManagerOf( 'News' );
+		$news_a = $manager->getList();
 		
-		$this->page->addVar( 'listeNews', $manager->getList() );
+		foreach ( $news_a as $news ) {
+			$news['fk_MEM_author'] = $this->managers->getManagerOf('User')->getUnique($news['fk_MEM_author']);
+			$news['fk_MEM_admin'] = $this->managers->getManagerOf('User')->getUnique($news['fk_MEM_admin']);
+		}
+		
+		$this->page->addVar( 'news_a', $news_a );
 		$this->page->addVar( 'nombreNews', $manager->count() );
 	}
 	
@@ -47,15 +52,14 @@ class NewsController extends BackController {
 		
 		if ( $request->method() == 'POST' ) {
 			$news = new News( [
-				// TODO: Modifier pour gérer la modération d'une news, ne pas changer l'auteur, nouveau champ admin à créer
-				'admin'   => $this->app->user()->getAttribute( 'username' ),
+				'fk_MEM_admin'   => $this->app->user()->getAttribute( 'user' )['id'],
 				'title'   => $request->postData( 'title' ),
 				'content' => $request->postData( 'content' ),
 			] );
 			
 			if ( $request->getExists( 'id' ) ) {
 				$news->setId( $request->getData( 'id' ) );
-				$news->setAuthor($this->managers->getManagerOf('News')->getUnique($news->id())->author());
+				$news->setFk_MEM_author($this->managers->getManagerOf('News')->getUnique($news->id())->fk_MEM_author());
 			}
 		}
 		else {

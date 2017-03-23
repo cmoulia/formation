@@ -5,47 +5,45 @@ namespace Entity;
 use \OCFram\Entity;
 
 class News extends Entity {
-	const AUTEUR_INVALIDE  = 1;
-	const TITRE_INVALIDE   = 2;
-	const CONTENU_INVALIDE = 3;
+	const INVALID_AUTHOR  = 1;
+	const INVALID_ADMIN   = 2;
+	const INVALID_TITLE   = 3;
+	const INVALID_CONTENT = 4;
+	/** @var string $prefix Table prefix (used in the constructor) */
 	protected $prefix = 'NNC_';
-	protected $author, $admin, $title, $content, $dateadd, $dateupdate;
+	protected $fk_MEM_author, $fk_MEM_admin, $title, $content, $dateadd, $dateupdate;
 	
 	public function isValid() {
-		return !(( empty( $this->author ) && empty( $this->admin )) || empty( $this->title ) || empty( $this->content ) );
+		return !( ( empty( $this->fk_MEM_author ) && empty( $this->fk_MEM_admin ) ) || empty( $this->title ) || empty( $this->content ) );
 	}
 	
 	// SETTERS //
 	
-	public function setAuthor( $author ) {
-		if ( !is_string( $author ) || empty( $author ) ) {
-			$this->errors[] = self::AUTEUR_INVALIDE;
+	public function setFk_MEM_author( $fk_MEM_author ) {
+		if ( !is_int( $fk_MEM_author ) || empty( $fk_MEM_author ) ) {
+			$this->errors[] = self::INVALID_AUTHOR;
 		}
-		
-		$this->author = $author;
+		$this->fk_MEM_author = $fk_MEM_author;
 	}
 	
-	public function setAdmin( $admin ) {
-		if ( !is_string( $admin ) || empty( $admin ) ) {
-			$this->errors[] = self::AUTEUR_INVALIDE;
+	public function setFk_MEM_admin( $fk_MEM_admin ) {
+		if ( !is_int( $fk_MEM_admin ) ) {
+			$this->errors[] = self::INVALID_ADMIN;
 		}
-		
-		$this->admin = $admin;
+		$this->fk_MEM_admin = $fk_MEM_admin;
 	}
 	
 	public function setTitle( $title ) {
 		if ( !is_string( $title ) || empty( $title ) ) {
-			$this->errors[] = self::TITRE_INVALIDE;
+			$this->errors[] = self::INVALID_TITLE;
 		}
-		
 		$this->title = $title;
 	}
 	
 	public function setContent( $content ) {
 		if ( !is_string( $content ) || empty( $content ) ) {
-			$this->errors[] = self::CONTENU_INVALIDE;
+			$this->errors[] = self::INVALID_CONTENT;
 		}
-		
 		$this->content = $content;
 	}
 	
@@ -59,12 +57,12 @@ class News extends Entity {
 	
 	// GETTERS //
 	
-	public function author() {
-		return $this->author;
+	public function fk_MEM_author() {
+		return $this->fk_MEM_author;
 	}
 	
-	public function admin() {
-		return $this->admin;
+	public function fk_MEM_admin() {
+		return $this->fk_MEM_admin;
 	}
 	
 	public function title() {

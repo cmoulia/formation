@@ -2,9 +2,17 @@
 
 namespace OCFram;
 
+use Model\CommentsManager;
+use Model\NewsManager;
+use Model\RoleManager;
+use Model\UserManager;
+
 class FormHandler {
+	/** @var Form $form */
 	protected $form;
+	/** @var NewsManager|CommentsManager|UserManager|RoleManager $manager */
 	protected $manager;
+	/** @var HTTPRequest $request */
 	protected $request;
 	
 	public function __construct( Form $form, Manager $manager, HTTPRequest $request ) {

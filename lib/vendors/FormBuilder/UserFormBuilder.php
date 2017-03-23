@@ -15,10 +15,6 @@ use \OCFram\MaxLengthValidator;
 use \OCFram\NotNullValidator;
 
 class UserFormBuilder extends FormBuilder {
-	public function __construct( Entity $entity, UserManager $manager ) {
-		parent::__construct( $entity, $manager );
-	}
-	
 	public function build() {
 		$this->form->add( new StringField( [
 			'label'      => 'Nom d\'utilisateur',
@@ -27,11 +23,12 @@ class UserFormBuilder extends FormBuilder {
 			'validators' => [
 				new MaxLengthValidator( 'Le nom d\'utilisateur spécifié est trop long (20 caractères maximum)', 20 ),
 				new NotNullValidator( 'Merci de spécifier votre nom d\'utilisateur' ),
-				new ExistingUserValidator( 'Le nom d\'utilisateur n\'est pas disponible', $this->manager->getList() ),
+				new ExistingUserValidator( 'Le nom d\'utilisateur n\'est pas disponible', $this->manager->getList(),$this->entity ),
 			],
 		] ) )->add( new StringField( [
 			'label'      => 'Mot de passe',
 			'name'       => 'password',
+			// HTML5 type, so password hidden
 			'type'       => 'password',
 			'maxLength'  => 100,
 			'validators' => [
@@ -41,6 +38,7 @@ class UserFormBuilder extends FormBuilder {
 		] ) )->add( new StringField( [
 			'label'      => 'Confirmation du mot de passe',
 			'name'       => 'password_verification',
+			// HTML5 type, so password hidden
 			'type'       => 'password',
 			'maxLength'  => 100,
 			'validators' => [
@@ -51,17 +49,19 @@ class UserFormBuilder extends FormBuilder {
 		] ) )->add( new StringField( [
 			'label'      => 'Email',
 			'name'       => 'email',
+			// HTML5 type, so email format
 			'type'       => 'email',
 			'maxLength'  => 100,
 			'validators' => [
 				new MaxLengthValidator( 'L\'adresse email spécifié est trop longue (100 caractères maximum)', 100 ),
 				new NotNullValidator( 'Merci de spécifier l\'adresse email' ),
-				new ExistingUserValidator( 'L\'adresse email n\'est pas disponible', $this->manager->getList() ),
+				new ExistingUserValidator( 'L\'adresse email n\'est pas disponible', $this->manager->getList(),$this->entity ),
 			
 			],
 		] ) )->add( new StringField( [
 			'label'      => 'Confirmation de l\'email',
 			'name'       => 'email_verification',
+			// HTML5 type, so email format
 			'type'       => 'email',
 			'maxLength'  => 100,
 			'validators' => [

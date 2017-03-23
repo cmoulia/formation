@@ -8,6 +8,10 @@ class User {
 		return isset( $_SESSION[ $attr ] ) ? $_SESSION[ $attr ] : null;
 	}
 	
+	public function setAttribute( $attr, $value ) {
+		$_SESSION[ $attr ] = $value;
+	}
+	
 	public function getFlash() {
 		$flash = $_SESSION[ 'flash' ];
 		unset( $_SESSION[ 'flash' ] );
@@ -19,6 +23,10 @@ class User {
 		return isset( $_SESSION[ 'flash' ] );
 	}
 	
+	public function setFlash( $value ) {
+		$_SESSION[ 'flash' ] = $value;
+	}
+	
 	public function isAuthenticated() {
 		return isset( $_SESSION[ 'auth' ] ) && $_SESSION[ 'auth' ] === true;
 	}
@@ -27,15 +35,10 @@ class User {
 		return $_SESSION['role'] == base64_encode('admin');
 	}
 	
-	public function setAttribute( $attr, $value ) {
-		$_SESSION[ $attr ] = $value;
-	}
-	
 	public function setAuthenticated( $authenticated = true ) {
 		if ( !is_bool( $authenticated ) ) {
 			throw new \InvalidArgumentException( 'La valeur spécifiée à la méthode OCFram\User::setAuthenticated() doit être un boolean' );
 		}
-		
 		$_SESSION[ 'auth' ] = $authenticated;
 	}
 	
@@ -43,12 +46,6 @@ class User {
 		if ( !is_string( $role)){
 			throw new \InvalidArgumentException( 'La valeur spécifiée à la méthode OCFram\User::setRole() doit être un string');
 		}
-		
 		$_SESSION['role'] = base64_encode($role);
-		
-	}
-	
-	public function setFlash( $value ) {
-		$_SESSION[ 'flash' ] = $value;
 	}
 }

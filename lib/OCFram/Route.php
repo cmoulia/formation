@@ -15,6 +15,21 @@ class Route {
 		$this->setVarsNames( $varsNames );
 	}
 	
+	public function hasVars() {
+		return !empty( $this->varsNames );
+	}
+	
+	public function match( $url ) {
+		if ( preg_match( '`^' . $this->url . '$`', $url, $matches ) ) {
+			return $matches;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	// SETTERS //
+	
 	public function setUrl( $url ) {
 		if ( is_string( $url ) ) {
 			$this->url = $url;
@@ -33,26 +48,15 @@ class Route {
 		}
 	}
 	
+	public function setVars( array $vars ) {
+		$this->vars = $vars;
+	}
+	
 	public function setVarsNames( array $varsNames ) {
 		$this->varsNames = $varsNames;
 	}
 	
-	public function hasVars() {
-		return !empty( $this->varsNames );
-	}
-	
-	public function match( $url ) {
-		if ( preg_match( '`^' . $this->url . '$`', $url, $matches ) ) {
-			return $matches;
-		}
-		else {
-			return false;
-		}
-	}
-	
-	public function setVars( array $vars ) {
-		$this->vars = $vars;
-	}
+	// GETTERS //
 	
 	public function action() {
 		return $this->action;

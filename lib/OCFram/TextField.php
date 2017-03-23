@@ -33,18 +33,16 @@ class TextField extends Field {
 	}
 	
 	public function setCols( $cols ) {
-		$cols = (int)$cols;
-		
-		if ( $cols > 0 ) {
-			$this->cols = $cols;
+		if ( !is_int( $cols ) || $cols <= 0 ) {
+			throw new \InvalidArgumentException('Column attribute should be an integer and greater than 0');
 		}
+		$this->cols = $cols;
 	}
 	
 	public function setRows( $rows ) {
-		$rows = (int)$rows;
-		
-		if ( $rows > 0 ) {
-			$this->rows = $rows;
+		if ( !is_int( $rows ) || $rows <= 0 ) {
+			throw new \InvalidArgumentException('Rows attribute should be an integer and greater than 0');
 		}
+		$this->cols = $rows;
 	}
 }

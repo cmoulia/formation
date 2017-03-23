@@ -12,24 +12,24 @@ class Router {
 	}
 	
 	public function getRoute( $url ) {
+		/** @var Route $route */
 		foreach ( $this->routes as $route ) {
-			// Si la route correspond à l'URL
+			// If route match the url
 			if ( ( $varsValues = $route->match( $url ) ) !== false ) {
-				// Si elle a des variables
+				// If there are variables
 				if ( $route->hasVars() ) {
 					$varsNames = $route->varsNames();
 					$listVars  = [];
 					
-					// On crée un nouveau tableau clé/valeur
-					// (clé = nom de la variable, valeur = sa valeur)
+					/** @var array $varsValues */
 					foreach ( $varsValues as $key => $match ) {
-						// La première valeur contient entièrement la chaine capturée (voir la doc sur preg_match)
+						/* First value is the whole captured string.*/ /** @see preg_match() */
 						if ( $key !== 0 ) {
 							$listVars[ $varsNames[ $key - 1 ] ] = $match;
 						}
 					}
 					
-					// On assigne ce tableau de variables � la route
+					// We set a new array of routes
 					$route->setVars( $listVars );
 				}
 				

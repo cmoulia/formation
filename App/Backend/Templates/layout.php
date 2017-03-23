@@ -9,7 +9,6 @@
 		<meta http-equiv="X-UA-Compatible" content="ie=edge">
 		<title><?= isset( $title ) ? $title : 'Formation PHP' ?></title>
 		<link rel="icon" href="/favicon.ico">
-		<!--		<link rel="stylesheet" href="/css/bootstrap.min.css" type="text/css">-->
 		<link rel="stylesheet" href="/css/Envision.css" type="text/css">
 		<link rel="stylesheet" href="/css/style.css" type="text/css">
 	</head>
@@ -17,33 +16,32 @@
 		<div id="wrap">
 			<header>
 				<h1><a href="/">Mon super site</a></h1>
-				<p><?= ($user->getAttribute('user')) ? 'Bienvenue '.$user->getAttribute('user')['firstname'].' '.$user->getAttribute('user')['lastname'] : 'Espace Administrateur !' ?></p>
+				<p><?= ( $user->getAttribute( 'user' ) ) ? 'Bienvenue ' . $user->getAttribute( 'user' )[ 'firstname' ] . ' ' . $user->getAttribute( 'user' )[ 'lastname' ] : 'Espace Administrateur !' ?></p>
 			</header>
 			
 			<nav>
 				<ul>
-					<?php if ( $user->isAuthenticated() && $user->isAdmin() ) { ?>
+					<?php if ( $user->isAuthenticated() && $user->isAdmin() ): ?>
 						<li><a href="/">Front Office</a></li>
 						<li><a href="/admin/">Back Office</a></li>
 						<li><a href="/logout">D&eacute;connexion</a></li>
 						<li><a href="/news-insert">Ajouter une news</a></li>
 						<li><a href="/admin/roles">Liste des r&ocirc;les</a></li>
 						<li><a href="/admin/users">Liste des utilisateurs</a></li>
-					<?php } ?>
+					<?php endif; ?>
 				</ul>
 			</nav>
 			
 			<div id="content-wrap">
 				<section id="main">
-					<?php if ( $user->hasFlash() ) {
-						echo '<p style="text-align: center;">', $user->getFlash(), '</p>';
-					} ?>
+					<?php if ( $user->hasFlash() ): ?>
+						<p style="text-align: center;"><?= $user->getFlash() ?></p>
+					<?php endif; ?>
 					
 					<?= isset( $content ) ? $content : "Content" ?>
 				</section>
 			</div>
 			
 			<footer></footer>
-			<script href="/js/bootstrap.min.js"></script>
 	</body>
 </html>

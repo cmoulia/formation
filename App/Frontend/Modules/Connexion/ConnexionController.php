@@ -15,7 +15,6 @@ class ConnexionController extends BackController {
 			$this->app->httpResponse()->redirect('/admin/');
 		}
 		if ($this->app->user()->isAuthenticated() && !$this->app->user()->isAdmin()){
-			$this->app->user()->setFlash( 'Vous êtes déjà connecté' );
 			$this->app->httpResponse()->redirect('/');
 		}
 		
@@ -97,7 +96,7 @@ class ConnexionController extends BackController {
 			}
 		}
 		
-		$formBuilder = new UserFormBuilder( $user, $this->managers->getManagerOf('User') );
+		$formBuilder = new UserFormBuilder( $user, $this->managers->getManagerOf('User'),$this->app->user()->isAuthenticated() );
 		$formBuilder->build();
 		
 		$form = $formBuilder->form();
