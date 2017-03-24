@@ -13,11 +13,23 @@ use \OCFram\FormHandler;
 
 class NewsController extends BackController {
 	public function executeDelete( HTTPRequest $request ) {
-		$newsId = $request->getData( 'id' );
+		/** @var News $news */
+		$news = $this->managers->getManagerOf( 'News' )->getUnique( $request->getData( 'id' ) );
+		
+		// If requested news doesn't exist
+		if ( empty( $news ) ) {
+			$this->app->httpResponse()->redirect404();
+		}
+		
+		// If requested news is not his own
+		if ( $news->fk_MEM_author() != $this->app->user()->getAttribute( 'user' )[ 'id' ] ) {
+			$this->app->user()->setFlash( 'Vous n\'êtes pas autorisé à supprimer cette news' );
+			$this->app->httpResponse()->redirect( '/' );
+		}
 		
 		// We first delete the comments, then the news itself
-		$this->managers->getManagerOf( 'Comments' )->deleteFromNews( $newsId );
-		$this->managers->getManagerOf( 'News' )->delete( $newsId );
+		$this->managers->getManagerOf( 'Comments' )->deleteFromNews( $news->id() );
+		$this->managers->getManagerOf( 'News' )->delete( $news->id() );
 		
 		$this->app->user()->setFlash( 'La news a bien été supprimée !' );
 		
@@ -81,15 +93,16 @@ class NewsController extends BackController {
 		/** @var News $news */
 		$news = $this->managers->getManagerOf( 'News' )->getUnique( $request->getData( 'id' ) );
 		
-		// We get the data linked to the foreign key
-		$news[ 'fk_MEM_author' ] = $this->managers->getManagerOf( 'User' )->getUnique( $news[ 'fk_MEM_author' ] );
-		$news[ 'fk_MEM_admin' ]  = $this->managers->getManagerOf( 'User' )->getUnique( $news[ 'fk_MEM_admin' ] );
-		
 		if ( empty( $news ) ) {
 			$this->app->httpResponse()->redirect404();
 		}
 		
+		// We get the data linked to the foreign key
+		$news[ 'fk_MEM_author' ] = $this->managers->getManagerOf( 'User' )->getUnique( $news[ 'fk_MEM_author' ] );
+		$news[ 'fk_MEM_admin' ]  = $this->managers->getManagerOf( 'User' )->getUnique( $news[ 'fk_MEM_admin' ] );
+		
 		$comment_a = $this->managers->getManagerOf( 'Comments' )->getListOf( $news->id() );
+		
 		// We get the data linked to the foreign key
 		foreach ( $comment_a as $comment ) {
 			$comment[ 'fk_MEM_author' ] = $this->managers->getManagerOf( 'User' )->getUnique( $comment[ 'fk_MEM_author' ] );
@@ -102,8 +115,21 @@ class NewsController extends BackController {
 	}
 	
 	public function executeUpdate( HTTPRequest $request ) {
-		$this->processNewsForm( $request );
+		/** @var News $news */
+		$news = $this->managers->getManagerOf( 'News' )->getUnique( $request->getData( 'id' ) );
 		
+		// If requested news doesn't exist
+		if ( empty( $news ) ) {
+			$this->app->httpResponse()->redirect404();
+		}
+		
+		// If requested news is not his own
+		if ( $news->fk_MEM_author() != $this->app->user()->getAttribute( 'user' )[ 'id' ] ) {
+			$this->app->user()->setFlash( 'Vous n\'êtes pas autorisé à modifier cette news' );
+			$this->app->httpResponse()->redirect( '/' );
+		}
+		
+		$this->processNewsForm( $request );
 		$this->page->addVar( 'title', 'Modification d\'une news' );
 	}
 	
@@ -114,6 +140,7 @@ class NewsController extends BackController {
 	}
 	
 	public function processNewsForm( HTTPRequest $request ) {
+		$isNew = true;
 		if ( $request->method() == 'POST' ) {
 			$news = new News( [
 				// a news is created by an user, so we get the value from $_SESSION
@@ -123,20 +150,22 @@ class NewsController extends BackController {
 			] );
 			
 			if ( $request->getExists( 'id' ) ) {
+				$isNew = false;
 				$news->setId( $request->getData( 'id' ) );
 			}
 		}
 		else {
 			// L'identifiant de la news est transmis si on veut la modifier
 			if ( $request->getExists( 'id' ) ) {
-				$news = $this->managers->getManagerOf( 'News' )->getUnique( $request->getData( 'id' ) );
+				$isNew = false;
+				$news  = $this->managers->getManagerOf( 'News' )->getUnique( $request->getData( 'id' ) );
 			}
 			else {
 				$news = new News;
 			}
 		}
 		
-		$formBuilder = new NewsFormBuilder( $news, $this->managers->getManagerOf( 'News' ), $this->app->user()->isAuthenticated() );
+		$formBuilder = new NewsFormBuilder( $news, $this->managers->getManagerOf( 'News' ), $this->app->user() );
 		$formBuilder->build();
 		
 		$form = $formBuilder->form();
@@ -144,7 +173,7 @@ class NewsController extends BackController {
 		$formHandler = new FormHandler( $form, $this->managers->getManagerOf( 'News' ), $request );
 		
 		if ( $formHandler->process() ) {
-			$this->app->user()->setFlash( $news->isNew() ? 'La news a bien été ajoutée !' : 'La news a bien été modifiée !' );
+			$this->app->user()->setFlash( $isNew ? 'La news a bien été ajoutée !' : 'La news a bien été modifiée !' );
 			$this->app->httpResponse()->redirect( '/' );
 		}
 		
@@ -152,6 +181,7 @@ class NewsController extends BackController {
 	}
 	
 	public function processCommentForm( HTTPRequest $request ) {
+		$isNew = true;
 		if ( $request->method() == 'POST' ) {
 			$comment = new Comment( [
 				'fk_NNC'        => $request->getData( 'news' ),
@@ -159,9 +189,9 @@ class NewsController extends BackController {
 				'fk_MEM_author' => $this->app->user()->getAttribute( 'user' )[ 'id' ],
 				'content'       => $request->postData( 'content' ),
 			] );
-			$isNew   = true;
 			
 			if ( $request->getExists( 'id' ) ) {
+				$isNew = false;
 				$comment->setId( $request->getData( 'id' ) );
 			}
 			
@@ -171,15 +201,15 @@ class NewsController extends BackController {
 		}
 		else {
 			if ( $request->getExists( 'id' ) ) {
+				$isNew   = false;
 				$comment = $this->managers->getManagerOf( 'Comments' )->getUnique( $request->getData( 'id' ) );
 			}
 			else {
 				$comment = new Comment;
 			}
-			$isNew = false;
 		}
 		
-		$formBuilder = new CommentFormBuilder( $comment, $this->managers->getManagerOf( 'User' ), $this->app->user()->isAuthenticated() );
+		$formBuilder = new CommentFormBuilder( $comment, $this->managers->getManagerOf( 'User' ), $this->app->user() );
 		$formBuilder->build();
 		
 		$form = $formBuilder->form();

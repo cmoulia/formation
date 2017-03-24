@@ -15,11 +15,18 @@ use \OCFram\DateField;
 use \OCFram\MaxLengthValidator;
 use \OCFram\NotNullValidator;
 
-class UserFormBuilder extends FormBuilder {
+class AdminUserFormBuilder extends FormBuilder {
 	/** @var UserManager $manager */
 	protected $manager;
 	/** @var User $entity */
 	protected $entity;
+	/** @var boolean $update */
+	protected $update;
+	
+	public function __construct( Entity $entity, Manager $manager, $user, $update ) {
+		parent::__construct( $entity, $manager, $user );
+		$this->update = $update;
+	}
 	
 	public function build() {
 		$this->form->add( new StringField( [
@@ -31,28 +38,32 @@ class UserFormBuilder extends FormBuilder {
 				new NotNullValidator( 'Merci de spécifier votre nom d\'utilisateur' ),
 				new ExistingValidator( 'Le nom d\'utilisateur n\'est pas disponible', $this->manager->checkExistencyByUsername( $this->entity->username() ), ( $this->user->isAuthenticated() ) ? $this->entity->username() : null ),
 			],
-		] ) )->add( new StringField( [
-			'label'      => 'Mot de passe',
-			'name'       => 'password',
-			// HTML5 type, so password hidden
-			'type'       => 'password',
-			'maxLength'  => 100,
-			'validators' => [
-				new MaxLengthValidator( 'Le mot de passe spécifié est trop long (100 caractères maximum)', 100 ),
-				new NotNullValidator( 'Merci de spécifier le mot de passe' ),
-			],
-		] ) )->add( new StringField( [
-			'label'      => 'Confirmation du mot de passe',
-			'name'       => 'password_verification',
-			// HTML5 type, so password hidden
-			'type'       => 'password',
-			'maxLength'  => 100,
-			'validators' => [
-				new MaxLengthValidator( 'La confirmation de mot de passe spécifié est trop long (100 caractères maximum)', 100 ),
-				new NotNullValidator( 'Merci de spécifier la vérification de mot de passe' ),
-				new EqualsValidator( 'Mot de passe différent', $this->form->getField( 'password' ) ),
-			],
-		] ) )->add( new StringField( [
+		] ) );
+		if (!$this->update) {
+			$this->form->add( new StringField( [
+				'label'      => 'Mot de passe',
+				'name'       => 'password',
+				// HTML5 type, so password hidden
+				'type'       => 'password',
+				'maxLength'  => 100,
+				'validators' => [
+					new MaxLengthValidator( 'Le mot de passe spécifié est trop long (100 caractères maximum)', 100 ),
+					new NotNullValidator( 'Merci de spécifier le mot de passe' ),
+				],
+			] ) )->add( new StringField( [
+				'label'      => 'Confirmation du mot de passe',
+				'name'       => 'password_verification',
+				// HTML5 type, so password hidden
+				'type'       => 'password',
+				'maxLength'  => 100,
+				'validators' => [
+					new MaxLengthValidator( 'La confirmation de mot de passe spécifié est trop long (100 caractères maximum)', 100 ),
+					new NotNullValidator( 'Merci de spécifier la vérification de mot de passe' ),
+					new EqualsValidator( 'Mot de passe différent', $this->form->getField( 'password' ) ),
+				],
+			] ) );
+		}
+		$this->form->add( new StringField( [
 			'label'      => 'Email',
 			'name'       => 'email',
 			// HTML5 type, so email format

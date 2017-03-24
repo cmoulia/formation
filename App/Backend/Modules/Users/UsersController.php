@@ -3,6 +3,7 @@
 namespace App\Backend\Modules\Users;
 
 use Entity\User;
+use FormBuilder\AdminUserFormBuilder;
 use FormBuilder\UserFormBuilder;
 use \OCFram\BackController;
 use \OCFram\FormHandler;
@@ -43,31 +44,35 @@ class UsersController extends BackController {
 	}
 	
 	public function processForm( HTTPRequest $request ) {
+		$isNew = true;
 		if ( $request->method() == 'POST' ) {
 			$user = new User( [
-				'firstname'  => $request->postData( 'firstname' ),
-				'lastname'   => $request->postData( 'lastname' ),
-				'email' => $request->postData( 'email' ),
-				'username' => $request->postData( 'username' ),
-				'password' => $request->postData( 'password' ),
-				'birthdate' => new \DateTime($request->postData( 'birthdate' )),
+				'firstname' => $request->postData( 'firstname' ),
+				'lastname'  => $request->postData( 'lastname' ),
+				'email'     => $request->postData( 'email' ),
+				'username'  => $request->postData( 'username' ),
+				'password'  => $request->postData( 'password' ),
+				'birthdate' => new \DateTime( $request->postData( 'birthdate' ) ),
 			] );
 			
 			if ( $request->getExists( 'id' ) ) {
+				$isNew = false;
 				$user->setId( $request->getData( 'id' ) );
 			}
 		}
 		else {
 			// L'identifiant de l\'utilisateur est transmis si on veut le modifier
 			if ( $request->getExists( 'id' ) ) {
-				$user = $this->managers->getManagerOf( 'User' )->getUnique( $request->getData( 'id' ) );
+				$isNew = false;
+				$user  = $this->managers->getManagerOf( 'User' )->getUnique( $request->getData( 'id' ) );
 			}
 			else {
 				$user = new User;
 			}
 		}
 		
-		$formBuilder = new UserFormBuilder( $user, $this->managers->getManagerOf('User'), $this->app->user()->isAuthenticated() );
+		// If user, admin update user info
+		$formBuilder = new AdminUserFormBuilder( $user, $this->managers->getManagerOf( 'User' ), $this->app->user(), $request->getExists( 'id' ) );
 		$formBuilder->build();
 		
 		$form = $formBuilder->form();
@@ -75,7 +80,7 @@ class UsersController extends BackController {
 		$formHandler = new FormHandler( $form, $this->managers->getManagerOf( 'User' ), $request );
 		
 		if ( $formHandler->process() ) {
-			$this->app->user()->setFlash( $user->isNew() ? 'L\'utilisateur a bien été ajouté !' : 'L\'utilisateur a bien été modifié !' );
+			$this->app->user()->setFlash( $isNew ? 'L\'utilisateur a bien été ajouté !' : 'L\'utilisateur a bien été modifié !' );
 			$this->app->httpResponse()->redirect( '/admin/users' );
 		}
 		

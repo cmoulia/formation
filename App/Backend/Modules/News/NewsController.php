@@ -81,7 +81,7 @@ class NewsController extends BackController {
 		$formHandler = new FormHandler( $form, $this->managers->getManagerOf( 'News' ), $request );
 		
 		if ( $formHandler->process() ) {
-			$this->app->user()->setFlash( $news->isNew() ? 'La news a bien été ajoutée !' : 'La news a bien été modifiée !' );
+			$this->app->user()->setFlash( $news->isNew() ? 'La news a bien été ajoutée !' : 'La news a bien été modérée !' );
 			$this->app->httpResponse()->redirect( '/' );
 		}
 		

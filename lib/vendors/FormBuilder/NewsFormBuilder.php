@@ -11,7 +11,7 @@ use \OCFram\NotNullValidator;
 class NewsFormBuilder extends FormBuilder {
 	public function build() {
 		// If the user is already connected, don't ask him his name, we already know it
-		if ( !$this->authenticated() ) {
+		if ( !$this->user() ) {
 			$this->form->add( new StringField( [
 				'label'      => 'Auteur',
 				'name'       => 'fk_MEM_author',

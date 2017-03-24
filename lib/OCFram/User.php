@@ -1,4 +1,5 @@
 <?php
+
 namespace OCFram;
 
 session_start();
@@ -32,7 +33,11 @@ class User {
 	}
 	
 	public function isAdmin() {
-		return $_SESSION['role'] == base64_encode('admin');
+		return $_SESSION[ 'role' ] == $this->getAdmin();
+	}
+	
+	public function getAdmin(){
+		return $this->encrypt('admin');
 	}
 	
 	public function setAuthenticated( $authenticated = true ) {
@@ -43,9 +48,13 @@ class User {
 	}
 	
 	public function setRole( $role = 'user' ) {
-		if ( !is_string( $role)){
-			throw new \InvalidArgumentException( 'La valeur spécifiée à la méthode OCFram\User::setRole() doit être un string');
+		if ( !is_string( $role ) ) {
+			throw new \InvalidArgumentException( 'La valeur spécifiée à la méthode OCFram\User::setRole() doit être un string' );
 		}
-		$_SESSION['role'] = base64_encode($role);
+		$_SESSION[ 'role' ] = $this->encrypt( $role );
+	}
+	
+	private function encrypt( $value ) {
+		return base64_encode( $value );
 	}
 }

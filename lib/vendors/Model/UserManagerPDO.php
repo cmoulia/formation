@@ -12,37 +12,36 @@ class UserManagerPDO extends UserManager {
 	 * @return array
 	 */
 	public function getList( $limit = -1, $offset = -1 ) {
-//		SELECT everything from T_MEM_memberc
+		//		SELECT everything from T_MEM_memberc
 		$sql = 'SELECT MEM_id, MEM_fk_MRC, MEM_firstname, MEM_lastname, MEM_email, MEM_username, MEM_birthdate, MEM_dateregister FROM T_MEM_memberc ORDER BY MEM_dateregister DESC';
 		
-//		If we want the top X
+		//		If we want the top X
 		if ( $limit != -1 ) {
 			$sql .= ' LIMIT ' . (int)$limit;
 			
-//			If we want the data starting at a certain point
+			//			If we want the data starting at a certain point
 			if ( $offset != -1 ) {
 				$sql .= ' OFFSET ' . (int)$offset;
 			}
-			
 		}
 		
 		/** @var \PDOStatement $requete */
 		$requete = $this->dao->query( $sql );
-//		\PDO::FETCH_ASSOC is set, we get an array with the columns as the keys of the array
-		$requete->setFetchMode(\PDO::FETCH_ASSOC);
+		//		\PDO::FETCH_ASSOC is set, we get an array with the columns as the keys of the array
+		$requete->setFetchMode( \PDO::FETCH_ASSOC );
 		$user_a = $requete->fetchAll();
 		
 		foreach ( $user_a as $key => $user ) {
-//			Dates are return from the database as a string, we need them in DateTime format, we set the date as a DateTime instance with the string in parameter
-			$user['MEM_birthdate'] = new \DateTime($user['MEM_birthdate']);
-			$user['MEM_dateregister'] = new \DateTime($user['MEM_dateregister']);
-//			We instanciate each sub-array as a new User entity
-			$user_a[$key] = new User($user);
+			//			Dates are return from the database as a string, we need them in DateTime format, we set the date as a DateTime instance with the string in parameter
+			$user[ 'MEM_birthdate' ]    = new \DateTime( $user[ 'MEM_birthdate' ] );
+			$user[ 'MEM_dateregister' ] = new \DateTime( $user[ 'MEM_dateregister' ] );
+			//			We instanciate each sub-array as a new User entity
+			$user_a[ $key ] = new User( $user );
 		}
 		
 		$requete->closeCursor();
 		
-//		We return the array of User entities
+		//		We return the array of User entities
 		return $user_a;
 	}
 	
@@ -56,18 +55,18 @@ class UserManagerPDO extends UserManager {
 		$requete = $this->dao->prepare( 'SELECT MEM_id, MEM_fk_MRC, MEM_firstname, MEM_lastname, MEM_email, MEM_username, MEM_password, MEM_birthdate, MEM_dateregister FROM T_MEM_memberc WHERE MEM_id = :id' );
 		$requete->bindValue( ':id', (int)$id, \PDO::PARAM_INT );
 		$requete->execute();
-		$requete->setFetchMode(\PDO::FETCH_ASSOC);
+		$requete->setFetchMode( \PDO::FETCH_ASSOC );
 		
 		if ( $user = $requete->fetch() ) {
-//			Dates are return from the database as a string, we need them in DateTime format, we set the date as a DateTime instance with the string in parameter
-			$user['MEM_birthdate'] = new \DateTime($user['MEM_birthdate']);
-			$user['MEM_dateregister'] = new \DateTime($user['MEM_dateregister']);
+			//			Dates are return from the database as a string, we need them in DateTime format, we set the date as a DateTime instance with the string in parameter
+			$user[ 'MEM_birthdate' ]    = new \DateTime( $user[ 'MEM_birthdate' ] );
+			$user[ 'MEM_dateregister' ] = new \DateTime( $user[ 'MEM_dateregister' ] );
 			
-//			new instance of Entity\User with the array from the db in parameter
-			return new User($user);
+			//			new instance of Entity\User with the array from the db in parameter
+			return new User( $user );
 		}
 		
-//		If we were unable to fetch, meaning there's no user with that id
+		//		If we were unable to fetch, meaning there's no user with that id
 		return null;
 	}
 	
@@ -82,16 +81,70 @@ class UserManagerPDO extends UserManager {
 		$requete->bindValue( ':username', $login );
 		$requete->bindValue( ':email', $login );
 		$requete->execute();
-		$requete->setFetchMode(\PDO::FETCH_ASSOC);
+		$requete->setFetchMode( \PDO::FETCH_ASSOC );
 		
 		if ( $user = $requete->fetch() ) {
-			$user['MEM_birthdate'] = new \DateTime($user['MEM_birthdate']);
-			$user['MEM_dateregister'] = new \DateTime($user['MEM_dateregister']);
+			$user[ 'MEM_birthdate' ]    = new \DateTime( $user[ 'MEM_birthdate' ] );
+			$user[ 'MEM_dateregister' ] = new \DateTime( $user[ 'MEM_dateregister' ] );
 			
-			return new User($user);
+			return new User( $user );
 		}
 		
 		return null;
+	}
+	
+	public function getUniqueByUsername( $username ) {
+		/** @var \PDOStatement $requete */
+		$requete = $this->dao->prepare( 'SELECT MEM_id, MEM_fk_MRC, MEM_firstname, MEM_lastname, MEM_email, MEM_username, MEM_password, MEM_birthdate, MEM_dateregister FROM T_MEM_memberc WHERE MEM_username = :username' );
+		$requete->bindValue( ':username', $username );
+		$requete->execute();
+		$requete->setFetchMode( \PDO::FETCH_ASSOC );
+		
+		if ( $user = $requete->fetch() ) {
+			$user[ 'MEM_birthdate' ]    = new \DateTime( $user[ 'MEM_birthdate' ] );
+			$user[ 'MEM_dateregister' ] = new \DateTime( $user[ 'MEM_dateregister' ] );
+			
+			return new User( $user );
+		}
+		
+		return null;
+	}
+	
+	public function getUniqueByEmail( $email ) {
+		/** @var \PDOStatement $requete */
+		$requete = $this->dao->prepare( 'SELECT MEM_id, MEM_fk_MRC, MEM_firstname, MEM_lastname, MEM_email, MEM_username, MEM_password, MEM_birthdate, MEM_dateregister FROM T_MEM_memberc WHERE MEM_email = :email' );
+		$requete->bindValue( ':email', $email );
+		$requete->execute();
+		$requete->setFetchMode( \PDO::FETCH_ASSOC );
+		
+		if ( $user = $requete->fetch() ) {
+			$user[ 'MEM_birthdate' ]    = new \DateTime( $user[ 'MEM_birthdate' ] );
+			$user[ 'MEM_dateregister' ] = new \DateTime( $user[ 'MEM_dateregister' ] );
+			
+			return new User( $user );
+		}
+		
+		return null;
+	}
+	
+	public function checkExistencyByUsername( $username ) {
+		/** @var \PDOStatement $requete */
+		$requete = $this->dao->prepare( 'SELECT MEM_id FROM T_MEM_memberc WHERE MEM_username = :username' );
+		$requete->bindValue( ':username', $username );
+		$requete->execute();
+		$requete->setFetchMode( \PDO::FETCH_ASSOC );
+		
+		return ( $requete->fetch() ) ? true : false;
+	}
+	
+	public function checkExistencyByEmail( $email ) {
+		/** @var \PDOStatement $requete */
+		$requete = $this->dao->prepare( 'SELECT MEM_id FROM T_MEM_memberc WHERE MEM_email = :email' );
+		$requete->bindValue( ':email', $email );
+		$requete->execute();
+		$requete->setFetchMode( \PDO::FETCH_ASSOC );
+		
+		return ( $requete->fetch() ) ? true : false;
 	}
 	
 	/**
@@ -113,7 +166,7 @@ class UserManagerPDO extends UserManager {
 		$requete->bindValue( ':email', $user->email() );
 		$requete->bindValue( ':username', $user->username() );
 		$requete->bindValue( ':password', $user->password() );
-		$requete->bindValue( ':birthdate', $user->birthdate()->format("Y-m-d H:i:s") );
+		$requete->bindValue( ':birthdate', $user->birthdate()->format( "Y-m-d H:i:s" ) );
 		
 		$requete->execute();
 		
@@ -131,7 +184,7 @@ class UserManagerPDO extends UserManager {
 		$requete->bindValue( ':firstname', $user->firstname() );
 		$requete->bindValue( ':lastname', $user->lastname() );
 		$requete->bindValue( ':email', $user->email() );
-		$requete->bindValue( ':birthdate', $user->birthdate()->format("Y-m-d H:i:s") );
+		$requete->bindValue( ':birthdate', $user->birthdate()->format( "Y-m-d H:i:s" ) );
 		$requete->bindValue( ':id', $user->id(), \PDO::PARAM_INT );
 		
 		$requete->execute();

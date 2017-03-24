@@ -16,7 +16,7 @@
 		<div id="wrap">
 			<header>
 				<h1><a href="/">Mon super site</a></h1>
-				<p><?= ( $user->getAttribute( 'user' ) ) ? 'Bienvenue ' . $user->getAttribute( 'user' )[ 'firstname' ] . ' ' . $user->getAttribute( 'user' )[ 'lastname' ] : 'Bienvenue sur mon blog collaboratif !' ?></p>
+				<p><?= ( $user->getAttribute( 'user' ) ) ? 'Bienvenue ' . $user->getAttribute( 'user' )[ 'username' ].' : '.$user->getAttribute( 'user' )[ 'firstname' ] . ' ' . $user->getAttribute( 'user' )[ 'lastname' ] : 'Bienvenue sur mon blog collaboratif !' ?></p>
 			</header>
 			
 			<nav>
@@ -36,6 +36,7 @@
 					<?php else: ?>
 						<li><a href="/">Accueil</a></li>
 						<li><a href="/login">Connexion</a></li>
+						<li><a href="/register">Inscription</a></li>
 					<?php endif; ?>
 				</ul>
 			</nav>

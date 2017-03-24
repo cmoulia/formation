@@ -10,12 +10,12 @@ use OCFram\HTTPRequest;
 
 class ConnexionController extends BackController {
 	public function executeLogin( HTTPRequest $request ) {
-		if ($this->app->user()->isAuthenticated() && $this->app->user()->isAdmin()){
+		if ( $this->app->user()->isAuthenticated() && $this->app->user()->isAdmin() ) {
 			$this->app->user()->setFlash( 'Vous êtes déjà connecté' );
-			$this->app->httpResponse()->redirect('/admin/');
+			$this->app->httpResponse()->redirect( '/admin/' );
 		}
-		if ($this->app->user()->isAuthenticated() && !$this->app->user()->isAdmin()){
-			$this->app->httpResponse()->redirect('/');
+		if ( $this->app->user()->isAuthenticated() && !$this->app->user()->isAdmin() ) {
+			$this->app->httpResponse()->redirect( '/' );
 		}
 		
 		$this->page->addVar( 'title', 'Connexion' );
@@ -31,14 +31,14 @@ class ConnexionController extends BackController {
 			if ( $user = $manager->getUniqueByUsernameOrEmail( $login ) ) {
 				if ( $password == $user->password() ) {
 					$this->app->user()->setAuthenticated( true );
-					$this->app->user()->setAttribute('user', $user);
+					$this->app->user()->setAttribute( 'user', $user );
 					
 					$this->app->user()->setFlash( 'Connexion réussie' );
 					if ( ( $user->fk_MRC() == 1 ) ) {
 						$this->app->user()->setRole( 'admin' );
 						$this->app->httpResponse()->redirect( '/admin/' );
 					}
-				else {
+					else {
 						$this->app->user()->setRole();
 						$this->app->httpResponse()->redirect( '.' );
 					}
@@ -59,7 +59,7 @@ class ConnexionController extends BackController {
 		$this->app->httpResponse()->redirect( '/' );
 	}
 	
-	public function executeRegister( HTTPRequest $request  ) {
+	public function executeRegister( HTTPRequest $request ) {
 		$this->processForm( $request );
 		
 		$this->page->addVar( 'title', 'Inscription' );
@@ -72,33 +72,36 @@ class ConnexionController extends BackController {
 	}
 	
 	public function processForm( HTTPRequest $request ) {
+		$isNew = true;
 		if ( $request->method() == 'POST' ) {
-			$isNew=true;
 			$user = new User( [
-				'firstname'  => $request->postData( 'firstname' ),
-				'lastname'   => $request->postData( 'lastname' ),
-				'email' => $request->postData( 'email' ),
-				'username' => $request->postData( 'username' ),
-				'password' => $request->postData( 'password' ),
-				'birthdate' => new \DateTime($request->postData( 'birthdate' )),
+				'firstname' => $request->postData( 'firstname' ),
+				'lastname'  => $request->postData( 'lastname' ),
+				'email'     => strtolower( $request->postData( 'email' ) ),
+				'username'  => $request->postData( 'username' ),
+				'password'  => $request->postData( 'password' ),
+				'birthdate' => new \DateTime( $request->postData( 'birthdate' ) ),
 			] );
 			
 			if ( $request->getExists( 'id' ) ) {
+				$isNew = false;
 				$user->setId( $request->getData( 'id' ) );
 			}
 		}
 		else {
-			$isNew=false;
 			// L'identifiant de l\'utilisateur est transmis si on veut le modifier
 			if ( $request->getExists( 'id' ) ) {
-				$user = $this->managers->getManagerOf( 'User' )->getUnique( $request->getData( 'id' ) );
+				$isNew = false;
+				$user  = $this->managers->getManagerOf( 'User' )->getUnique( $request->getData( 'id' ) );
 			}
 			else {
 				$user = new User;
 			}
 		}
 		
-		$formBuilder = new UserFormBuilder( $user, $this->managers->getManagerOf('User'),$this->app->user()->isAuthenticated() );
+		// If is not authenticated, register
+		// If is authenticated, user update his info
+		$formBuilder = new UserFormBuilder( $user, $this->managers->getManagerOf( 'User' ), $this->app->user() );
 		$formBuilder->build();
 		
 		$form = $formBuilder->form();
@@ -107,11 +110,13 @@ class ConnexionController extends BackController {
 		
 		if ( $formHandler->process() ) {
 			$this->app->user()->setFlash( $isNew ? 'L\'inscription s\'est bien déroulé !' : 'La modification de vos informations s\'est bien déroulé !' );
-			if ($user->isNew()) $this->app->user()->setAuthenticated(true);
-			$this->app->user()->setRole();
-			$this->app->user()->setAttribute('user', $user);
+			if ( $isNew ) {
+				$this->app->user()->setAuthenticated( true );
+				$this->app->user()->setRole();
+			}
+			$this->app->user()->setAttribute( 'user', $user );
 			
-			$this->app->httpResponse()->redirect( '/admin/' );
+			$this->app->httpResponse()->redirect( '/' );
 		}
 		
 		$this->page->addVar( 'form', $form->createView() );

@@ -10,20 +10,24 @@ abstract class FormBuilder {
 	protected $entity;
 	/** @var Manager $manager */
 	protected $manager;
-	/** @var boolean $authenticated */
-	protected $authenticated;
+	/** @var User $user */
+	protected $user;
 	
-	public function __construct( Entity $entity, Manager $manager, $authenticated ) {
-		$this->setAuthenticated($authenticated);
+	public function __construct( Entity $entity, Manager $manager, $user ) {
+		$this->setUser( $user );
 		$this->setEntity( $entity );
 		$this->setForm( new Form( $entity ) );
-		$this->setManager($manager);
+		$this->setManager( $manager );
 	}
 	
 	abstract public function build();
 	
-	public function setAuthenticated( $authenticated ) {
-		$this->authenticated = $authenticated;
+	public function isAdmin() {
+		return $this->user->isAdmin();
+	}
+	
+	public function setUser( $user ) {
+		$this->user = $user;
 	}
 	
 	public function setEntity( Entity $entity ) {
@@ -38,8 +42,8 @@ abstract class FormBuilder {
 		$this->manager = $manager;
 	}
 	
-	public function authenticated() {
-		return $this->authenticated;
+	public function user() {
+		return $this->user;
 	}
 	
 	public function entity() {
@@ -53,5 +57,4 @@ abstract class FormBuilder {
 	public function manager() {
 		return $this->manager;
 	}
-	
 }
