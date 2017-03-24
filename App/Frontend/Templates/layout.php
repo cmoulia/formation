@@ -23,6 +23,7 @@
 				<ul>
 					<?php if ( $user->isAuthenticated() && $user->isAdmin() ): ?>
 						<li><a href="/">Front Office</a></li>
+						<li><a href="<?php \OCFram\Router::getUrl('Connexion','login') ?>">Back Office</a></li>
 						<li><a href="/admin/">Back Office</a></li>
 						<li><a href="/logout">D&eacute;connexion</a></li>
 						<li><a href="/news-insert">Ajouter une news</a></li>

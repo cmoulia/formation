@@ -26,7 +26,7 @@ class TextField extends Field {
 		$widget .= '>';
 		
 		if ( !empty( $this->value ) ) {
-			$widget .= htmlspecialchars( $this->value );
+			$widget .= htmlentities( $this->value );
 		}
 		
 		return $widget . '</textarea>';

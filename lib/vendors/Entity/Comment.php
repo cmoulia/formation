@@ -13,7 +13,7 @@ class Comment extends Entity {
 	protected $fk_NNC, $author, $fk_MEM_author, $fk_MEM_admin, $content, $dateadd;
 	
 	public function isValid() {
-		return !( ( empty( $this->author ) && empty( $this->fk_MEM_author ) ) || empty( $this->content ) );
+		return !( ( empty($author) && empty( $this->fk_MEM_author ) && empty( $this->fk_MEM_admin ) ) && empty( $this->fk_MEM_author ) || empty( $this->content ) );
 	}
 	
 	// SETTERS //

@@ -9,6 +9,11 @@ use OCFram\FormHandler;
 use OCFram\HTTPRequest;
 
 class ConnexionController extends BackController {
+	public function execute404( HTTPRequest $request ) {
+		$this->app->user()->setFlash('404 Not Found !');
+		$this->app->httpResponse()->redirect('/');
+	}
+	
 	public function executeLogin( HTTPRequest $request ) {
 		if ( $this->app->user()->isAuthenticated() && $this->app->user()->isAdmin() ) {
 			$this->app->user()->setFlash( 'Vous êtes déjà connecté' );
@@ -89,9 +94,9 @@ class ConnexionController extends BackController {
 			}
 		}
 		else {
+			$isNew = false;
 			// L'identifiant de l\'utilisateur est transmis si on veut le modifier
 			if ( $request->getExists( 'id' ) ) {
-				$isNew = false;
 				$user  = $this->managers->getManagerOf( 'User' )->getUnique( $request->getData( 'id' ) );
 			}
 			else {

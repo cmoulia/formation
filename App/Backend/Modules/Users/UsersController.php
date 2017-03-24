@@ -10,6 +10,12 @@ use \OCFram\FormHandler;
 use \OCFram\HTTPRequest;
 
 class UsersController extends BackController {
+	
+	public function execute404( HTTPRequest $request ) {
+		$this->app->user()->setFlash('404 Not Found !');
+		$this->app->httpResponse()->redirect('/admin/');
+	}
+	
 	public function executeDelete( HTTPRequest $request ) {
 		$userId = $request->getData( 'id' );
 		

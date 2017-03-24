@@ -127,10 +127,37 @@ class UserManagerPDO extends UserManager {
 		return null;
 	}
 	
+	public function checkExistencyByUsername( $username, $excluded_id = null ) {
+		/** @var \PDOStatement $requete */
+		$sql = 'SELECT MEM_id FROM T_MEM_memberc WHERE MEM_username = :username';
+		if ($excluded_id) {
+			$sql.= ' AND MEM_id != :mem_id';
+		}
+		$requete = $this->dao->prepare( $sql );
+		$requete->bindValue( ':username', $username );
+		if ($excluded_id) {
+			$requete->bindValue(':mem_id',$excluded_id,\PDO::PARAM_INT);
+		}
+		$requete->execute();
+		$requete->setFetchMode( \PDO::FETCH_ASSOC );
+		
+		return ( $requete->fetch() ) ? true : false;
+	}
+	
+	public function checkExistencyByEmail( $email ) {
+		/** @var \PDOStatement $requete */
+		$requete = $this->dao->prepare( 'SELECT MEM_id FROM T_MEM_memberc WHERE MEM_email = :email' );
+		$requete->bindValue( ':email', $email );
+		$requete->execute();
+		$requete->setFetchMode( \PDO::FETCH_ASSOC );
+		
+		return ( $requete->fetch() ) ? true : false;
+	}
+	
 	public function checkExistency( $attribute, $value ) {
 		/** @var \PDOStatement $requete */
 		$requete = $this->dao->prepare( 'SELECT MEM_id FROM T_MEM_memberc WHERE MEM_'.$attribute.' = :value' );
-//		$requete->bindValue( ':attribute', $attribute );
+		//		$requete->bindValue( ':attribute', $attribute );
 		$requete->bindValue( ':value', $value );
 		$requete->execute();
 		$requete->setFetchMode( \PDO::FETCH_ASSOC );
@@ -185,8 +212,8 @@ class UserManagerPDO extends UserManager {
 	 * @param int $id
 	 */
 	public function delete( $id ) {
-		$this->dao->exec( 'DELETE T_NEW_commentc FROM T_NEW_commentc INNER JOIN T_NEW_newsc ON NNC_id = NCC_fk_NNC WHERE NNC_fk_MEM_author = ' . (int)$id .' OR NCC_fk_MEM_author = ' . (int)$id );
-		$this->dao->exec( 'DELETE T_NEW_newsc FROM T_NEW_newsc WHERE NNC_fk_MEM_author = ' . (int)$id );
-		$this->dao->exec( 'DELETE T_MEM_memberc FROM T_MEM_memberc WHERE MEM_id = ' . (int)$id );
+		$this->dao->exec( 'DELETE FROM T_MEM_memberc WHERE MEM_id = ' . (int)$id );
+		$this->dao->exec( 'DELETE FROM T_NEW_newsc WHERE NNC_fk_MEM_author = ' . (int)$id );
+		$this->dao->exec( 'DELETE FROM T_MEM_memberc WHERE MEM_id = ' . (int)$id );
 	}
 }

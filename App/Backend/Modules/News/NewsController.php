@@ -36,11 +36,11 @@ class NewsController extends BackController {
 		
 		/** @var \Model\NewsManager $manager */
 		$manager = $this->managers->getManagerOf( 'News' );
-		$news_a = $manager->getList();
+		$news_a  = $manager->getList();
 		
 		foreach ( $news_a as $news ) {
-			$news['fk_MEM_author'] = $this->managers->getManagerOf('User')->getUnique($news['fk_MEM_author']);
-			$news['fk_MEM_admin'] = $this->managers->getManagerOf('User')->getUnique($news['fk_MEM_admin']);
+			$news[ 'fk_MEM_author' ] = $this->managers->getManagerOf( 'User' )->getUnique( $news[ 'fk_MEM_author' ] );
+			$news[ 'fk_MEM_admin' ]  = $this->managers->getManagerOf( 'User' )->getUnique( $news[ 'fk_MEM_admin' ] );
 		}
 		
 		$this->page->addVar( 'news_a', $news_a );
@@ -52,14 +52,14 @@ class NewsController extends BackController {
 		
 		if ( $request->method() == 'POST' ) {
 			$news = new News( [
-				'fk_MEM_admin'   => $this->app->user()->getAttribute( 'user' )['id'],
-				'title'   => $request->postData( 'title' ),
-				'content' => $request->postData( 'content' ),
+				'fk_MEM_admin' => $this->app->user()->getAttribute( 'user' )[ 'id' ],
+				'title'        => $request->postData( 'title' ),
+				'content'      => $request->postData( 'content' ),
 			] );
 			
 			if ( $request->getExists( 'id' ) ) {
 				$news->setId( $request->getData( 'id' ) );
-				$news->setFk_MEM_author($this->managers->getManagerOf('News')->getUnique($news->id())->fk_MEM_author());
+				$news->setFk_MEM_author( $this->managers->getManagerOf( 'News' )->getUnique( $news->id() )->fk_MEM_author() );
 			}
 		}
 		else {
@@ -72,7 +72,7 @@ class NewsController extends BackController {
 			}
 		}
 		
-		$formBuilder = new NewsFormBuilder( $news, $this->managers->getManagerOf( 'News' ), $this->app->user()->isAuthenticated() );
+		$formBuilder = new NewsFormBuilder( $news, $this->managers->getManagerOf( 'News' ), $this->app->user() );
 		$formBuilder->build();
 		
 		
@@ -82,7 +82,7 @@ class NewsController extends BackController {
 		
 		if ( $formHandler->process() ) {
 			$this->app->user()->setFlash( $news->isNew() ? 'La news a bien été ajoutée !' : 'La news a bien été modérée !' );
-			$this->app->httpResponse()->redirect( '/' );
+			$this->app->httpResponse()->redirect( '/admin/' );
 		}
 		
 		
@@ -94,18 +94,19 @@ class NewsController extends BackController {
 		
 		if ( $request->method() == 'POST' ) {
 			$comment = new Comment( [
-				'id'      => $request->getData( 'id' ),
-				'author'  => $request->postData( 'author' ),
-				'content' => $request->postData( 'content' ),
+				'id'           => $request->getData( 'id' ),
+				'author'       => $request->postData( 'author' ),
+				'fk_MEM_admin' => $this->app->user()->getAttribute( 'user' )[ 'id' ],
+				'content'      => $request->postData( 'content' ),
 			] );
 			$comment->setFk_NNC( $this->managers->getManagerOf( 'Comments' )->getNews( $comment->id() ) );
 		}
 		else {
-			$comment = $this->managers->getManagerOf( 'Comments' )->get( $request->getData( 'id' ) );
+			$comment = $this->managers->getManagerOf( 'Comments' )->getUnique( $request->getData( 'id' ) );
 		}
 		
 		
-		$formBuilder = new CommentFormBuilder( $comment, $this->managers->getManagerOf( 'Comments' ), $this->app->user()->isAuthenticated() );
+		$formBuilder = new CommentFormBuilder( $comment, $this->managers->getManagerOf( 'Comments' ), $this->app->user() );
 		$formBuilder->build();
 		
 		$form = $formBuilder->form();

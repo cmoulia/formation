@@ -16,13 +16,13 @@ class StringField extends Field {
 		$widget .= '<label>' . $this->label . '</label><input ';
 		
 		if ( !empty( $this->type ) ) {
-			$widget .= ' type="' . htmlspecialchars( $this->type ) . '"';
+			$widget .= ' type="' . htmlentities( $this->type ) . '"';
 		}
 		
 		$widget .= ' name="' . $this->name . '"';
 		
-		if ( !empty( $this->value ) ) {
-			$widget .= ' value="' . htmlspecialchars( $this->value ) . '"';
+		if ( !empty( $this->value ) && $this->type != 'password' ) {
+			$widget .= ' value="' . htmlentities( $this->value ) . '"';
 		}
 		
 		if ( !empty( $this->maxLength ) ) {

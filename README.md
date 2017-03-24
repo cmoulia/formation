@@ -20,4 +20,21 @@
 
 # 3 - CSS : Fix the CSS error when text is too long 
 * Try to enter a very long text in title and text of a News and observe the result. (Long text without space)
-* Fix visual problem by adding somes CSS rules.
+* Fix visual problem by adding some CSS rules.
+
+
+# 4 - Fix SQL Injection
+* If you have good memory, you know that SQL Injection mean ! 
+* Remove all SQL Injection vulnerabilities. 
+
+
+# 5 - Fix JavaScript Injection
+* Google is your best friend.
+* Remove all JavaScript Injection vulnerabilities. 
+
+
+# 6 - Improve your code : Url and Link
+Actually, you need to enter manually the value of a href attribute according to the route.xml file. 
+What happens if tomorrow i decided to edit a route ?
+All your code break down.
+This part consists to add a functionnality that ask for a route to the Controller and an Action using a function. Replace the manually entered href by a call of this function. 

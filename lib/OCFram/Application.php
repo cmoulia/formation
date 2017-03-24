@@ -7,6 +7,7 @@ abstract class Application {
 	protected $name;
 	protected $user;
 	protected $config;
+	static $routes;
 	
 	public function __construct() {
 		$this->httpRequest  = new HTTPRequest( $this );
@@ -38,6 +39,7 @@ abstract class Application {
 			// We add the route to the router, its url, its module, its action, and its variables
 			$router->addRoute( new Route( $route->getAttribute( 'url' ), $route->getAttribute( 'module' ), $route->getAttribute( 'action' ), $vars ) );
 		}
+		
 		try {
 			// We try to get route corresponding to our url
 			$matchedRoute = $router->getRoute( $this->httpRequest->requestURI() );

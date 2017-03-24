@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <routes>
 	
-	<route url="/admin/" module="News" action="index"></route>
+	<route url="/admin/" module="News" action="index" name=""></route>
 	<route url="/admin/news-update-([0-9]+)" module="News" action="update" vars="id"></route>
 	<route url="/admin/news-delete-([0-9]+)" module="News" action="delete" vars="id"></route>
 	<route url="/admin/news-comment-update-([0-9]+)" module="News" action="updateComment" vars="id"></route>
@@ -17,5 +17,7 @@
 	<route url="/admin/role-insert" module="Role" action="insert"></route>
 	<route url="/admin/role-update-([0-9]+)" module="Role" action="update" vars="id"></route>
 	<route url="/admin/role-delete-([0-9]+)" module="Role" action="delete" vars="id"></route>
-
+	
+	<route url="/(.*)" module="Users" action="404" ></route>
+	
 </routes>

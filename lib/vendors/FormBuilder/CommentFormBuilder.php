@@ -3,6 +3,7 @@
 namespace FormBuilder;
 
 use \OCFram\FormBuilder;
+use OCFram\NoTagsValidator;
 use \OCFram\StringField;
 use \OCFram\TextField;
 use \OCFram\MaxLengthValidator;
@@ -23,8 +24,9 @@ class CommentFormBuilder extends FormBuilder {
 				'validators' => [
 					new MaxLengthValidator( 'L\'auteur spécifié est trop long (50 caractères maximum)', 50 ),
 					new NotNullValidator( 'Merci de spécifier l\'auteur du commentaire' ),
-					// errorMessage, array containing the list of all users, and a new instance of User, cause the class need one (supposed to be the current user, here we have no user
-					new ExistingValidator( 'L\'utilisateur n\'est pas disponible', $this->manager, 'username', ( $this->user->isAuthenticated() ) ? $this->entity->author() : null ),
+					// errorMessage, User manager, field for the query, and null
+					new ExistingValidator( 'L\'utilisateur n\'est pas disponible', $this->manager, 'checkExistencyByUsername', null ),
+					new NoTagsValidator( 'Le nom d\'auteur n\'est pas valide' ),
 				],
 			] ) );
 		}
@@ -35,6 +37,7 @@ class CommentFormBuilder extends FormBuilder {
 			'cols'       => 50,
 			'validators' => [
 				new NotNullValidator( 'Merci de spécifier votre commentaire' ),
+				new NoTagsValidator( 'Le contenu n\'est pas valide' ),
 			],
 		] ) );
 	}

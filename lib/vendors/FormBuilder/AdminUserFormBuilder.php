@@ -10,6 +10,7 @@ use \OCFram\EqualsValidator;
 use OCFram\ExistingValidator;
 use \OCFram\FormBuilder;
 use OCFram\Manager;
+use OCFram\NoTagsValidator;
 use \OCFram\StringField;
 use \OCFram\DateField;
 use \OCFram\MaxLengthValidator;
@@ -36,10 +37,11 @@ class AdminUserFormBuilder extends FormBuilder {
 			'validators' => [
 				new MaxLengthValidator( 'Le nom d\'utilisateur spécifié est trop long (20 caractères maximum)', 20 ),
 				new NotNullValidator( 'Merci de spécifier votre nom d\'utilisateur' ),
-				new ExistingValidator( 'Le nom d\'utilisateur n\'est pas disponible', $this->manager->checkExistencyByUsername( $this->entity->username() ), ( $this->user->isAuthenticated() ) ? $this->entity->username() : null ),
+				new NoTagsValidator( 'Le nom d\'utilisateur n\'est pas valide' ),
+				new ExistingValidator( 'Le nom d\'utilisateur n\'est pas disponible', $this->manager, 'checkExistencyByUsername', ( !$this->entity->isNew() ) ? $this->entity->id() : null ),
 			],
 		] ) );
-		if (!$this->update) {
+		if ( !$this->update ) {
 			$this->form->add( new StringField( [
 				'label'      => 'Mot de passe',
 				'name'       => 'password',
@@ -72,8 +74,8 @@ class AdminUserFormBuilder extends FormBuilder {
 			'validators' => [
 				new MaxLengthValidator( 'L\'adresse email spécifié est trop longue (100 caractères maximum)', 100 ),
 				new NotNullValidator( 'Merci de spécifier l\'adresse email' ),
-				new ExistingValidator( 'L\'adresse email n\'est pas disponible', $this->manager->checkExistencyByEmail( $this->entity->email() ), ( $this->user->isAuthenticated() ) ? $this->entity->email() : null ),
-			
+				new NoTagsValidator( 'L\'email n\'est pas valide' ),
+				new ExistingValidator( 'L\'adresse email n\'est pas disponible', $this->manager, 'checkExistencyByEmail', ( !$this->entity->isNew() ) ? $this->entity->id() : null ),
 			],
 		] ) )->add( new StringField( [
 			'label'      => 'Confirmation de l\'email',
@@ -93,6 +95,7 @@ class AdminUserFormBuilder extends FormBuilder {
 			'validators' => [
 				new MaxLengthValidator( 'Le prénom spécifié est trop long (20 caractères maximum)', 100 ),
 				new NotNullValidator( 'Merci de spécifier le prénom' ),
+				new NoTagsValidator( 'Le prénom n\'est pas valide' ),
 			],
 		] ) )->add( new StringField( [
 			'label'      => 'Nom',
@@ -101,10 +104,12 @@ class AdminUserFormBuilder extends FormBuilder {
 			'validators' => [
 				new MaxLengthValidator( 'Le nom spécifié est trop long (20 caractères maximum)', 100 ),
 				new NotNullValidator( 'Merci de spécifier le nom' ),
+				new NoTagsValidator( 'Le nom de famille n\'est pas valide' ),
 			],
-		] ) )->add( new DateField( [
+		] ) )->add( new StringField( [
 			'label'      => 'Date de naissance',
 			'name'       => 'birthdate',
+			'type'       => 'date',
 			'value'      => date( "Y-m-d" ),
 			'validators' => [],
 		] ) );
