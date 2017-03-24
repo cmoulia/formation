@@ -2,23 +2,18 @@
 
 namespace FormBuilder;
 
-use App\Backend\Modules\Users\UsersController;
-use Entity\User;
-use Model\UserManager;
-use OCFram\Entity;
-use \OCFram\EqualsValidator;
-use OCFram\ExistingValidator;
 use \OCFram\FormBuilder;
-use OCFram\Manager;
 use \OCFram\StringField;
 use \OCFram\DateField;
 use \OCFram\MaxLengthValidator;
 use \OCFram\NotNullValidator;
+use \OCFram\EqualsValidator;
+use \OCFram\ExistingValidator;
 
 class UserFormBuilder extends FormBuilder {
-	/** @var UserManager $manager */
+	/** @var \Model\UserManager $manager */
 	protected $manager;
-	/** @var User $entity */
+	/** @var \Entity\User $entity */
 	protected $entity;
 	
 	public function build() {
@@ -29,7 +24,7 @@ class UserFormBuilder extends FormBuilder {
 			'validators' => [
 				new MaxLengthValidator( 'Le nom d\'utilisateur spécifié est trop long (20 caractères maximum)', 20 ),
 				new NotNullValidator( 'Merci de spécifier votre nom d\'utilisateur' ),
-				new ExistingValidator( 'Le nom d\'utilisateur n\'est pas disponible', $this->manager->checkExistencyByUsername( $this->entity->username() ), ( $this->user->isAuthenticated() ) ? $this->entity->username() : null ),
+				new ExistingValidator( 'Le nom d\'utilisateur n\'est pas disponible', $this->manager, 'username', ( $this->user->isAuthenticated() ) ? $this->entity->username() : null ),
 			],
 		] ) )->add( new StringField( [
 			'label'      => 'Mot de passe',
@@ -61,7 +56,7 @@ class UserFormBuilder extends FormBuilder {
 			'validators' => [
 				new MaxLengthValidator( 'L\'adresse email spécifié est trop longue (100 caractères maximum)', 100 ),
 				new NotNullValidator( 'Merci de spécifier l\'adresse email' ),
-				new ExistingValidator( 'L\'adresse email n\'est pas disponible', $this->manager->checkExistencyByEmail( $this->entity->email() ), ( $this->user->isAuthenticated() ) ? $this->entity->email() : null ),
+				new ExistingValidator( 'L\'adresse email n\'est pas disponible', $this->manager, 'email', ( $this->user->isAuthenticated() ) ? $this->entity->email() : null ),
 			
 			],
 		] ) )->add( new StringField( [

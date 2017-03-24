@@ -127,20 +127,11 @@ class UserManagerPDO extends UserManager {
 		return null;
 	}
 	
-	public function checkExistencyByUsername( $username ) {
+	public function checkExistency( $attribute, $value ) {
 		/** @var \PDOStatement $requete */
-		$requete = $this->dao->prepare( 'SELECT MEM_id FROM T_MEM_memberc WHERE MEM_username = :username' );
-		$requete->bindValue( ':username', $username );
-		$requete->execute();
-		$requete->setFetchMode( \PDO::FETCH_ASSOC );
-		
-		return ( $requete->fetch() ) ? true : false;
-	}
-	
-	public function checkExistencyByEmail( $email ) {
-		/** @var \PDOStatement $requete */
-		$requete = $this->dao->prepare( 'SELECT MEM_id FROM T_MEM_memberc WHERE MEM_email = :email' );
-		$requete->bindValue( ':email', $email );
+		$requete = $this->dao->prepare( 'SELECT MEM_id FROM T_MEM_memberc WHERE MEM_'.$attribute.' = :value' );
+//		$requete->bindValue( ':attribute', $attribute );
+		$requete->bindValue( ':value', $value );
 		$requete->execute();
 		$requete->setFetchMode( \PDO::FETCH_ASSOC );
 		

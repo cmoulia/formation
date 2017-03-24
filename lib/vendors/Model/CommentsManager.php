@@ -2,8 +2,8 @@
 
 namespace Model;
 
-use Entity\News;
 use \OCFram\Manager;
+use \Entity\News;
 use \Entity\Comment;
 
 abstract class CommentsManager extends Manager {
