@@ -194,6 +194,8 @@ class UserManagerPDO extends UserManager {
 	 * @param int $id
 	 */
 	public function delete( $id ) {
-		$this->dao->exec( 'DELETE FROM T_MEM_memberc WHERE MEM_id = ' . (int)$id );
+		$this->dao->exec( 'DELETE T_NEW_commentc FROM T_NEW_commentc INNER JOIN T_NEW_newsc ON NNC_id = NCC_fk_NNC WHERE NNC_fk_MEM_author = ' . (int)$id .' OR NCC_fk_MEM_author = ' . (int)$id );
+		$this->dao->exec( 'DELETE T_NEW_newsc FROM T_NEW_newsc WHERE NNC_fk_MEM_author = ' . (int)$id );
+		$this->dao->exec( 'DELETE T_MEM_memberc FROM T_MEM_memberc WHERE MEM_id = ' . (int)$id );
 	}
 }

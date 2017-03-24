@@ -65,6 +65,7 @@ class NewsManagerPDO extends NewsManager {
 	
 	public function delete( $id ) {
 		$this->dao->exec( 'DELETE FROM T_NEW_newsc WHERE NNC_id = ' . (int)$id );
+		$this->dao->exec( 'DELETE FROM T_NEW_commentc WHERE NCC_fk_NNC = ' . (int)$id );
 	}
 	
 	protected function add( News $news ) {

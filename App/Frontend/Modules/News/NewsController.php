@@ -27,8 +27,7 @@ class NewsController extends BackController {
 			$this->app->httpResponse()->redirect( '/' );
 		}
 		
-		// We first delete the comments, then the news itself
-		$this->managers->getManagerOf( 'Comments' )->deleteFromNews( $news->id() );
+		// We delete the news (automatically delete the comments)
 		$this->managers->getManagerOf( 'News' )->delete( $news->id() );
 		
 		$this->app->user()->setFlash( 'La news a bien été supprimée !' );
@@ -94,7 +93,8 @@ class NewsController extends BackController {
 		$news = $this->managers->getManagerOf( 'News' )->getUnique( $request->getData( 'id' ) );
 		
 		if ( empty( $news ) ) {
-			$this->app->httpResponse()->redirect404();
+			$this->app->user()->setFlash('La news n\'existe pas');
+			$this->app->httpResponse()->redirect('/');
 		}
 		
 		// We get the data linked to the foreign key
