@@ -2,21 +2,21 @@
 <routes xmlns="">
 
 	<route url="/" module="News" action="index" ></route>
-	<route url="/news-([0-9]+)" module="News" action="show" vars="id" exemple="/news-`id`"></route>
-	<route url="/news-comment-([0-9]+)" module="News" action="insertComment" vars="news" ></route>
-	<route url="/news-comment-update-([0-9]+)" module="News" action="updateComment" vars="id"></route>
-	<route url="/news-comment-delete-([0-9]+)" module="News" action="deleteComment" vars="id"></route>
+	<route url="/news-([0-9]+)" module="News" action="show" vars="id" pattern="/news-{{id}}"></route>
+	<route url="/news-comment-([0-9]+)" module="News" action="insertComment" vars="news" pattern="/news-comment-{{news}}"></route>
+	<route url="/news-comment-update-([0-9]+)" module="News" action="updateComment" vars="id" pattern="/news-comment-update-{{id}}"></route>
+	<route url="/news-comment-delete-([0-9]+)" module="News" action="deleteComment" vars="id" pattern="/news-comment-delete-{{id}}"></route>
 	<route url="/news-insert" module="News" action="insert"></route>
-	<route url="/news-update-([0-9]+)" module="News" action="update" vars="id"></route>
-	<route url="/news-delete-([0-9]+)" module="News" action="delete" vars="id"></route>
+	<route url="/news-update-([0-9]+)" module="News" action="update" vars="id" pattern="/news-update-{{id}}"></route>
+	<route url="/news-delete-([0-9]+)" module="News" action="delete" vars="id" pattern="/news-delete-{{id}}"></route>
 	
 	<route url="/login" module="Connexion" action="login" ></route>
 	<route url="/logout" module="Connexion" action="logout" ></route>
 	<route url="/register" module="Connexion" action="register" ></route>
 	
-	<route url="/myaccount" module="News" action="login" ></route>
-	<route url="/myaccount-update" module="Connexion" action="login" ></route>
-	<route url="/myaccount-delete-([0-9]+)" module="Connexion" action="logout" ></route>
+	<!--<route url="/myaccount" module="News" action="login" ></route>-->
+	<!--<route url="/myaccount-update" module="Connexion" action="login" ></route>-->
+	<!--<route url="/myaccount-delete-([0-9]+)" module="Connexion" action="logout" ></route>-->
 	
 	<route url="/(.*)" module="Connexion" action="404" ></route>
 </routes>

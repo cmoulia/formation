@@ -9,6 +9,7 @@ use FormBuilder\NewsFormBuilder;
 use \OCFram\BackController;
 use OCFram\FormHandler;
 use \OCFram\HTTPRequest;
+use OCFram\RouterFactory;
 
 class NewsController extends BackController {
 	public function executeDelete( HTTPRequest $request ) {
@@ -28,7 +29,7 @@ class NewsController extends BackController {
 		
 		$this->app->user()->setFlash( 'Le commentaire a bien été supprimé !' );
 		
-		$this->app->httpResponse()->redirect( '/news-' . $newsId );
+		$this->app->httpResponse()->redirect( RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'show' ) . $newsId );
 	}
 	
 	public function executeIndex( HTTPRequest $request ) {
@@ -82,7 +83,7 @@ class NewsController extends BackController {
 		
 		if ( $formHandler->process() ) {
 			$this->app->user()->setFlash( $news->isNew() ? 'La news a bien été ajoutée !' : 'La news a bien été modérée !' );
-			$this->app->httpResponse()->redirect( '/admin/' );
+			$this->app->httpResponse()->redirect( RouterFactory::getRouter( 'Backend' )->getUrl( 'News', 'index' ) );
 		}
 		
 		
@@ -115,7 +116,7 @@ class NewsController extends BackController {
 		
 		if ( $formHandler->process() ) {
 			$this->app->user()->setFlash( 'Le commentaire a bien été modifié' );
-			$this->app->httpResponse()->redirect( '/news-' . $comment->fk_NNC() );
+			$this->app->httpResponse()->redirect( RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'show', [ 'id' => $comment->fk_NNC() ] ) );
 		}
 		
 		$this->page->addVar( 'form', $form->createView() );

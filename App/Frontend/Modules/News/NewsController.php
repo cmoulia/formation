@@ -10,6 +10,7 @@ use \OCFram\HTTPRequest;
 use \Entity\Comment;
 use \FormBuilder\CommentFormBuilder;
 use \OCFram\FormHandler;
+use OCFram\RouterFactory;
 
 class NewsController extends BackController {
 	public function executeDelete( HTTPRequest $request ) {
@@ -24,7 +25,7 @@ class NewsController extends BackController {
 		// If requested news is not his own
 		if ( $news->fk_MEM_author() != $this->app->user()->getAttribute( 'user' )[ 'id' ] ) {
 			$this->app->user()->setFlash( 'Vous n\'êtes pas autorisé à supprimer cette news' );
-			$this->app->httpResponse()->redirect( '/' );
+			$this->app->httpResponse()->redirect( RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'index' ) );
 		}
 		
 		// We delete the news (automatically delete the comments)
@@ -43,7 +44,7 @@ class NewsController extends BackController {
 		
 		$this->app->user()->setFlash( 'Le commentaire a bien été supprimé !' );
 		
-		$this->app->httpResponse()->redirect( '/news-' . $newsId );
+		$this->app->httpResponse()->redirect( RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'show', [ 'id' => $newsId ] ) );
 	}
 	
 	public function executeIndex( HTTPRequest $request ) {
@@ -93,8 +94,8 @@ class NewsController extends BackController {
 		$news = $this->managers->getManagerOf( 'News' )->getUnique( $request->getData( 'id' ) );
 		
 		if ( empty( $news ) ) {
-			$this->app->user()->setFlash('La news n\'existe pas');
-			$this->app->httpResponse()->redirect('/');
+			$this->app->user()->setFlash( 'La news n\'existe pas' );
+			$this->app->httpResponse()->redirect( RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'index' ) );
 		}
 		
 		// We get the data linked to the foreign key
@@ -126,7 +127,7 @@ class NewsController extends BackController {
 		// If requested news is not his own
 		if ( $news->fk_MEM_author() != $this->app->user()->getAttribute( 'user' )[ 'id' ] ) {
 			$this->app->user()->setFlash( 'Vous n\'êtes pas autorisé à modifier cette news' );
-			$this->app->httpResponse()->redirect( '/' );
+			$this->app->httpResponse()->redirect( RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'index' ) );
 		}
 		
 		$this->processNewsForm( $request );
@@ -174,7 +175,7 @@ class NewsController extends BackController {
 		
 		if ( $formHandler->process() ) {
 			$this->app->user()->setFlash( $isNew ? 'La news a bien été ajoutée !' : 'La news a bien été modifiée !' );
-			$this->app->httpResponse()->redirect( '/' );
+			$this->app->httpResponse()->redirect( RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'index' ) );
 		}
 		
 		$this->page->addVar( 'form', $form->createView() );
@@ -218,7 +219,7 @@ class NewsController extends BackController {
 		
 		if ( $formHandler->process() ) {
 			$this->app->user()->setFlash( $isNew ? 'Le commentaire a bien été ajouté' : 'Le commentaire a bien été modifié' );
-			$this->app->httpResponse()->redirect( '/news-' . $comment->fk_NNC() );
+			$this->app->httpResponse()->redirect( RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'show', [ 'id' => $comment->fk_NNC() ] ) );
 		}
 		
 		$this->page->addVar( 'form', $form->createView() );

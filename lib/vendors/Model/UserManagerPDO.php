@@ -131,7 +131,7 @@ class UserManagerPDO extends UserManager {
 		/** @var \PDOStatement $requete */
 		$sql = 'SELECT MEM_id FROM T_MEM_memberc WHERE MEM_username = :username';
 		if ($excluded_id) {
-			$sql.= ' AND MEM_id != :mem_id';
+			$sql.= ' AND MEM_id <> :mem_id';
 		}
 		$requete = $this->dao->prepare( $sql );
 		$requete->bindValue( ':username', $username );
@@ -144,21 +144,17 @@ class UserManagerPDO extends UserManager {
 		return ( $requete->fetch() ) ? true : false;
 	}
 	
-	public function checkExistencyByEmail( $email ) {
+	public function checkExistencyByEmail( $email, $excluded_id = null ) {
 		/** @var \PDOStatement $requete */
-		$requete = $this->dao->prepare( 'SELECT MEM_id FROM T_MEM_memberc WHERE MEM_email = :email' );
+		$sql = 'SELECT MEM_id FROM T_MEM_memberc WHERE MEM_email = :email';
+		if ($excluded_id) {
+			$sql.= ' AND MEM_id <> :mem_id';
+		}
+		$requete = $this->dao->prepare( $sql );
 		$requete->bindValue( ':email', $email );
-		$requete->execute();
-		$requete->setFetchMode( \PDO::FETCH_ASSOC );
-		
-		return ( $requete->fetch() ) ? true : false;
-	}
-	
-	public function checkExistency( $attribute, $value ) {
-		/** @var \PDOStatement $requete */
-		$requete = $this->dao->prepare( 'SELECT MEM_id FROM T_MEM_memberc WHERE MEM_'.$attribute.' = :value' );
-		//		$requete->bindValue( ':attribute', $attribute );
-		$requete->bindValue( ':value', $value );
+		if ($excluded_id) {
+			$requete->bindValue(':mem_id',$excluded_id,\PDO::PARAM_INT);
+		}
 		$requete->execute();
 		$requete->setFetchMode( \PDO::FETCH_ASSOC );
 		

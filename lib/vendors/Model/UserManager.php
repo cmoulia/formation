@@ -37,7 +37,6 @@ abstract class UserManager extends Manager {
 	abstract public function getUniqueByEmail ($email);
 	abstract public function checkExistencyByUsername ($username);
 	abstract public function checkExistencyByEmail ($email);
-	abstract public function checkExistency ($attribute, $value);
 	
 	/**
 	 * Méthode renvoyant le nombre d'utilisateurs total.

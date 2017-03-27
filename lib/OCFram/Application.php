@@ -19,26 +19,7 @@ abstract class Application {
 	}
 	
 	public function getController() {
-		$router = new Router;
-		
-		$xml = new \DOMDocument;
-		$xml->load( __DIR__ . '/../../App/' . $this->name . '/Config/routes.xml' );
-		
-		$routes = $xml->getElementsByTagName( 'route' );
-		
-		// We browse through each route
-		/** @var \DOMElement $route */
-		foreach ( $routes as $route ) {
-			$vars = [];
-			
-			// If $route has some attributes in the url
-			if ( $route->hasAttribute( 'vars' ) ) {
-				$vars = explode( ',', $route->getAttribute( 'vars' ) );
-			}
-			
-			// We add the route to the router, its url, its module, its action, and its variables
-			$router->addRoute( new Route( $route->getAttribute( 'url' ), $route->getAttribute( 'module' ), $route->getAttribute( 'action' ), $vars ) );
-		}
+		$router = RouterFactory::getRouter($this->name());
 		
 		try {
 			// We try to get route corresponding to our url

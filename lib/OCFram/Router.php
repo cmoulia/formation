@@ -4,12 +4,10 @@ namespace OCFram;
 class Router {
 	const NO_ROUTE = 1;
 	protected $routes  = [];
-	static    $route_a = [];
 	
 	public function addRoute( Route $route ) {
 		if ( !in_array( $route, $this->routes ) ) {
-			$this->routes[]  = $route;
-			self::$route_a[] = $route;
+			$this->routes[$route->module().'|'.$route->action()]  = $route;
 		}
 	}
 	
@@ -43,24 +41,20 @@ class Router {
 		throw new \RuntimeException( 'Aucune route ne correspond à l\'URL', self::NO_ROUTE );
 	}
 	
-	static public function getUrl( $module, $action, array $vars = [] ) {
+	public function getUrl( $module, $action, array $vars = [] ) {
 		/** @var Route $route */
-		foreach ( self::$route_a as $route ) {
-			if ( $route->module() == $module && $route->action() == $action ) {
-				if ( $route->hasVars() ) {
-					$url = $route->url();
-					$i   = 0;
-					foreach ( $vars as $var ) {
-						$url = preg_replace( preg_grep( '`^(.*)$`', $url )[ $i ], $var, $url );
-						$i += 1;
-					}
-					
-					return $url;
+		if ( !empty( $route = $this->routes[ $module . '|' . $action ] ) ) {
+			if ( $route->hasVars() ) {
+				$url = $route->pattern();
+				foreach ( $vars as $key => $var ) {
+					$url = str_replace( '{{' . $key . '}}', $var, $url );
 				}
 				
-				return $route->url();
+				return $url;
 			}
-			throw new \RuntimeException( 'Aucune route ne correspond', self::NO_ROUTE );
+			
+			return $route->url();
 		}
+		throw new \RuntimeException( 'Aucune route ne correspond à ' . $module . ':' . $action, self::NO_ROUTE );
 	}
 }

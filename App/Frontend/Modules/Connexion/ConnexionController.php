@@ -7,20 +7,21 @@ use FormBuilder\UserFormBuilder;
 use OCFram\BackController;
 use OCFram\FormHandler;
 use OCFram\HTTPRequest;
+use OCFram\RouterFactory;
 
 class ConnexionController extends BackController {
 	public function execute404( HTTPRequest $request ) {
 		$this->app->user()->setFlash('404 Not Found !');
-		$this->app->httpResponse()->redirect('/');
+		$this->app->httpResponse()->redirect( RouterFactory::getRouter('Frontend')->getUrl( 'News', 'index') );
 	}
 	
 	public function executeLogin( HTTPRequest $request ) {
 		if ( $this->app->user()->isAuthenticated() && $this->app->user()->isAdmin() ) {
 			$this->app->user()->setFlash( 'Vous êtes déjà connecté' );
-			$this->app->httpResponse()->redirect( '/admin/' );
+			$this->app->httpResponse()->redirect( RouterFactory::getRouter('Backend')->getUrl( 'News', 'index') );
 		}
 		if ( $this->app->user()->isAuthenticated() && !$this->app->user()->isAdmin() ) {
-			$this->app->httpResponse()->redirect( '/' );
+			$this->app->httpResponse()->redirect( RouterFactory::getRouter('Frontend')->getUrl( 'News', 'index') );
 		}
 		
 		$this->page->addVar( 'title', 'Connexion' );
@@ -41,7 +42,7 @@ class ConnexionController extends BackController {
 					$this->app->user()->setFlash( 'Connexion réussie' );
 					if ( ( $user->fk_MRC() == 1 ) ) {
 						$this->app->user()->setRole( 'admin' );
-						$this->app->httpResponse()->redirect( '/admin/' );
+						$this->app->httpResponse()->redirect( RouterFactory::getRouter('Backend')->getUrl( 'News', 'index') );
 					}
 					else {
 						$this->app->user()->setRole();
@@ -61,7 +62,7 @@ class ConnexionController extends BackController {
 	public function executeLogout( HTTPRequest $request ) {
 		session_unset();
 		session_destroy();
-		$this->app->httpResponse()->redirect( '/' );
+		$this->app->httpResponse()->redirect( RouterFactory::getRouter('Frontend')->getUrl( 'News', 'index') );
 	}
 	
 	public function executeRegister( HTTPRequest $request ) {
@@ -121,7 +122,7 @@ class ConnexionController extends BackController {
 			}
 			$this->app->user()->setAttribute( 'user', $user );
 			
-			$this->app->httpResponse()->redirect( '/' );
+			$this->app->httpResponse()->redirect( RouterFactory::getRouter('Frontend')->getUrl( 'News', 'index') );
 		}
 		
 		$this->page->addVar( 'form', $form->createView() );

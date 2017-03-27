@@ -37,4 +37,11 @@
 Actually, you need to enter manually the value of a href attribute according to the route.xml file. 
 What happens if tomorrow i decided to edit a route ?
 All your code break down.
-This part consists to add a functionnality that ask for a route to the Controller and an Action using a function. Replace the manually entered href by a call of this function. 
+This part consists to add a functionnality that ask for a route to the Controller and an Action using a function. Replace the manually entered href by a call of this function.
+ 
+# 7 - Add Feature : Ajax ! Flower Party :)
+* Change the comportment of the form to add a comment in a news page.
+* The form are include in the same page of the news. On top and bottom of comment list.
+* Form to add new comment must work now with ajax. So when user submit his form, don't reload the page but post an ajax query to valid the form.
+* Show errors or add new comment directly if there are no error.
+* The HTTP Response of any ajax call must be a JSON Object.

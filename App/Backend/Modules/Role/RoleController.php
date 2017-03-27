@@ -7,12 +7,13 @@ use FormBuilder\RoleFormBuilder;
 use OCFram\BackController;
 use OCFram\FormHandler;
 use OCFram\HTTPRequest;
+use OCFram\RouterFactory;
 
 class RoleController extends BackController {
 	public function executeDelete( HTTPRequest $request ) {
 		$this->managers->getManagerOf( 'Role' )->delete( $request->getData( 'id' ) );
 		$this->app->user()->setFlash( 'Le rôle a bien été supprimé !' );
-		$this->app->httpResponse()->redirect( '/admin/roles' );
+		$this->app->httpResponse()->redirect( RouterFactory::getRouter('Backend')->getUrl( 'Roles', 'index' ) );
 	}
 	
 	public function executeIndex( HTTPRequest $request ) {
@@ -62,7 +63,7 @@ class RoleController extends BackController {
 		
 		if ( $formHandler->process() ) {
 			$this->app->user()->setFlash( $role->isNew() ? 'Le rôle a bien été ajouté !' : 'Le rôle a bien été modifié !' );
-			$this->app->httpResponse()->redirect( '/admin/' );
+			$this->app->httpResponse()->redirect( RouterFactory::getRouter('Backend')->getUrl( 'News', 'index' ) );
 		}
 		
 		$this->page->addVar( 'form', $form->createView() );

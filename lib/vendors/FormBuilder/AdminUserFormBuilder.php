@@ -2,7 +2,7 @@
 
 namespace FormBuilder;
 
-use App\Backend\Modules\Users\UsersController;
+use App\Backend\Modules\User\UserController;
 use Entity\User;
 use Model\UserManager;
 use OCFram\Entity;

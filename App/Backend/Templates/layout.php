@@ -1,4 +1,7 @@
-<?php /** @var \OCFram\User $user */ ?>
+<?php /** @var \OCFram\User $user */
+$FrontendRouter = \OCFram\RouterFactory::getRouter('Frontend');
+$BackendRouter = \OCFram\RouterFactory::getRouter('Backend');
+?>
 
 <!DOCTYPE HTML>
 <!--suppress HtmlUnknownTarget -->
@@ -15,19 +18,19 @@
 	<body>
 		<div id="wrap">
 			<header>
-				<h1><a href="/">Mon super site</a></h1>
+				<h1><a href="<?= \OCFram\RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'index' ) ?>">Mon super site</a></h1>
 				<p><?= ( $user->getAttribute( 'user' ) ) ? 'Bienvenue ' . $user->getAttribute( 'user' )[ 'firstname' ] . ' ' . $user->getAttribute( 'user' )[ 'lastname' ] : 'Espace Administrateur !' ?></p>
 			</header>
 			
 			<nav>
 				<ul>
 					<?php if ( $user->isAuthenticated() && $user->isAdmin() ): ?>
-						<li><a href="/">Front Office</a></li>
-						<li><a href="/admin/">Back Office</a></li>
-						<li><a href="/logout">D&eacute;connexion</a></li>
-						<li><a href="/news-insert">Ajouter une news</a></li>
-						<li><a href="/admin/roles">Liste des r&ocirc;les</a></li>
-						<li><a href="/admin/users">Liste des utilisateurs</a></li>
+						<li><a href="<?= $FrontendRouter->getUrl( 'News', 'index' ) ?>">Front Office</a></li>
+						<li><a href="<?= $BackendRouter->getUrl( 'News', 'index' ) ?>">Back Office</a></li>
+						<li><a href="<?= \OCFram\RouterFactory::getRouter( 'Frontend' )->getUrl( 'Connexion', 'logout' ) ?>">D&eacute;connexion</a></li>
+						<li><a href="<?= \OCFram\RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'insert' ) ?>">Ajouter une news</a></li>
+						<li><a href="<?= \OCFram\RouterFactory::getRouter( 'Backend' )->getUrl( 'Role', 'insert' ) ?>">Liste des r&ocirc;les</a></li>
+						<li><a href="<?= \OCFram\RouterFactory::getRouter( 'Backend' )->getUrl( 'User', 'index' ) ?>">Liste des utilisateurs</a></li>
 					<?php endif; ?>
 				</ul>
 			</nav>

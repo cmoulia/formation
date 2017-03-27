@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Backend\Modules\Users;
+namespace App\Backend\Modules\User;
 
 use Entity\User;
 use FormBuilder\AdminUserFormBuilder;
@@ -8,12 +8,12 @@ use FormBuilder\UserFormBuilder;
 use \OCFram\BackController;
 use \OCFram\FormHandler;
 use \OCFram\HTTPRequest;
+use OCFram\RouterFactory;
 
-class UsersController extends BackController {
-	
+class UserController extends BackController {
 	public function execute404( HTTPRequest $request ) {
-		$this->app->user()->setFlash('404 Not Found !');
-		$this->app->httpResponse()->redirect('/admin/');
+		$this->app->user()->setFlash( '404 Not Found !' );
+		$this->app->httpResponse()->redirect( RouterFactory::getRouter( 'Backend' )->getUrl( 'News', 'index' ) );
 	}
 	
 	public function executeDelete( HTTPRequest $request ) {
@@ -23,7 +23,7 @@ class UsersController extends BackController {
 		
 		$this->app->user()->setFlash( 'L\'utilisateur a bien été supprimé !' );
 		
-		$this->app->httpResponse()->redirect( '/admin/users' );
+		$this->app->httpResponse()->redirect( RouterFactory::getRouter( 'Backend' )->getUrl( 'User', 'index' ) );
 	}
 	
 	public function executeIndex( HTTPRequest $request ) {
@@ -33,7 +33,7 @@ class UsersController extends BackController {
 		$manager = $this->managers->getManagerOf( 'User' );
 		
 		// On ajoute la variable $listeUsers à la vue.
-		$this->page->addVar( 'listeUsers', $manager->getList() );
+		$this->page->addVar( 'user_a', $manager->getList() );
 		$this->page->addVar( 'nombreUsers', $manager->count() );
 	}
 	
@@ -87,7 +87,7 @@ class UsersController extends BackController {
 		
 		if ( $formHandler->process() ) {
 			$this->app->user()->setFlash( $isNew ? 'L\'utilisateur a bien été ajouté !' : 'L\'utilisateur a bien été modifié !' );
-			$this->app->httpResponse()->redirect( '/admin/users' );
+			$this->app->httpResponse()->redirect( RouterFactory::getRouter( 'Backend' )->getUrl( 'User', 'index' ) );
 		}
 		
 		$this->page->addVar( 'form', $form->createView() );
