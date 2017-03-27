@@ -46,5 +46,7 @@ $BackendRouter = \OCFram\RouterFactory::getRouter('Backend');
 			</div>
 			
 			<footer></footer>
+			<script src="/js/jquery-3.2.0.min.js"></script>
+			<script src="/js/script.js"></script>
 	</body>
 </html>

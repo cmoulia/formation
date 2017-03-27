@@ -10,6 +10,7 @@ use \OCFram\HTTPRequest;
 use \Entity\Comment;
 use \FormBuilder\CommentFormBuilder;
 use \OCFram\FormHandler;
+use OCFram\Page;
 use OCFram\RouterFactory;
 
 class NewsController extends BackController {
@@ -89,6 +90,38 @@ class NewsController extends BackController {
 		$this->processCommentForm( $request );
 	}
 	
+	public function executeInsertCommentJson( HTTPRequest $request ) {
+		$isNew = true;
+		if ( $request->method() == 'POST' ) {
+			$comment = new Comment( [
+				'fk_NNC'        => $request->getData( 'news' ),
+				'author'        => $request->postData( 'author' ),
+				'fk_MEM_author' => $this->app->user()->getAttribute( 'user' )[ 'id' ],
+				'content'       => $request->postData( 'content' ),
+			] );
+			
+			if ( $request->getExists( 'id' ) ) {
+				$isNew = false;
+				$comment->setId( $request->getData( 'id' ) );
+			}
+			
+			if ( !$comment->fk_NNC() ) {
+				$comment->setFk_NNC( $this->managers->getManagerOf( 'Comments' )->getNews( $comment->id() ) );
+			}
+		}
+		
+		$formBuilder = new CommentFormBuilder( $comment, $this->managers->getManagerOf( 'User' ), $this->app->user() );
+		$formBuilder->build();
+		
+		$form = $formBuilder->form();
+		
+		$formHandler = new FormHandler( $form, $this->managers->getManagerOf( 'Comments' ), $request );
+		
+		if ( $formHandler->process() ) {
+			$this->page->addVar('comment', $comment);
+		}
+	}
+	
 	public function executeShow( HTTPRequest $request ) {
 		/** @var News $news */
 		$news = $this->managers->getManagerOf( 'News' )->getUnique( $request->getData( 'id' ) );
@@ -110,6 +143,12 @@ class NewsController extends BackController {
 			$comment[ 'fk_MEM_admin' ]  = $this->managers->getManagerOf( 'User' )->getUnique( $comment[ 'fk_MEM_admin' ] );
 		}
 		
+		$formBuilder = new CommentFormBuilder( new Comment, $this->managers->getManagerOf( 'User' ), $this->app->user() );
+		$formBuilder->build();
+		
+		$form = $formBuilder->form();
+		
+		$this->page->addVar( 'form', $form->createView() );
 		$this->page->addVar( 'title', $news->title() );
 		$this->page->addVar( 'news', $news );
 		$this->page->addVar( 'comment_a', $comment_a );
@@ -209,7 +248,9 @@ class NewsController extends BackController {
 				$comment = new Comment;
 			}
 		}
+
 		
+
 		$formBuilder = new CommentFormBuilder( $comment, $this->managers->getManagerOf( 'User' ), $this->app->user() );
 		$formBuilder->build();
 		

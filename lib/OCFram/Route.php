@@ -2,18 +2,20 @@
 namespace OCFram;
 
 class Route {
-	protected $pattern;
-	protected $action;
-	protected $module;
 	protected $url;
+	protected $module;
+	protected $action;
+	protected $pattern;
+	protected $format;
 	protected $varsNames;
 	protected $vars = [];
 	
-	public function __construct( $url, $module, $action, $pattern, array $varsNames ) {
+	public function __construct( $url, $module, $action, $pattern, $format, array $varsNames ) {
 		$this->setUrl( $url );
 		$this->setModule( $module );
 		$this->setAction( $action );
 		$this->setPattern( $pattern );
+		$this->setFormat( $format );
 		$this->setVarsNames( $varsNames );
 	}
 	
@@ -56,6 +58,12 @@ class Route {
 		}
 	}
 	
+	public function setFormat( $format ) {
+		if ( is_string( $format ) ) {
+			$this->format = $format;
+		}
+	}
+	
 	public function setVars( array $vars ) {
 		$this->vars = $vars;
 	}
@@ -66,6 +74,14 @@ class Route {
 	
 	// GETTERS //
 	
+	public function url() {
+		return $this->url;
+	}
+	
+	public function module() {
+		return $this->module;
+	}
+	
 	public function action() {
 		return $this->action;
 	}
@@ -73,13 +89,9 @@ class Route {
 	public function pattern() {
 		return $this->pattern;
 	}
-	
-	public function url() {
-		return $this->url;
-	}
-	
-	public function module() {
-		return $this->module;
+
+	public function format() {
+		return $this->format;
 	}
 	
 	public function vars() {

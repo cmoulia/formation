@@ -9,15 +9,15 @@ abstract class BackController extends ApplicationComponent {
 	protected $view     = '';
 	protected $managers = null;
 	
-	public function __construct( Application $app, $module, $action ) {
+	public function __construct( Application $app, $module, $action, $format ) {
 		parent::__construct( $app );
 		
 		$this->managers = new Managers( 'PDO', PDOFactory::getMysqlConnexion() );
-		$this->page     = new Page( $app );
+		$this->page     = new Page( $app, $format );
 		
 		$this->setModule( $module );
 		$this->setAction( $action );
-		$this->setView( $action );
+		$this->setView( $action, $format );
 	}
 	
 	public function setModule( $module ) {
@@ -36,14 +36,14 @@ abstract class BackController extends ApplicationComponent {
 		$this->action = $action;
 	}
 	
-	public function setView( $view ) {
+	public function setView( $view, $format ) {
 		if ( !is_string( $view ) || empty( $view ) ) {
 			throw new \InvalidArgumentException( 'View has to be a valid string' );
 		}
 		
 		$this->view = $view;
 		
-		$this->page->setContentFile( __DIR__ . '/../../App/' . $this->app->name() . '/Modules/' . $this->module . '/Views/' . $this->view . '.php' );
+		$this->page->setContentFile( __DIR__ . '/../../App/' . $this->app->name() . '/Modules/' . $this->module . '/Views/' . $this->view .'.'.$format. '.php' );
 	}
 	
 	public function execute() {

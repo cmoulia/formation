@@ -4,7 +4,7 @@ namespace Entity;
 
 use \OCFram\Entity;
 
-class Comment extends Entity {
+class Comment extends Entity{
 	const INVALID_AUTHOR  = 1;
 	const INVALID_CONTENT = 2;
 	const INVALID_ADMIN   = 3;

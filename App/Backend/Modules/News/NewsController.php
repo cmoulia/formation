@@ -29,7 +29,7 @@ class NewsController extends BackController {
 		
 		$this->app->user()->setFlash( 'Le commentaire a bien été supprimé !' );
 		
-		$this->app->httpResponse()->redirect( RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'show' ) . $newsId );
+		$this->app->httpResponse()->redirect( RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'show', [ 'id' => $newsId ] ) );
 	}
 	
 	public function executeIndex( HTTPRequest $request ) {
