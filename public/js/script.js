@@ -2,50 +2,52 @@ $(function() {
 	
 	$('.js-form-comment').submit(function( e ) {
 		e.preventDefault();
-		if ($("[name='content']").val().length != 0){
+		var formvalue = $("[name='content']").val();
+		$("[name='content']").val('');
+		$('input[type=submit]', this).attr('disable',true);
+		if (formvalue.length != 0){
 		$.ajax({
 			type: $(this).attr('method'),
 			url: $(this).attr('data-action'),
 			data: $(this).serialize(),
 			error: function( data, status, error ) {
-				console.log(data);
-				console.log(status);
-				console.log(error);
-				$('#commentList').prepend('<p id="flash">'+data.responseJSON.content.errors+'</p>').append('<p id="flash">'+data.responseJSON.content.errors+'</p>');
+				if (data.status == 0){
+				$('#commentList').prepend('<p class="msg-flash">'+data.statusText+'</p>').append('<p class="msg-flash">'+data.statusText+'</p>');
 				setTimeout(function() {
-					$('#flash').remove();
+					$('.msg-flash').remove();
 				}, 3000);
+				}
 			},
 			success: function( data ) {
 				addComment(data.content.comment, data.content.comment_author, data.content.routes);
-				$('#commentList').prepend('<p id="flash">Commentaire ajouté</p>').append('<p id="flash">Commentaire ajouté</p>');
-				$("[name='content']").val('');
+				$('#commentList').prepend('<p class="msg-flash">Commentaire ajouté</p>').append('<p class="msg-flash">Commentaire ajouté</p>');
 				setTimeout(function() {
-					$('#flash').remove();
+					$('.msg-flash').remove();
 				}, 3000);
+				$('input[type=submit]', this).attr('disable',false);
 			}
 			
 		});
 		}
 	});
 	
-	$('.js-delete-comment').click(function( e ) {
+	$(document).on("click",".js-delete-comment",function( e ) {
 		e.preventDefault();
 		$.ajax({
 			type: 'POST',
 			url: $(this).attr('data-action'),
 			error: function( data ) {
-				$('#commentList').prepend('<p id="flash">'+data.responseJSON.content.errors+'</p>');
+				$('#commentList').prepend('<p class="msg-flash">'+data.responseJSON.content.errors+'</p>').append('<p class="msg-flash">'+data.responseJSON.content.errors+'</p>');
 				$("fieldset[data-id=" + data.responseJSON.content.comment_id + "]").remove();
 				setTimeout(function() {
-					$('#flash').remove();
+					$('.msg-flash').remove();
 				}, 3000);
 			},
 			success: function( data ) {
 				console.log(data);
-				$("fieldset[data-id=" + data.content.comment_id + "]").replaceWith('<p id="flash">Commentaire supprimé</p>');
+				$("fieldset[data-id=" + data.content.comment_id + "]").replaceWith('<p class="msg-flash">Commentaire supprimé</p>');
 				setTimeout(function() {
-					$('#flash').remove();
+					$('.msg-flash').remove();
 				}, 3000);
 			}
 			
@@ -55,7 +57,7 @@ $(function() {
 	function addComment( comment, author, routes ) {
 		var linksHTML = ' - ' +
 			'<a href="{{comment_update_route}}">{{comment_update}}</a> | ' +
-			'<a href="{{comment_delete_route}}" data-action="{{comment_delete_route_json}}">{{comment_delete}}</a> ';
+			'<a href="{{comment_delete_route}}" class="js-delete-comment" data-action="{{comment_delete_route_json}}">{{comment_delete}}</a> ';
 		var commentHTML = '<fieldset data-id="{{comment_id}}">'+
 			'<legend>Posté par <strong>{{comment_author}}</strong> le {{comment_date}}' +
 			'{{links}}' +
