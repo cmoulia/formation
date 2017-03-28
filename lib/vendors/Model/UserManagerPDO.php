@@ -13,7 +13,9 @@ class UserManagerPDO extends UserManager {
 	 */
 	public function getList( $limit = -1, $offset = -1 ) {
 		//		SELECT everything from T_MEM_memberc
-		$sql = 'SELECT MEM_id, MEM_fk_MRC, MEM_firstname, MEM_lastname, MEM_email, MEM_username, MEM_birthdate, MEM_dateregister FROM T_MEM_memberc ORDER BY MEM_dateregister DESC';
+		$sql = 'SELECT MEM_id, MEM_fk_MRC, MEM_firstname, MEM_lastname, MEM_email, MEM_username, MEM_birthdate, MEM_dateregister
+				FROM T_MEM_memberc
+				ORDER BY MEM_dateregister DESC';
 		
 		//		If we want the top X
 		if ( $limit != -1 ) {
@@ -52,7 +54,9 @@ class UserManagerPDO extends UserManager {
 	 */
 	public function getUnique( $id ) {
 		/** @var \PDOStatement $requete */
-		$requete = $this->dao->prepare( 'SELECT MEM_id, MEM_fk_MRC, MEM_firstname, MEM_lastname, MEM_email, MEM_username, MEM_password, MEM_birthdate, MEM_dateregister FROM T_MEM_memberc WHERE MEM_id = :id' );
+		$requete = $this->dao->prepare( 'SELECT MEM_id, MEM_fk_MRC, MEM_firstname, MEM_lastname, MEM_email, MEM_username, MEM_password, MEM_birthdate, MEM_dateregister
+										 FROM T_MEM_memberc
+										 WHERE MEM_id = :id' );
 		$requete->bindValue( ':id', (int)$id, \PDO::PARAM_INT );
 		$requete->execute();
 		$requete->setFetchMode( \PDO::FETCH_ASSOC );
@@ -77,7 +81,9 @@ class UserManagerPDO extends UserManager {
 	 */
 	public function getUniqueByUsernameOrEmail( $login ) {
 		/** @var \PDOStatement $requete */
-		$requete = $this->dao->prepare( 'SELECT MEM_id, MEM_fk_MRC, MEM_firstname, MEM_lastname, MEM_email, MEM_username, MEM_password, MEM_birthdate, MEM_dateregister FROM T_MEM_memberc WHERE MEM_username = :username OR MEM_email = :email' );
+		$requete = $this->dao->prepare( 'SELECT MEM_id, MEM_fk_MRC, MEM_firstname, MEM_lastname, MEM_email, MEM_username, MEM_password, MEM_birthdate, MEM_dateregister
+										 FROM T_MEM_memberc
+										 WHERE MEM_username = :username OR MEM_email = :email' );
 		$requete->bindValue( ':username', $login );
 		$requete->bindValue( ':email', $login );
 		$requete->execute();
@@ -95,7 +101,9 @@ class UserManagerPDO extends UserManager {
 	
 	public function getUniqueByUsername( $username ) {
 		/** @var \PDOStatement $requete */
-		$requete = $this->dao->prepare( 'SELECT MEM_id, MEM_fk_MRC, MEM_firstname, MEM_lastname, MEM_email, MEM_username, MEM_password, MEM_birthdate, MEM_dateregister FROM T_MEM_memberc WHERE MEM_username = :username' );
+		$requete = $this->dao->prepare( 'SELECT MEM_id, MEM_fk_MRC, MEM_firstname, MEM_lastname, MEM_email, MEM_username, MEM_password, MEM_birthdate, MEM_dateregister
+										 FROM T_MEM_memberc
+										 WHERE MEM_username = :username' );
 		$requete->bindValue( ':username', $username );
 		$requete->execute();
 		$requete->setFetchMode( \PDO::FETCH_ASSOC );
@@ -112,7 +120,9 @@ class UserManagerPDO extends UserManager {
 	
 	public function getUniqueByEmail( $email ) {
 		/** @var \PDOStatement $requete */
-		$requete = $this->dao->prepare( 'SELECT MEM_id, MEM_fk_MRC, MEM_firstname, MEM_lastname, MEM_email, MEM_username, MEM_password, MEM_birthdate, MEM_dateregister FROM T_MEM_memberc WHERE MEM_email = :email' );
+		$requete = $this->dao->prepare( 'SELECT MEM_id, MEM_fk_MRC, MEM_firstname, MEM_lastname, MEM_email, MEM_username, MEM_password, MEM_birthdate, MEM_dateregister
+										 FROM T_MEM_memberc
+										 WHERE MEM_email = :email' );
 		$requete->bindValue( ':email', $email );
 		$requete->execute();
 		$requete->setFetchMode( \PDO::FETCH_ASSOC );
@@ -129,7 +139,9 @@ class UserManagerPDO extends UserManager {
 	
 	public function checkExistencyByUsername( $username, $excluded_id = null ) {
 		/** @var \PDOStatement $requete */
-		$sql = 'SELECT MEM_id FROM T_MEM_memberc WHERE MEM_username = :username';
+		$sql = 'SELECT MEM_id
+				FROM T_MEM_memberc
+				WHERE MEM_username = :username';
 		if ($excluded_id) {
 			$sql.= ' AND MEM_id <> :mem_id';
 		}
@@ -146,7 +158,9 @@ class UserManagerPDO extends UserManager {
 	
 	public function checkExistencyByEmail( $email, $excluded_id = null ) {
 		/** @var \PDOStatement $requete */
-		$sql = 'SELECT MEM_id FROM T_MEM_memberc WHERE MEM_email = :email';
+		$sql = 'SELECT MEM_id
+				FROM T_MEM_memberc
+				WHERE MEM_email = :email';
 		if ($excluded_id) {
 			$sql.= ' AND MEM_id <> :mem_id';
 		}
@@ -165,7 +179,8 @@ class UserManagerPDO extends UserManager {
 	 * @return mixed
 	 */
 	public function count() {
-		return $this->dao->query( 'SELECT COUNT(*) FROM T_MEM_memberc' )->fetchColumn();
+		return $this->dao->query( 'SELECT COUNT(*)
+								   FROM T_MEM_memberc' )->fetchColumn();
 	}
 	
 	/**
@@ -173,7 +188,8 @@ class UserManagerPDO extends UserManager {
 	 */
 	protected function add( User $user ) {
 		/** @var \PDOStatement $requete */
-		$requete = $this->dao->prepare( 'INSERT INTO T_MEM_memberc SET MEM_firstname = :firstname, MEM_lastname = :lastname, MEM_email = :email, MEM_username = :username, MEM_password = :password, MEM_birthdate = :birthdate, MEM_dateregister = NOW()' );
+		$requete = $this->dao->prepare( 'INSERT INTO T_MEM_memberc
+									     SET MEM_firstname = :firstname, MEM_lastname = :lastname, MEM_email = :email, MEM_username = :username, MEM_password = :password, MEM_birthdate = :birthdate, MEM_dateregister = NOW()' );
 		
 		$requete->bindValue( ':firstname', $user->firstname() );
 		$requete->bindValue( ':lastname', $user->lastname() );
@@ -192,7 +208,9 @@ class UserManagerPDO extends UserManager {
 	 */
 	protected function modify( User $user ) {
 		/** @var \PDOStatement $requete */
-		$requete = $this->dao->prepare( 'UPDATE T_MEM_memberc SET MEM_username = :username, MEM_firstname = :firstname, MEM_lastname = :lastname, MEM_email = :email, MEM_birthdate = :birthdate WHERE MEM_id = :id' );
+		$requete = $this->dao->prepare( 'UPDATE T_MEM_memberc
+										 SET MEM_username = :username, MEM_firstname = :firstname, MEM_lastname = :lastname, MEM_email = :email, MEM_birthdate = :birthdate
+										 WHERE MEM_id = :id' );
 		
 		$requete->bindValue( ':username', $user->username() );
 		$requete->bindValue( ':firstname', $user->firstname() );
@@ -208,8 +226,11 @@ class UserManagerPDO extends UserManager {
 	 * @param int $id
 	 */
 	public function delete( $id ) {
-		$this->dao->exec( 'DELETE FROM T_MEM_memberc WHERE MEM_id = ' . (int)$id );
-		$this->dao->exec( 'DELETE FROM T_NEW_newsc WHERE NNC_fk_MEM_author = ' . (int)$id );
-		$this->dao->exec( 'DELETE FROM T_MEM_memberc WHERE MEM_id = ' . (int)$id );
+		$this->dao->exec( 'DELETE FROM T_MEM_memberc
+						   WHERE MEM_id = ' . (int)$id );
+		$this->dao->exec( 'DELETE FROM T_NEW_newsc
+						   WHERE NNC_fk_MEM_author = ' . (int)$id );
+		$this->dao->exec( 'DELETE FROM T_MEM_memberc
+						   WHERE MEM_id = ' . (int)$id );
 	}
 }

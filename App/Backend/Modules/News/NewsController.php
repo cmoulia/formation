@@ -29,7 +29,12 @@ class NewsController extends BackController {
 		
 		$this->app->user()->setFlash( 'Le commentaire a bien été supprimé !' );
 		
-		$this->app->httpResponse()->redirect( RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'show', [ 'id' => $newsId ] ) );
+		$this->app->httpResponse()->redirect( RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'show', false, [ 'id' => $newsId ] ) );
+	}
+	
+	public function executeDeleteCommentJson( HTTPRequest $request ) {
+		$this->managers->getManagerOf( 'Comments' )->delete( $request->getData( 'id' ) );
+		$this->page->addVar( 'comment_id', $request->getData('id'));
 	}
 	
 	public function executeIndex( HTTPRequest $request ) {
@@ -116,7 +121,7 @@ class NewsController extends BackController {
 		
 		if ( $formHandler->process() ) {
 			$this->app->user()->setFlash( 'Le commentaire a bien été modifié' );
-			$this->app->httpResponse()->redirect( RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'show', [ 'id' => $comment->fk_NNC() ] ) );
+			$this->app->httpResponse()->redirect( RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'show', false, [ 'id' => $comment->fk_NNC() ] ) );
 		}
 		
 		$this->page->addVar( 'form', $form->createView() );

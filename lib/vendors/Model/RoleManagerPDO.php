@@ -13,7 +13,8 @@ class RoleManagerPDO extends RoleManager {
 	 */
 	public function getList( $limit = -1, $offset = -1 ) {
 //		SELECT everything from T_MEM_rolec
-		$sql = 'SELECT MRC_id, MRC_name, MRC_description FROM T_MEM_rolec';
+		$sql = 'SELECT MRC_id, MRC_name, MRC_description
+				FROM T_MEM_rolec';
 		
 		//		If we want the top X
 		if ( $limit != -1 ) {
@@ -47,7 +48,9 @@ class RoleManagerPDO extends RoleManager {
 	 */
 	public function getUnique( $id ) {
 		/** @var \PDOStatement $query */
-		$query = $this->dao->prepare( 'SELECT MRC_id, MRC_name, MRC_description FROM T_MEM_rolec WHERE MRC_id = :id' );
+		$query = $this->dao->prepare( 'SELECT MRC_id, MRC_name, MRC_description
+									   FROM T_MEM_rolec
+									   WHERE MRC_id = :id' );
 		$query->bindValue( ':id', (int)$id, \PDO::PARAM_INT );
 		$query->execute();
 		$query->setFetchMode( \PDO::FETCH_ASSOC );
@@ -63,7 +66,8 @@ class RoleManagerPDO extends RoleManager {
 	 * @return mixed
 	 */
 	protected function count() {
-		return $this->dao->query( 'SELECT COUNT(*) FROM T_MEM_rolec' )->fetchColumn();
+		return $this->dao->query( 'SELECT COUNT(*)
+								   FROM T_MEM_rolec' )->fetchColumn();
 	}
 	
 	/**
@@ -71,7 +75,8 @@ class RoleManagerPDO extends RoleManager {
 	 */
 	protected function add( Role $role ) {
 		/** @var \PDOStatement $query */
-		$query = $this->dao->prepare( 'INSERT INTO T_MEM_rolec SET MRC_name = :name, MRC_description = :description' );
+		$query = $this->dao->prepare( 'INSERT INTO T_MEM_rolec
+									   SET MRC_name = :name, MRC_description = :description' );
 		$query->bindValue( ':name', $role->name() );
 		$query->bindValue( ':description', $role->description() );
 		
@@ -83,7 +88,9 @@ class RoleManagerPDO extends RoleManager {
 	 */
 	protected function modify( Role $role ) {
 		/** @var \PDOStatement $query */
-		$query = $this->dao->prepare( 'UPDATE T_MEM_rolec SET MRC_name = :name, MRC_description = :description WHERE MRC_id = :id' );
+		$query = $this->dao->prepare( 'UPDATE T_MEM_rolec
+									   SET MRC_name = :name, MRC_description = :description
+									   WHERE MRC_id = :id' );
 		$query->bindValue( ':name', $role->name() );
 		$query->bindValue( ':description', $role->description() );
 		$query->bindValue( ':id', $role->id(), \PDO::PARAM_INT );
@@ -95,6 +102,7 @@ class RoleManagerPDO extends RoleManager {
 	 * @param int $id
 	 */
 	public function delete( $id ) {
-		$this->dao->exec( 'DELETE FROM T_MEM_rolec WHERE MRC_id = ' . (int)$id );
+		$this->dao->exec( 'DELETE FROM T_MEM_rolec
+						   WHERE MRC_id = ' . (int)$id );
 	}
 }

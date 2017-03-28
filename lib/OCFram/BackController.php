@@ -40,7 +40,8 @@ abstract class BackController extends ApplicationComponent {
 		if ( !is_string( $view ) || empty( $view ) ) {
 			throw new \InvalidArgumentException( 'View has to be a valid string' );
 		}
-		
+		if ($format != 'html')
+			$view = str_replace(ucfirst($format),'',$view);
 		$this->view = $view;
 		
 		$this->page->setContentFile( __DIR__ . '/../../App/' . $this->app->name() . '/Modules/' . $this->module . '/Views/' . $this->view .'.'.$format. '.php' );

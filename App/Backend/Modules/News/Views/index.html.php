@@ -17,8 +17,8 @@
 			<td>le <?= $news[ 'dateadd' ]->format( 'd/m/Y à H\hi' ) ?></td>
 			<td><?= ( $news[ 'dateadd' ] == $news[ 'dateupdate' ] ? '-' : 'le ' . $news[ 'dateupdate' ]->format( 'd/m/Y à H\hi' ) ) ?></td>
 			<td>
-				<a href="<?= \OCFram\RouterFactory::getRouter('Backend')->getUrl( 'News', 'update',['id'=> $news[ 'id' ]]) ?>"><img src="/img/update.png" alt="Modérer" /></a>
-				<a href="<?= \OCFram\RouterFactory::getRouter('Backend')->getUrl( 'News', 'delete',['id'=> $news[ 'id' ]]) ?>"><img src="/img/delete.png" alt="Supprimer" /></a>
+				<a href="<?= \OCFram\RouterFactory::getRouter('Backend')->getUrl( 'News', 'update', false, ['id'=> $news[ 'id' ]]) ?>"><img src="/img/update.png" alt="Modérer" /></a>
+				<a href="<?= \OCFram\RouterFactory::getRouter('Backend')->getUrl( 'News', 'delete', false, ['id'=> $news[ 'id' ]]) ?>"><img src="/img/delete.png" alt="Supprimer" /></a>
 			</td>
 		</tr>
 	<?php endforeach; ?>

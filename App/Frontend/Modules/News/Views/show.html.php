@@ -29,7 +29,8 @@
 <?php if ( empty( $comment_a ) ): ?>
 	<p>Aucun commentaire n'a encore été posté. Soyez le premier à en laisser un !</p>
 <?php endif; ?>
-<form action="<?= \OCFram\RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'insertCommentJson','json', [ 'news' => $news[ 'id' ] ] ) ?>" method="post" id="commentform1">
+<form action="<?= \OCFram\RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'insertComment', false, [ 'news' => $news[ 'id' ] ] ) ?>" method="post" class="js-form-comment"
+	  data-action="<?= \OCFram\RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'insertCommentJson', 'json', [ 'news' => $news[ 'id' ] ] ) ?>">
 	<p>
 		<?= $form ?>
 		<input type="submit" value="Commenter" />
@@ -42,7 +43,8 @@
 	<?php endforeach; ?>
 </div>
 
-<form action="<?= \OCFram\RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'insertCommentJson','json', [ 'news' => $news[ 'id' ] ] ) ?>" method="post" id="commentform2">
+<form action="<?= \OCFram\RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'insertComment', false, [ 'news' => $news[ 'id' ] ] ) ?>" method="post" class="js-form-comment"
+	  data-action="<?= \OCFram\RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'insertCommentJson', 'json', [ 'news' => $news[ 'id' ] ] ) ?>">
 	<p>
 		<?= $form ?>
 		<input type="submit" value="Commenter" />

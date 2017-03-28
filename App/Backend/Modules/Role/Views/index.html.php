@@ -14,8 +14,8 @@
 			<td><?= htmlentities($role[ 'name' ]) ?></td>
 			<td class="role content"><?= htmlentities($role[ 'description' ]) ?></td>
 			<td>
-				<a href="<?= \OCFram\RouterFactory::getRouter('Backend')->getUrl( 'Role', 'update',['id'=> $role[ 'id' ]]) ?>"><img src="/img/update.png" alt="Modifier" /></a>
-				<a href="<?= \OCFram\RouterFactory::getRouter('Backend')->getUrl( 'Role', 'delete',['id'=> $role[ 'id' ]]) ?>"><img src="/img/delete.png" alt="Supprimer" /></a>
+				<a href="<?= \OCFram\RouterFactory::getRouter('Backend')->getUrl( 'Role', 'update', false, ['id'=> $role[ 'id' ]]) ?>"><img src="/img/update.png" alt="Modifier" /></a>
+				<a href="<?= \OCFram\RouterFactory::getRouter('Backend')->getUrl( 'Role', 'delete', false, ['id'=> $role[ 'id' ]]) ?>"><img src="/img/delete.png" alt="Supprimer" /></a>
 			</td>
 		</tr>
 	<?php endforeach; ?>

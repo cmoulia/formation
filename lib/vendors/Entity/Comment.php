@@ -2,18 +2,19 @@
 
 namespace Entity;
 
+use \JsonSerializable;
 use \OCFram\Entity;
 
-class Comment extends Entity{
-	const INVALID_AUTHOR  = 1;
+class Comment extends Entity implements JsonSerializable {
+	const INVALID_AUTHOR = 1;
 	const INVALID_CONTENT = 2;
-	const INVALID_ADMIN   = 3;
+	const INVALID_ADMIN = 3;
 	/** @var string $prefix Table prefix (used in the constructor) */
 	protected $prefix = 'NCC_';
 	protected $fk_NNC, $author, $fk_MEM_author, $fk_MEM_admin, $content, $dateadd;
 	
 	public function isValid() {
-		return !( ( empty($author) && empty( $this->fk_MEM_author ) && empty( $this->fk_MEM_admin ) ) && empty( $this->fk_MEM_author ) || empty( $this->content ) );
+		return !( ( empty( $this->author ) && empty( $this->fk_MEM_author ) ) || empty( $this->content ) );
 	}
 	
 	// SETTERS //
@@ -78,5 +79,25 @@ class Comment extends Entity{
 	
 	public function dateadd() {
 		return $this->dateadd;
+	}
+	
+	/**
+	 * Specify data which should be serialized to JSON
+	 *
+	 * @link  http://php.net/manual/en/jsonserializable.jsonserialize.php
+	 * @return mixed data which can be serialized by <b>json_encode</b>,
+	 *        which is a value of any type other than a resource.
+	 * @since 5.4.0
+	 */
+	public function jsonSerialize() {
+		return [
+			'id' => $this->id,
+			'fk_NNC' => $this->fk_NNC,
+			'author' => $this->author,
+			'fk_MEM_author' => $this->fk_MEM_author,
+			'fk_MEM_admin' => $this->fk_MEM_admin,
+			'content' => $this->content,
+			'dateadd' => $this->dateadd,
+		];
 	}
 }

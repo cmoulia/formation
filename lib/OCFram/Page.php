@@ -24,28 +24,15 @@ class Page extends ApplicationComponent {
 		}
 		switch ($this->format){
 			case 'html':
-				$this->getGeneratedPageHTML();
+				return $this->getGeneratedPageHTML();
 				break;
 			case 'json':
-				$this->getGeneratedPageJSON();
+				return $this->getGeneratedPageJSON();
 				break;
 			default:
 				throw new \RuntimeException('Le format '.$this->format.' n\est pas encore géré');
 		}
 		
-		/** @var User $user */
-		$user = $this->app->user();
-		
-		extract( $this->vars );
-		
-		ob_start();
-		require $this->contentFile;
-		$content = ob_get_clean();
-		
-		ob_start();
-		require __DIR__ . '/../../App/' . $this->app->name() . '/Templates/layout.php';
-		
-		return ob_get_clean();
 	}
 	
 	private function getGeneratedPageHTML() {
@@ -63,7 +50,7 @@ class Page extends ApplicationComponent {
 		$content = ob_get_clean();
 		
 		ob_start();
-		require __DIR__ . '/../../App/' . $this->app->name() . '/Templates/layout.php';
+		require __DIR__ . '/../../App/' . $this->app->name() . '/Templates/layout.html.php';
 		
 		return ob_get_clean();
 	}
@@ -72,13 +59,12 @@ class Page extends ApplicationComponent {
 		
 		/** @var User $user */
 		$user = $this->app->user();
-		$this->app->httpResponse()->addHeader('Content-type: application/json');
 		
 		extract( $this->vars );
 		
-		ob_start();
-		require $this->contentFile;
-		return ob_get_clean();
+		$content = require $this->contentFile;
+		
+		return json_encode(require __DIR__ . '/../../App/' . $this->app->name() . '/Templates/layout.json.php');
 	}
 	
 	public function setContentFile( $contentFile ) {

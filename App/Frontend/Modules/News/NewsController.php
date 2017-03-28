@@ -11,6 +11,7 @@ use \Entity\Comment;
 use \FormBuilder\CommentFormBuilder;
 use \OCFram\FormHandler;
 use OCFram\Page;
+use OCFram\Router;
 use OCFram\RouterFactory;
 
 class NewsController extends BackController {
@@ -45,7 +46,19 @@ class NewsController extends BackController {
 		
 		$this->app->user()->setFlash( 'Le commentaire a bien été supprimé !' );
 		
-		$this->app->httpResponse()->redirect( RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'show', [ 'id' => $newsId ] ) );
+		$this->app->httpResponse()->redirect( RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'show', false, [ 'id' => $newsId ] ) );
+	}
+	
+	public function executeDeleteCommentJson( HTTPRequest $request ) {
+		$comment = $this->managers->getManagerOf( 'Comments' )->getUnique( $request->getData( 'id' ) );
+		
+		if ( !$comment ) {
+			$this->app->httpResponse()->addHeader( 'HTTP/1.0 404 Not Found ' );
+			$this->page->addVar('errors', 'Le commentaire n\'existe déjà plus');
+		}else{
+			$this->managers->getManagerOf( 'Comments' )->delete( $request->getData( 'id' ) );
+		}
+		$this->page->addVar( 'comment_id', $request->getData('id'));
 	}
 	
 	public function executeIndex( HTTPRequest $request ) {
@@ -90,8 +103,12 @@ class NewsController extends BackController {
 		$this->processCommentForm( $request );
 	}
 	
+	/**
+	 * Set la variable comment pour le commentaire juste inséré
+	 *
+	 * @param HTTPRequest $request
+	 */
 	public function executeInsertCommentJson( HTTPRequest $request ) {
-		$isNew = true;
 		if ( $request->method() == 'POST' ) {
 			$comment = new Comment( [
 				'fk_NNC'        => $request->getData( 'news' ),
@@ -101,7 +118,6 @@ class NewsController extends BackController {
 			] );
 			
 			if ( $request->getExists( 'id' ) ) {
-				$isNew = false;
 				$comment->setId( $request->getData( 'id' ) );
 			}
 			
@@ -118,8 +134,34 @@ class NewsController extends BackController {
 		$formHandler = new FormHandler( $form, $this->managers->getManagerOf( 'Comments' ), $request );
 		
 		if ( $formHandler->process() ) {
-			$this->page->addVar('comment', $comment);
+			$routes=[];
+			if ( $this->app->user()->isAdmin() ) {
+				$routes = [
+					"update" => RouterFactory::getRouter( 'Backend' )->getUrl( 'News', 'updateComment', false, [ 'id' => $comment[ 'id' ] ] ),
+					"update_text" => 'Modérer',
+					"delete" => RouterFactory::getRouter( 'Backend' )->getUrl( 'News', 'deleteComment', false, [ 'id' => $comment[ 'id' ] ] ),
+					"delete_json" => RouterFactory::getRouter( 'Backend' )->getUrl( 'News', 'deleteCommentJson', 'json', [ 'id' => $comment[ 'id' ] ] ),
+					"delete_text" => 'Supprimer',
+				];
+			}
+			if ( !$this->app->user()->isAdmin() ) {
+				$routes = [
+					"update" => RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'updateComment', false, [ 'id' => $comment[ 'id' ] ] ),
+					"update_text" => 'Modifier',
+					"delete" => RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'deleteComment', false, [ 'id' => $comment[ 'id' ] ] ),
+					"delete_json" => RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'deleteCommentJson', 'json', [ 'id' => $comment[ 'id' ] ] ),
+					"delete_text" => 'Supprimer',
+				];
+			}
+			$this->page->addVar( 'comment', $comment );
+			$this->page->addVar( 'comment_author', $this->app->user()->getAttribute( 'user' )[ 'username' ] );
+			$this->page->addVar( 'routes', $routes);
 		}
+		else{
+			$this->app->httpResponse()->addHeader('HTTP/1.0 401 Error');
+			$this->page->addVar('errors', 'Une erreur est survenue');
+		}
+
 	}
 	
 	public function executeShow( HTTPRequest $request ) {
@@ -248,9 +290,8 @@ class NewsController extends BackController {
 				$comment = new Comment;
 			}
 		}
-
 		
-
+		
 		$formBuilder = new CommentFormBuilder( $comment, $this->managers->getManagerOf( 'User' ), $this->app->user() );
 		$formBuilder->build();
 		
@@ -260,7 +301,7 @@ class NewsController extends BackController {
 		
 		if ( $formHandler->process() ) {
 			$this->app->user()->setFlash( $isNew ? 'Le commentaire a bien été ajouté' : 'Le commentaire a bien été modifié' );
-			$this->app->httpResponse()->redirect( RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'show', [ 'id' => $comment->fk_NNC() ] ) );
+			$this->app->httpResponse()->redirect( RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'show', false, [ 'id' => $comment->fk_NNC() ] ) );
 		}
 		
 		$this->page->addVar( 'form', $form->createView() );
