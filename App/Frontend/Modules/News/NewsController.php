@@ -5,6 +5,7 @@ namespace App\Frontend\Modules\News;
 use \Entity\News;
 use FormBuilder\NewsFormBuilder;
 use \OCFram\BackController;
+use OCFram\Field;
 use \OCFram\Form;
 use \OCFram\HTTPRequest;
 use \Entity\Comment;
@@ -54,11 +55,12 @@ class NewsController extends BackController {
 		
 		if ( !$comment ) {
 			$this->app->httpResponse()->addHeader( 'HTTP/1.0 404 Not Found ' );
-			$this->page->addVar('errors', 'Le commentaire n\'existe déjà plus');
-		}else{
+			$this->page->addVar( 'errors', 'Le commentaire n\'existe déjà plus' );
+		}
+		else {
 			$this->managers->getManagerOf( 'Comments' )->delete( $request->getData( 'id' ) );
 		}
-		$this->page->addVar( 'comment_id', $request->getData('id'));
+		$this->page->addVar( 'comment_id', $request->getData( 'id' ) );
 	}
 	
 	public function executeIndex( HTTPRequest $request ) {
@@ -134,34 +136,62 @@ class NewsController extends BackController {
 		$formHandler = new FormHandler( $form, $this->managers->getManagerOf( 'Comments' ), $request );
 		
 		if ( $formHandler->process() ) {
-			$routes=[];
-			if ( $this->app->user()->isAdmin() ) {
+			$routes = [];
+			if ( $this->app->user()->isAuthenticated() ) {
 				$routes = [
-					"update" => RouterFactory::getRouter( 'Backend' )->getUrl( 'News', 'updateComment', false, [ 'id' => $comment[ 'id' ] ] ),
-					"update_text" => 'Modérer',
-					"delete" => RouterFactory::getRouter( 'Backend' )->getUrl( 'News', 'deleteComment', false, [ 'id' => $comment[ 'id' ] ] ),
-					"delete_json" => RouterFactory::getRouter( 'Backend' )->getUrl( 'News', 'deleteCommentJson', 'json', [ 'id' => $comment[ 'id' ] ] ),
-					"delete_text" => 'Supprimer',
-				];
-			}
-			if ( !$this->app->user()->isAdmin() ) {
-				$routes = [
-					"update" => RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'updateComment', false, [ 'id' => $comment[ 'id' ] ] ),
-					"update_text" => 'Modifier',
-					"delete" => RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'deleteComment', false, [ 'id' => $comment[ 'id' ] ] ),
+					"update"      => RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'updateComment', false, [ 'id' => $comment[ 'id' ] ] ),
+					"update_text" => ( $this->app->user()->isAdmin() ) ? 'Modérer' : 'Modifier',
+					"delete"      => RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'deleteComment', false, [ 'id' => $comment[ 'id' ] ] ),
 					"delete_json" => RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'deleteCommentJson', 'json', [ 'id' => $comment[ 'id' ] ] ),
 					"delete_text" => 'Supprimer',
 				];
 			}
 			$this->page->addVar( 'comment', $comment );
 			$this->page->addVar( 'comment_author', $this->app->user()->getAttribute( 'user' )[ 'username' ] );
-			$this->page->addVar( 'routes', $routes);
+			$this->page->addVar( 'routes', $routes );
 		}
-		else{
-			$this->app->httpResponse()->addHeader('HTTP/1.0 401 Error');
-			$this->page->addVar('errors', 'Une erreur est survenue');
+		else {
+			$this->app->httpResponse()->addHeader( 'HTTP/1.0 401 Error' );
+			/** @var Field $field */
+			foreach ( $form->getFields() as $field ) {
+				$error_a[] = $field->errorMessage();
+			}
+			$this->page->addVar( 'error_a', $error_a );
 		}
-
+	}
+	
+	public function executeRefreshCommentJson( HTTPRequest $request ) {
+		$page_comments = $request->postData('ids');
+		$dateupdate = new \DateTime();
+		$dateupdate->setTimestamp($request->postData('date'));
+		$newsid = $request->getData('id');
+		
+//		var_dump($page_comments, $dateupdate, $newsid);die;
+		$comment_new_a = $this->managers->getManagerOf('Comments')->getListOfFilterByAfterDate($newsid, $dateupdate);
+		$route_a = array();
+		foreach ( $comment_new_a as $comment_new ) {
+			$comment_new_author_a[$comment_new['id']] = $this->managers->getManagerOf( 'User' )->getUnique( $comment_new[ 'fk_MEM_author' ] );
+			if ( $this->app->user()->isAuthenticated() ) {
+				$route_a[$comment_new['id']] = array(
+					"update"      => RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'updateComment', false, [ 'id' => $comment_new[ 'id' ] ] ),
+					"update_text" => ( $this->app->user()->isAdmin() ) ? 'Modérer' : 'Modifier',
+					"delete"      => RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'deleteComment', false, [ 'id' => $comment_new[ 'id' ] ] ),
+					"delete_json" => RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'deleteCommentJson', 'json', [ 'id' => $comment_new[ 'id' ] ] ),
+					"delete_text" => 'Supprimer',
+				);
+			}
+		}
+		$comment_delete_a = $this->managers->getManagerOf('Comments')->getListOfFilterByDeletedAfterDate($newsid, $page_comments, $dateupdate);
+		$comment_update_a = $this->managers->getManagerOf('Comments')->getListOfFilterByUpdatedAfterDate($newsid, $page_comments, $dateupdate);
+		
+		$errors = '';
+		
+		$this->page->addVar('comment_new_a', $comment_new_a);
+		$this->page->addVar('comment_new_author_a', isset($comment_new_author_a)?$comment_new_author_a:'');
+		$this->page->addVar('comment_delete_a', $comment_delete_a);
+		$this->page->addVar('comment_update_a', $comment_update_a);
+		$this->page->addVar('route_a', $route_a);
+		$this->page->addVar('errors', $errors);
 	}
 	
 	public function executeShow( HTTPRequest $request ) {

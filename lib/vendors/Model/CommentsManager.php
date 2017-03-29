@@ -49,6 +49,9 @@ abstract class CommentsManager extends Manager {
 	 * @return array
 	 */
 	abstract public function getListOf( $newsId );
+	abstract public function getListOfFilterByAfterDate( $newsId, $dateupdate );
+	abstract public function getListOfFilterByDeletedAfterDate( $newsId, $comment_id_a, $dateupdate );
+	abstract public function getListOfFilterByUpdatedAfterDate( $newsId, $comment_id_a, $dateupdate );
 	
 	/**
 	 * Méthode permettant d'obtenir un commentaire spécifique.

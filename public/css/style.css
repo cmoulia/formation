@@ -1,3 +1,7 @@
 #main h2, td.name, .content {
-	word-break     : break-word;
+	word-break : break-word;
+	}
+
+.hidden {
+	display : none;
 	}

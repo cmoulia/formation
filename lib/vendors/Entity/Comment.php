@@ -2,16 +2,15 @@
 
 namespace Entity;
 
-use \JsonSerializable;
 use \OCFram\Entity;
 
-class Comment extends Entity implements JsonSerializable {
+class Comment extends Entity{
 	const INVALID_AUTHOR = 1;
 	const INVALID_CONTENT = 2;
 	const INVALID_ADMIN = 3;
 	/** @var string $prefix Table prefix (used in the constructor) */
 	protected $prefix = 'NCC_';
-	protected $fk_NNC, $author, $fk_MEM_author, $fk_MEM_admin, $content, $dateadd;
+	protected $fk_NNC, $author, $fk_MEM_author, $fk_MEM_admin, $content, $dateadd, $dateupdate;
 	
 	public function isValid() {
 		return !( ( empty( $this->author ) && empty( $this->fk_MEM_author ) ) || empty( $this->content ) );
@@ -55,6 +54,10 @@ class Comment extends Entity implements JsonSerializable {
 		$this->dateadd = $dateadd;
 	}
 	
+	public function setDateupdate( \DateTime $dateupdate ) {
+		$this->dateupdate = $dateupdate;
+	}
+	
 	// GETTERS //
 	
 	public function fk_NNC() {
@@ -81,6 +84,10 @@ class Comment extends Entity implements JsonSerializable {
 		return $this->dateadd;
 	}
 	
+	public function dateupdate() {
+		return $this->dateupdate;
+	}
+	
 	/**
 	 * Specify data which should be serialized to JSON
 	 *
@@ -98,6 +105,7 @@ class Comment extends Entity implements JsonSerializable {
 			'fk_MEM_admin' => $this->fk_MEM_admin,
 			'content' => $this->content,
 			'dateadd' => $this->dateadd,
+			'dateupdate' => $this->dateupdate,
 		];
 	}
 }

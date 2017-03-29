@@ -5,7 +5,6 @@
 	<route url="/admin/news-update-([0-9]+)" module="News" action="update" vars="id" pattern="/admin/news-update-{{id}}"></route>
 	<route url="/admin/news-delete-([0-9]+)" module="News" action="delete" vars="id" pattern="/admin/news-delete-{{id}}"></route>
 	<route url="/admin/news-comment-update-([0-9]+)" module="News" action="updateComment" vars="id" pattern="/admin/news-comment-update-{{id}}"></route>
-	<route url="/admin/news-comment-delete-([0-9]+)" module="News" action="deleteComment" vars="id" pattern="/admin/news-comment-delete-{{id}}"></route>
 	
 	<route url="/admin/users" module="User" action="index"></route>
 	<route url="/admin/user-([0-9]+)" module="User" action="detail" vars="id" pattern="/admin/user-{{id}}"></route>

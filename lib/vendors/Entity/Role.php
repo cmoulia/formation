@@ -40,4 +40,12 @@ class Role extends Entity {
 	public function description() {
 		return $this->description;
 	}
+	
+	public function jsonSerialize() {
+		return [
+			'id' => $this->id,
+			'name' => $this->name,
+			'description' => $this->description,
+		];
+	}
 }

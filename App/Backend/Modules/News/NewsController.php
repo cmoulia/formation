@@ -23,20 +23,6 @@ class NewsController extends BackController {
 		$this->app->httpResponse()->redirect( '.' );
 	}
 	
-	public function executeDeleteComment( HTTPRequest $request ) {
-		$newsId = $this->managers->getManagerOf( 'Comments' )->getNews( $request->getData( 'id' ) );
-		$this->managers->getManagerOf( 'Comments' )->delete( $request->getData( 'id' ) );
-		
-		$this->app->user()->setFlash( 'Le commentaire a bien été supprimé !' );
-		
-		$this->app->httpResponse()->redirect( RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'show', false, [ 'id' => $newsId ] ) );
-	}
-	
-	public function executeDeleteCommentJson( HTTPRequest $request ) {
-		$this->managers->getManagerOf( 'Comments' )->delete( $request->getData( 'id' ) );
-		$this->page->addVar( 'comment_id', $request->getData('id'));
-	}
-	
 	public function executeIndex( HTTPRequest $request ) {
 		$this->page->addVar( 'title', 'Gestion des news' );
 		

@@ -14,7 +14,7 @@ class CommentsManagerPDO extends CommentsManager {
 		}
 		
 		/** @var \PDOStatement $q */
-		$q = $this->dao->prepare( 'SELECT NCC_id, NCC_fk_NNC, NCC_author, NCC_fk_MEM_author, NCC_fk_MEM_admin, NCC_content, NCC_dateadd
+		$q = $this->dao->prepare( 'SELECT NCC_id, NCC_fk_NNC, NCC_author, NCC_fk_MEM_author, NCC_fk_MEM_admin, NCC_content, NCC_dateadd, NCC_dateupdate
 								   FROM T_NEW_commentc
 								   WHERE NCC_fk_NNC = :news ' );
 		$q->bindValue( ':news', $newsId, \PDO::PARAM_INT );
@@ -25,8 +25,73 @@ class CommentsManagerPDO extends CommentsManager {
 		
 		/** @var Comment $comment */
 		foreach ( $comment_a as $key => $comment ) {
-			$comment[ 'NCC_dateadd' ] = new \DateTime( $comment[ 'NCC_dateadd' ] );
-			$comment_a[ $key ]        = new Comment( $comment );
+			$comment[ 'NCC_dateadd' ]    = new \DateTime( $comment[ 'NCC_dateadd' ] );
+			$comment[ 'NCC_dateupdate' ] = new \DateTime( $comment[ 'NCC_dateupdate' ] );
+			$comment_a[ $key ]           = new Comment( $comment );
+		}
+		
+		return $comment_a;
+	}
+	
+	public function getListOfFilterByAfterDate( $newsId, $dateupdate ) {
+		$q = $this->dao->prepare( 'SELECT NCC_id, NCC_fk_NNC, NCC_author, NCC_fk_MEM_author, NCC_fk_MEM_admin, NCC_content, NCC_dateadd, NCC_dateupdate
+ 								  FROM T_NEW_commentc
+ 								  WHERE NCC_fk_NNC = :news AND NCC_dateadd >= :date' );
+		$q->bindValue( ':news', $newsId, \PDO::PARAM_INT );
+		$q->bindValue( ':date', $dateupdate->format( 'Y-m-d H:i:s' ) );
+		$q->execute();
+		$q->setFetchMode( \PDO::FETCH_ASSOC );
+		
+		$comment_a = $q->fetchAll();
+		
+		/** @var Comment $comment */
+		foreach ( $comment_a as $key => $comment ) {
+			$comment[ 'NCC_dateadd' ]    = new \DateTime( $comment[ 'NCC_dateadd' ] );
+			$comment[ 'NCC_dateupdate' ] = new \DateTime( $comment[ 'NCC_dateupdate' ] );
+			$comment_a[ $key ]           = new Comment( $comment );
+		}
+		
+		return $comment_a;
+	}
+	
+	public function getListOfFilterByDeletedAfterDate( $newsId, $comment_id_a, $dateupdate ) {
+		$inQuery = implode( ',', $comment_id_a );
+		$q = $this->dao->prepare( 'SELECT NCC_id
+ 								   FROM T_NEW_commentc
+ 								   WHERE NCC_fk_NNC = :news AND NCC_id IN (' . $inQuery . ')' );
+		$q->bindValue( ':news', $newsId, \PDO::PARAM_INT );
+		$q->execute();
+		$q->setFetchMode( \PDO::FETCH_NUM );
+
+		if ( !empty( $comment_a = $q->fetchAll() ) ) {
+			$merged    = array_merge( ...$comment_a );
+			$comment_a = array_diff( $comment_id_a, $merged );
+			/** @var Comment $comment */
+			foreach ( $comment_a as $key => $comment ) {
+				$comment_a[ $comment ] = $comment;
+				unset($comment_a[$key]);
+			}
+//			var_dump($inQuery, $comment_id_a, $merged, $comment_a);die;
+		}
+		
+		return $comment_a;
+	}
+	
+	public function getListOfFilterByUpdatedAfterDate( $newsId, $comment_id_a, $dateupdate ) {
+		$inQuery = implode( ',', $comment_id_a );
+		$q       = $this->dao->prepare( 'SELECT NCC_id, NCC_content, NCC_dateupdate
+ 								  FROM T_NEW_commentc
+ 								  WHERE NCC_fk_NNC = :news AND NCC_dateupdate >= :date AND NCC_id IN (' . $inQuery . ')' );
+		$q->bindValue( ':news', $newsId, \PDO::PARAM_INT );
+		$q->bindValue( ':date', $dateupdate->format( 'Y-m-d H:i:s' ) );
+		$q->execute();
+		$q->setFetchMode( \PDO::FETCH_ASSOC );
+		
+		$comment_a = $q->fetchAll();
+		/** @var Comment $comment */
+		foreach ( $comment_a as $key => $comment ) {
+			$comment[ 'NCC_dateupdate' ] = new \DateTime( $comment[ 'NCC_dateupdate' ] );
+			$comment_a[ $key ] = new Comment( $comment );
 		}
 		
 		return $comment_a;
@@ -41,10 +106,10 @@ class CommentsManagerPDO extends CommentsManager {
 		$q->execute();
 		$q->setFetchMode( \PDO::FETCH_ASSOC );
 		
-		if ($result = $q->fetch())
-		{
+		if ( $result = $q->fetch() ) {
 			return new Comment( $result );
 		}
+		
 		return false;
 	}
 	
@@ -63,8 +128,6 @@ class CommentsManagerPDO extends CommentsManager {
 		$this->dao->exec( 'DELETE FROM T_NEW_commentc
 						   WHERE NCC_id = ' . (int)$id );
 		
-		if ($this->dao->errorCode())
-			return $this->dao->errorInfo();
 		return true;
 	}
 	
@@ -78,7 +141,7 @@ class CommentsManagerPDO extends CommentsManager {
 		/** @var \PDOStatement $q */
 		if ( $comment->author() ) {
 			$q = $this->dao->prepare( 'INSERT INTO T_NEW_commentc
-									   SET NCC_fk_NNC = :fk_NNC, NCC_author = :author, NCC_content = :content, NCC_dateadd = :datetime' );
+									   SET NCC_fk_NNC = :fk_NNC, NCC_author = :author, NCC_content = :content, NCC_dateadd = :datetime, NCC_dateupdate = :datetime' );
 			$q->bindValue( ':author', $comment->author() );
 			$q->bindValue( ':datetime', $dateutcnow->format( 'Y-m-d H:i:s' ) );
 		}
@@ -94,17 +157,19 @@ class CommentsManagerPDO extends CommentsManager {
 		
 		$q->execute();
 		
-		$comment->setDateadd($dateutcnow);
+		$comment->setDateadd( $dateutcnow );
 		$comment->setId( $this->dao->lastInsertId() );
 	}
 	
 	protected function modify( Comment $comment ) {
+		$dateutcnow = new \DateTime();
 		/** @var \PDOStatement $q */
 		$q = $this->dao->prepare( 'UPDATE T_NEW_commentc
-								   SET NCC_author = :author, NCC_content = :content
+								   SET NCC_author = :author, NCC_content = :content, NCC_dateupdate = :datetime
 								   WHERE NCC_id = :id' );
 		
 		$q->bindValue( ':author', $comment->author() );
+		$q->bindValue( ':datetime', $dateutcnow->format( 'Y-m-d H:i:s' ) );
 		$q->bindValue( ':content', $comment->content() );
 		$q->bindValue( ':id', $comment->id(), \PDO::PARAM_INT );
 		

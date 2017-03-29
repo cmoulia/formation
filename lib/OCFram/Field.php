@@ -5,9 +5,11 @@ namespace OCFram;
 abstract class Field {
 	use Hydrator;
 	protected $errorMessage;
+	protected $id;
 	protected $label;
 	protected $length;
 	protected $name;
+	protected $required;
 	protected $validators = [];
 	protected $value;
 	
@@ -33,6 +35,12 @@ abstract class Field {
 	
 	// SETTERS //
 	
+	public function setId( $id ) {
+		if (is_string($id)){
+			$this->id = $id;
+		}
+	}
+	
 	public function setLabel( $label ) {
 		if ( is_string( $label ) ) {
 			$this->label = $label;
@@ -53,6 +61,12 @@ abstract class Field {
 		}
 	}
 	
+	public function setRequired( $required ) {
+		if (is_bool($required)){
+			$this->required = $required;
+		}
+	}
+	
 	public function setValidators( array $validators ) {
 		foreach ( $validators as $validator ) {
 			if ( $validator instanceof Validator && !in_array( $validator, $this->validators ) ) {
@@ -69,6 +83,10 @@ abstract class Field {
 	
 	// GETTERS //
 	
+	public function id() {
+		return $this->id;
+	}
+	
 	public function label() {
 		return $this->label;
 	}
@@ -81,11 +99,19 @@ abstract class Field {
 		return $this->name;
 	}
 	
+	public function required(){
+		return $this->required;
+	}
+	
 	public function validators() {
 		return $this->validators;
 	}
 	
 	public function value() {
 		return $this->value;
+	}
+	
+	public function errorMessage() {
+		return $this->errorMessage;
 	}
 }

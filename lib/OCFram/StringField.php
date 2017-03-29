@@ -13,13 +13,20 @@ class StringField extends Field {
 			$widget .= $this->errorMessage . '<br />';
 		}
 		
-		$widget .= '<label>' . $this->label . '</label><input ';
+		$widget .= '<label';
+		
+		if ( !empty( $this->id ) ) {
+			$widget .= ' for="' . $this->id . '"';
+		}
+		$widget .= '>' . $this->label . '</label><input name="' . $this->name . '"';
 		
 		if ( !empty( $this->type ) ) {
 			$widget .= ' type="' . htmlentities( $this->type ) . '"';
 		}
 		
-		$widget .= ' name="' . $this->name . '"';
+		if ( !empty( $this->id ) ) {
+			$widget .= ' id="' . $this->id . '"';
+		}
 		
 		if ( !empty( $this->value ) && $this->type != 'password' ) {
 			$widget .= ' value="' . htmlentities( $this->value ) . '"';
@@ -27,6 +34,10 @@ class StringField extends Field {
 		
 		if ( !empty( $this->maxLength ) ) {
 			$widget .= ' maxlength="' . $this->maxLength . '"';
+		}
+		
+		if ($this->required){
+			$widget .= ' required';
 		}
 		
 		$widget .= ' />';

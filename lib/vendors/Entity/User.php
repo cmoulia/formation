@@ -104,4 +104,16 @@ class User extends Entity {
 	public function dateRegister() {
 		return $this->dateregister;
 	}
+	public function jsonSerialize() {
+		return [
+			'id' => $this->id,
+			'firstname' => $this->firstname,
+			'lastname' => $this->lastname,
+			'fk_MRC' => $this->fk_MRC,
+			'email' => $this->email,
+			'username' => $this->username,
+			'birthdate' => $this->birthdate,
+		];
+	}
+	
 }

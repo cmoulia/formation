@@ -19,34 +19,24 @@
 <?php endif; ?>
 
 <a href="<?= \OCFram\RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'delete', false, [ 'id' => $news[ 'id' ] ] ) ?>">Supprimer la news</a>
-<h2><?= htmlentities( $news[ 'title' ] ) ?></h2>
+<h2 class="news title"><?= htmlentities( $news[ 'title' ] ) ?></h2>
 
 <?php if ( $news[ 'dateadd' ] != $news[ 'dateupdate' ] ): ?>
 	<p><?= nl2br( htmlentities( $news[ 'content' ] ) ) ?></p>
 <?php endif; ?>
 
 
-<?php if ( empty( $comment_a ) ): ?>
-	<p>Aucun commentaire n'a encore été posté. Soyez le premier à en laisser un !</p>
-<?php endif; ?>
-<form action="<?= \OCFram\RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'insertComment', false, [ 'news' => $news[ 'id' ] ] ) ?>" method="post" class="js-form-comment"
-	  data-action="<?= \OCFram\RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'insertCommentJson', 'json', [ 'news' => $news[ 'id' ] ] ) ?>">
-	<p>
-		<?= $form ?>
-		<input type="submit" value="Commenter" />
-	</p>
-</form>
+<?php ( empty( $comment_a ) ) ? $empty = true : $empty = false ?>
+<p class="nocomment <?= ( $empty ) ?: 'hidden' ?>">Aucun commentaire n'a encore été posté. Soyez le premier à en laisser un !</p>
+<div class="form">
+	<?php require 'includes/comment.form.php' ?>
+</div>
 
-<div id="commentList">
+<div id="commentList" class="<?= ( $empty ) ? 'hidden' : '' ?>" data-action="<?= \OCFram\RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'refreshCommentJson', 'json', [ 'id' => $news[ 'id' ] ] ) ?>" data-update="<?= date_create()->getTimestamp() ?>">
 	<?php foreach ( $comment_a as $comment ): ?>
 		<?php require 'includes/comment.part.php'; ?>
 	<?php endforeach; ?>
 </div>
-
-<form action="<?= \OCFram\RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'insertComment', false, [ 'news' => $news[ 'id' ] ] ) ?>" method="post" class="js-form-comment"
-	  data-action="<?= \OCFram\RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'insertCommentJson', 'json', [ 'news' => $news[ 'id' ] ] ) ?>">
-	<p>
-		<?= $form ?>
-		<input type="submit" value="Commenter" />
-	</p>
-</form>
+<div class="form <?= ( $empty ) ? 'hidden' : '' ?>">
+	<?php require 'includes/comment.form.php' ?>
+</div>

@@ -2,7 +2,9 @@
 
 namespace OCFram;
 
-abstract class Entity implements \ArrayAccess {
+use JsonSerializable;
+
+abstract class Entity implements \ArrayAccess, JsonSerializable  {
 	protected $errors = [];
 	protected $id;
 	protected $prefix;

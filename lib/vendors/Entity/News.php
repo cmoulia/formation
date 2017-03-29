@@ -80,4 +80,16 @@ class News extends Entity {
 	public function dateupdate() {
 		return $this->dateupdate;
 	}
+	
+	public function jsonSerialize() {
+		return [
+			'id' => $this->id,
+			'fk_MEM_author' => $this->fk_MEM_author,
+			'fk_MEM_admin' => $this->fk_MEM_admin,
+			'title' => $this->title,
+			'content' => $this->content,
+			'dateadd' => $this->dateadd,
+			'dateupdate' => $this->dateupdate,
+		];
+	}
 }
