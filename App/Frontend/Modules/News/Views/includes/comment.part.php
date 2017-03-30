@@ -5,8 +5,14 @@
 ?>
 <fieldset data-id="<?= $comment[ 'id' ] ?>">
 	<legend>
-		Posté par
-		<strong><?= htmlentities( ( $comment[ 'fk_MEM_author' ] ) ? $comment[ 'fk_MEM_author' ][ 'username' ] : $comment[ 'author' ] ) ?></strong> le <?= $comment[ 'dateadd' ]->format( 'd/m/Y à H\hi' ) ?>
+		<span>Posté par</span>
+		<strong><?= htmlentities( ( $comment[ 'fk_MEM_author' ] ) ? $comment[ 'fk_MEM_author' ][ 'username' ] : $comment[ 'author' ] ) ?></strong>
+		<span class="date-add"> le <?= $comment[ 'dateadd' ]->format( 'd/m/Y à H\hi' ) ?></span>
+		<span class="date-update">
+		<?php if ( $comment[ 'dateupdate' ]): ?>
+			 (<?= $comment[ 'dateupdate' ]->format( 'd/m/Y à H\hi' ) ?>)
+		<?php endif; ?>
+		</span>
 		<?php if ( $user->isAuthenticated() && ( $user->isAdmin() || ( !$user->isAdmin() && $comment[ 'fk_MEM_author' ][ 'username' ] == $user->getAttribute( 'user' )[ 'username' ] ) ) ): ?> -
 			<a href="<?= \OCFram\RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'updateComment', false, [ 'id' => $comment[ 'id' ] ] ) ?>"
 			><?= ( $user->isAdmin() && $comment[ 'fk_MEM_author' ][ 'username' ] != $user->getAttribute( 'user' )[ 'username' ] ) ? 'Modérer' : 'Modifier' ?></a> |

@@ -40,3 +40,4 @@
 <div class="form <?= ( $empty ) ? 'hidden' : '' ?>">
 	<?php require 'includes/comment.form.php' ?>
 </div>
+<script src="/js/script.js"></script>

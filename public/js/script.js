@@ -1,5 +1,7 @@
 $( function() {
 	
+	var timeout_id = refresh();
+	
 	$( '.js-form-comment' ).submit( function( e ) {
 		e.preventDefault();
 		var $this        = $( this );
@@ -14,9 +16,9 @@ $( function() {
 		var formserialize = $( this ).serialize();
 		$( 'input[type="submit"]', $( '.js-form-comment' ) ).prop( 'disabled', true );
 		$.each( $( this ).serializeArray(), function( k, v ) {
-			console.log( v );
+			//console.log( v );
 			if ( v.value == "" ) {
-				console.log( $( this ) );
+				//console.log( $( this ) );
 				$( '[name="' + v.name + '"]', $this ).after( 'Fail' );
 			}
 		} );
@@ -50,10 +52,10 @@ $( function() {
 					}
 				},
 				success  : function( data ) {
-					addComment( data.content.comment, data.content.comment_author, data.content.routes );
-					$( '#commentList' )
-						.prepend( $( '<p class="msg-flash' + rand + '">Commentaire ajouté</p>' ).hide().fadeIn() )
-						.append( $( '<p class="msg-flash' + rand + '">Commentaire ajouté</p>' ).hide().fadeIn() );
+					clearTimeout( timeout_id );
+					timeout_id = refresh();
+					//addComment( data.content.comment, data.content.comment_author, data.content.routes );
+					$this.append( $( '<p class="msg-flash' + rand + '">Commentaire ajouté</p>' ).hide().fadeIn() );
 					setTimeout( function() {
 						$( '.msg-flash' + rand ).fadeOut( '400', function() {
 							this.remove();
@@ -93,45 +95,50 @@ $( function() {
 	} );
 	
 	function addComment( comment, author, routes ) {
-		console.log('addComment');
-		var linksHTML   = ' - ' + '<a href="{{comment_update_route}}">{{comment_update}}</a> | ' + '<a href="{{comment_delete_route}}" class="js-delete-comment" data-action="{{comment_delete_route_json}}">{{comment_delete}}</a> ';
-		var commentHTML = '<fieldset data-id="{{comment_id}}">' + '<legend>Posté par <strong>{{comment_author}}</strong> le {{comment_date}}' + '{{links}}' + '</legend>' + '<p class="comment content">{{comment_content}}</p> ' + '</fieldset>';
-		var date        = new Date( comment.dateadd.date );
-		var datestring  = ("0" + date.getDate()).slice( -2 ) + '/' + ("0" + date.getMonth()).slice( -2 ) + '/' + date.getFullYear() + ' à ' + ("0" + date.getHours()).slice( -2 ) + 'h' + ("0" + date.getMinutes()).slice( -2 );
-		commentHTML     = commentHTML.replace( '{{comment_id}}', comment.id );
-		commentHTML     = commentHTML.replace( '{{comment_author}}', comment.author ? comment.author : author );
-		commentHTML     = commentHTML.replace( '{{comment_date}}', datestring );
-		commentHTML     = commentHTML.replace( '{{comment_content}}', comment.content );
-		if ( routes.length != 0 ) {
-			commentHTML = commentHTML.replace( '{{links}}', linksHTML );
-			commentHTML = commentHTML.replace( '{{comment_update}}', routes.update_text );
-			commentHTML = commentHTML.replace( '{{comment_update_route}}', routes.update );
-			commentHTML = commentHTML.replace( '{{comment_delete}}', routes.delete_text );
-			commentHTML = commentHTML.replace( '{{comment_delete_route}}', routes.delete );
-			commentHTML = commentHTML.replace( '{{comment_delete_route_json}}', routes.delete_json );
+		if ( routes === undefined ) {
+			routes = [];
 		}
-		else {
-			commentHTML = commentHTML.replace( '{{links}}', '' );
+		if ( $( "fieldset[data-id=" + comment.id + "]" ).length == 0 ) {
+			console.log( 'addComment' + comment.id );
+			var linksHTML   = ' - ' + '<a href="{{comment_update_route}}">{{comment_update}}</a> | ' + '<a href="{{comment_delete_route}}" class="js-delete-comment" data-action="{{comment_delete_route_json}}">{{comment_delete}}</a> ';
+			var commentHTML = '<fieldset data-id="{{comment_id}}">' + '<legend><span>Posté par </span><strong>{{comment_author}}</strong><span class="date-add"> le {{comment_date}}</span> <span class="date-update"></span>' + '{{links}}' + '</legend>' + '<p class="comment content">{{comment_content}}</p> ' + '</fieldset>';
+			var date        = new Date( comment.dateadd.date );
+			var datestring  = ("0" + date.getDate()).slice( -2 ) + '/' + ("0" + date.getMonth()).slice( -2 ) + '/' + date.getFullYear() + ' à ' + ("0" + date.getHours()).slice( -2 ) + 'h' + ("0" + date.getMinutes()).slice( -2 );
+			commentHTML     = commentHTML.replace( '{{comment_id}}', comment.id );
+			commentHTML     = commentHTML.replace( '{{comment_author}}', comment.author ? comment.author : author );
+			commentHTML     = commentHTML.replace( '{{comment_date}}', datestring );
+			commentHTML     = commentHTML.replace( '{{comment_content}}', comment.content );
+			if ( routes.length != 0 ) {
+				commentHTML = commentHTML.replace( '{{links}}', linksHTML );
+				commentHTML = commentHTML.replace( '{{comment_update}}', routes.update_text );
+				commentHTML = commentHTML.replace( '{{comment_update_route}}', routes.update );
+				commentHTML = commentHTML.replace( '{{comment_delete}}', routes.delete_text );
+				commentHTML = commentHTML.replace( '{{comment_delete_route}}', routes.delete );
+				commentHTML = commentHTML.replace( '{{comment_delete_route_json}}', routes.delete_json );
+			}
+			else {
+				commentHTML = commentHTML.replace( '{{links}}', '' );
+			}
+			if ( $( '#commentList' ).children().length == 0 ) {
+				$( '#commentList' ).fadeIn();
+				$( '.js-form-comment' ).last().parent().fadeIn();
+				$( '.nocomment' ).fadeOut();
+			}
+			$( '#commentList' ).append( commentHTML );
 		}
-		if ( $( '#commentList' ).children().length == 0 ) {
-			$( '#commentList' ).fadeIn();
-			$( '.js-form-comment' ).last().parent().fadeIn();
-			$( '.nocomment' ).fadeOut();
-		}
-		$( '#commentList' ).append( commentHTML );
 	}
 	
 	function updateComment( comment ) {
-		console.log('upadteComment');
-		$( "fieldset[data-id=" + comment.id + "]" ).find('.comment.content').replaceWith( comment.content ).hide().fadeIn();
-		var date        = new Date( comment.dateupdate.date );
-		var datestring  = ("0" + date.getDate()).slice( -2 ) + '/' + ("0" + date.getMonth()).slice( -2 ) + '/' + date.getFullYear() + ' à ' + ("0" + date.getHours()).slice( -2 ) + 'h' + ("0" + date.getMinutes()).slice( -2 );
-		$( "fieldset[data-id=" + comment.id + "]" ).find('legend').append( datestring ).hide().fadeIn();
+		console.log( 'updateComment' + comment.id );
+		$( "fieldset[data-id=" + comment.id + "]" ).find( '.comment.content' ).html( comment.content ).hide().fadeIn();
+		var date       = new Date( comment.dateupdate.date );
+		var datestring = ("0" + date.getDate()).slice( -2 ) + '/' + ("0" + date.getMonth()).slice( -2 ) + '/' + date.getFullYear() + ' à ' + ("0" + date.getHours()).slice( -2 ) + 'h' + ("0" + date.getMinutes()).slice( -2 );
+		$( "fieldset[data-id=" + comment.id + "]" ).find( 'span.date-update' ).html( '(' + datestring + ')' ).hide().fadeIn();
 	}
 	
-	function deleteComment( comment, rand ) {
-		console.log('deleteComment');
-		$( "fieldset[data-id=" + comment + "]" ).replaceWith( $( '<p class="msg-flash' + rand + '">Commentaire supprimé</p>' ).hide().fadeIn() );
+	function deleteComment( comment_id, rand ) {
+		console.log( 'deleteComment' + comment_id );
+		$( "fieldset[data-id=" + comment_id + "]" ).replaceWith( $( '<p class="msg-flash' + rand + '">Commentaire supprimé</p>' ).hide().fadeIn() );
 		setTimeout( function() {
 			$( '.msg-flash' + rand ).fadeOut( '400', function() {
 				this.remove();
@@ -153,13 +160,13 @@ $( function() {
 		}, 3000 );
 	}
 	
-	setInterval( function() {
-		var $e = $('#commentList');
-		var data = {};
-		data.ids = $e.children().map( function() {
+	function refresh() {
+		var $e    = $( '#commentList' );
+		var data  = {};
+		data.ids  = $e.children().map( function() {
 			return $( this ).data( 'id' )
 		} ).toArray();
-		data.date = $e.data('update');
+		data.date = $e.data( 'update' );
 		$.ajax( {
 			type    : 'POST',
 			url     : $e.data( 'action' ),
@@ -167,32 +174,40 @@ $( function() {
 			error   : function( data ) {
 				
 			},
-			success : function( data ) {
+			success : function( data, status, error ) {
 				refreshComment( data.content );
+				var date = new Date();
+				console.log(date.valueOf()/1000);
 			}
 			
 		} );
-	}, 15000 );
+		return setTimeout( refresh, 15000 );
+	}
+	
 	function refreshComment( content ) {
-		insertComment_a(content.comment_new_a, content.comment_new_author_a, content.route_a);
-		updateComment_a(content.comment_update_a);
-		deleteComment_a(content.comment_delete_a);
+		insertComment_a( content.comment_new_a, content.comment_new_author_a, content.route_a );
+		updateComment_a( content.comment_update_a );
+		deleteComment_a( content.comment_delete_a );
 		var dateupdate = new Date();
-		$('#commentList').data('update', dateupdate.valueOf());
+		$( '#commentList' ).data( 'update', Math.floor( dateupdate.valueOf() / 1000 ) );
 	}
+	
 	function insertComment_a( comment_a, comment_author_a, route_a ) {
-		$(comment_a).each(function( k, v ) {
-			addComment(v, comment_author_a[v.id], route_a[v.id])
-		})
+		
+		$( comment_a ).each( function( k, v ) {
+			addComment( v, (comment_author_a[ v.id ] !== undefined) ? comment_author_a[ v.id ].username : null, route_a[ v.id ] )
+		} )
 	}
+	
 	function updateComment_a( comment_a ) {
-		$(comment_a).each(function( k, v ) {
-			updateComment(v);
-		})
+		$( comment_a ).each( function( k, v ) {
+			updateComment( v );
+		} )
 	}
+	
 	function deleteComment_a( comment_a ) {
-		$(comment_a).each(function( k, v ) {
-			deleteComment(v, k);
-		})
+		$( comment_a ).each( function( k, v ) {
+			deleteComment( v, k );
+		} )
 	}
 } );

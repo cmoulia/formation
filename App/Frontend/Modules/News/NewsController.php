@@ -161,37 +161,46 @@ class NewsController extends BackController {
 	}
 	
 	public function executeRefreshCommentJson( HTTPRequest $request ) {
-		$page_comments = $request->postData('ids');
-		$dateupdate = new \DateTime();
-		$dateupdate->setTimestamp($request->postData('date'));
-		$newsid = $request->getData('id');
+		$page_comments = $request->postData( 'ids' );
+		$dateupdate    = new \DateTime();
+		$dateupdate->setTimestamp( $request->postData( 'date' ) );
+		$newsid = $request->getData( 'id' );
 		
-//		var_dump($page_comments, $dateupdate, $newsid);die;
-		$comment_new_a = $this->managers->getManagerOf('Comments')->getListOfFilterByAfterDate($newsid, $dateupdate);
-		$route_a = array();
+		//		var_dump($page_comments, $dateupdate, $newsid);die;
+		$comment_new_a        = $this->managers->getManagerOf( 'Comments' )->getListOfFilterByAfterDate( $newsid, $dateupdate );
+		$route_a              = array();
+		$comment_new_author_a = array();
 		foreach ( $comment_new_a as $comment_new ) {
-			$comment_new_author_a[$comment_new['id']] = $this->managers->getManagerOf( 'User' )->getUnique( $comment_new[ 'fk_MEM_author' ] );
+			if ( $comment_new[ 'fk_MEM_author' ] ) {
+				$comment_new_author_a[ $comment_new[ 'id' ] ] = $this->managers->getManagerOf( 'User' )->getUnique( $comment_new[ 'fk_MEM_author' ] );
+			}
 			if ( $this->app->user()->isAuthenticated() ) {
-				$route_a[$comment_new['id']] = array(
-					"update"      => RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'updateComment', false, [ 'id' => $comment_new[ 'id' ] ] ),
-					"update_text" => ( $this->app->user()->isAdmin() ) ? 'Modérer' : 'Modifier',
-					"delete"      => RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'deleteComment', false, [ 'id' => $comment_new[ 'id' ] ] ),
-					"delete_json" => RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'deleteCommentJson', 'json', [ 'id' => $comment_new[ 'id' ] ] ),
-					"delete_text" => 'Supprimer',
-				);
+				if ( $this->app->user()->isAdmin()
+					 || $this->app->user()->getAttribute( 'user' )[ 'id' ] == $comment_new[ 'fk_MEM_author' ]
+				) {
+					$route_a[ $comment_new[ 'id' ] ] = array(
+						"update"      => RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'updateComment', false, [ 'id' => $comment_new[ 'id' ] ] ),
+						"update_text" => ( $this->app->user()->isAdmin()
+										   && ( $comment_new_author_a[ $comment_new[ 'id' ] ] ) ? $comment_new_author_a[ $comment_new[ 'id' ] ][ 'username' ]
+							: null != $this->app->user()->getAttribute( 'user' )[ 'username' ] ) ? 'Modérer' : 'Modifier',
+						"delete"      => RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'deleteComment', false, [ 'id' => $comment_new[ 'id' ] ] ),
+						"delete_json" => RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'deleteCommentJson', 'json', [ 'id' => $comment_new[ 'id' ] ] ),
+						"delete_text" => 'Supprimer',
+					);
+				}
 			}
 		}
-		$comment_delete_a = $this->managers->getManagerOf('Comments')->getListOfFilterByDeletedAfterDate($newsid, $page_comments, $dateupdate);
-		$comment_update_a = $this->managers->getManagerOf('Comments')->getListOfFilterByUpdatedAfterDate($newsid, $page_comments, $dateupdate);
+		$comment_delete_a = $this->managers->getManagerOf( 'Comments' )->getListOfFilterByDeletedAfterDate( $newsid, $page_comments, $dateupdate );
+		$comment_update_a = $this->managers->getManagerOf( 'Comments' )->getListOfFilterByUpdatedAfterDate( $newsid, $page_comments, $dateupdate );
 		
 		$errors = '';
 		
-		$this->page->addVar('comment_new_a', $comment_new_a);
-		$this->page->addVar('comment_new_author_a', isset($comment_new_author_a)?$comment_new_author_a:'');
-		$this->page->addVar('comment_delete_a', $comment_delete_a);
-		$this->page->addVar('comment_update_a', $comment_update_a);
-		$this->page->addVar('route_a', $route_a);
-		$this->page->addVar('errors', $errors);
+		$this->page->addVar( 'comment_new_a', $comment_new_a );
+		$this->page->addVar( 'comment_new_author_a', $comment_new_author_a );
+		$this->page->addVar( 'comment_delete_a', $comment_delete_a );
+		$this->page->addVar( 'comment_update_a', $comment_update_a );
+		$this->page->addVar( 'route_a', $route_a );
+		$this->page->addVar( 'errors', $errors );
 	}
 	
 	public function executeShow( HTTPRequest $request ) {
@@ -298,7 +307,8 @@ class NewsController extends BackController {
 			$comment = new Comment( [
 				'fk_NNC'        => $request->getData( 'news' ),
 				'author'        => $request->postData( 'author' ),
-				'fk_MEM_author' => $this->app->user()->getAttribute( 'user' )[ 'id' ],
+				'fk_MEM_author' => ( $this->app->user()->isAdmin() ) ? null : $this->app->user()->getAttribute( 'user' )[ 'id' ],
+				'fk_MEM_admin'  => ( $this->app->user()->isAdmin() ) ? $this->app->user()->getAttribute( 'user' )[ 'id' ] : null,
 				'content'       => $request->postData( 'content' ),
 			] );
 			

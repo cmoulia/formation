@@ -40,7 +40,7 @@
 					<?php endif; ?>
 				</ul>
 			</nav>
-			
+			<script src="/js/jquery-3.2.0.min.js"></script>
 			<div id="content-wrap">
 				<section id="main">
 					<?php if ( $user->hasFlash() ): ?>
@@ -52,7 +52,5 @@
 			</div>
 			<footer></footer>
 		</div>
-		<script src="/js/jquery-3.2.0.min.js"></script>
-		<script src="/js/script.js"></script>
 	</body>
 </html>
