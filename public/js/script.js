@@ -16,10 +16,8 @@ $( function() {
 		var formserialize = $( this ).serialize();
 		$( 'input[type="submit"]', $( '.js-form-comment' ) ).prop( 'disabled', true );
 		$.each( $( this ).serializeArray(), function( k, v ) {
-			//console.log( v );
 			if ( v.value == "" ) {
-				//console.log( $( this ) );
-				$( '[name="' + v.name + '"]', $this ).after( 'Fail' );
+				$( '[name="' + v.name + '"]', $this ).after( 'Merci de remplir ce champ' );
 			}
 		} );
 		if ( contentvalue.length != 0 && authorvalue.length != 0 ) {
@@ -104,21 +102,22 @@ $( function() {
 			var commentHTML = '<fieldset data-id="{{comment_id}}">' + '<legend><span>Posté par </span><strong>{{comment_author}}</strong><span class="date-add"> le {{comment_date}}</span> <span class="date-update"></span>' + '{{links}}' + '</legend>' + '<p class="comment content">{{comment_content}}</p> ' + '</fieldset>';
 			var date        = new Date( comment.dateadd.date );
 			var datestring  = ("0" + date.getDate()).slice( -2 ) + '/' + ("0" + date.getMonth()).slice( -2 ) + '/' + date.getFullYear() + ' à ' + ("0" + date.getHours()).slice( -2 ) + 'h' + ("0" + date.getMinutes()).slice( -2 );
-			commentHTML     = commentHTML.replace( '{{comment_id}}', comment.id );
-			commentHTML     = commentHTML.replace( '{{comment_author}}', comment.author ? comment.author : author );
-			commentHTML     = commentHTML.replace( '{{comment_date}}', datestring );
-			commentHTML     = commentHTML.replace( '{{comment_content}}', comment.content );
+			commentHTML     = commentHTML.replace( '{{comment_id}}', comment.id )
+										 .replace( '{{comment_author}}', comment.author ? comment.author : author )
+										 .replace( '{{comment_date}}', datestring )
+										 .replace( '{{comment_content}}', comment.content );
 			if ( routes.length != 0 ) {
-				commentHTML = commentHTML.replace( '{{links}}', linksHTML );
-				commentHTML = commentHTML.replace( '{{comment_update}}', routes.update_text );
-				commentHTML = commentHTML.replace( '{{comment_update_route}}', routes.update );
-				commentHTML = commentHTML.replace( '{{comment_delete}}', routes.delete_text );
-				commentHTML = commentHTML.replace( '{{comment_delete_route}}', routes.delete );
-				commentHTML = commentHTML.replace( '{{comment_delete_route_json}}', routes.delete_json );
+				commentHTML = commentHTML.replace( '{{links}}', linksHTML )
+										 .replace( '{{comment_update}}', routes.update_text )
+										 .replace( '{{comment_update_route}}', routes.update )
+										 .replace( '{{comment_delete}}', routes.delete_text )
+										 .replace( '{{comment_delete_route}}', routes.delete )
+										 .replace( '{{comment_delete_route_json}}', routes.delete_json );
 			}
 			else {
 				commentHTML = commentHTML.replace( '{{links}}', '' );
 			}
+			
 			if ( $( '#commentList' ).children().length == 0 ) {
 				$( '#commentList' ).fadeIn();
 				$( '.js-form-comment' ).last().parent().fadeIn();
@@ -177,11 +176,13 @@ $( function() {
 			success : function( data, status, error ) {
 				refreshComment( data.content );
 				var date = new Date();
-				console.log(date.valueOf()/1000);
+				console.log( date.valueOf() / 1000 );
 			}
 			
 		} );
-		return setTimeout( refresh, 15000 );
+		return setTimeout( function() {
+			timeout_id = refresh();
+		}, 15000 );
 	}
 	
 	function refreshComment( content ) {
@@ -196,18 +197,18 @@ $( function() {
 		
 		$( comment_a ).each( function( k, v ) {
 			addComment( v, (comment_author_a[ v.id ] !== undefined) ? comment_author_a[ v.id ].username : null, route_a[ v.id ] )
-		} )
+		} );
 	}
 	
 	function updateComment_a( comment_a ) {
 		$( comment_a ).each( function( k, v ) {
 			updateComment( v );
-		} )
+		} );
 	}
 	
 	function deleteComment_a( comment_a ) {
 		$( comment_a ).each( function( k, v ) {
 			deleteComment( v, k );
-		} )
+		} );
 	}
 } );

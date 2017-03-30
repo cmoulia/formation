@@ -59,13 +59,29 @@ class CommentsManagerPDO extends CommentsManager {
 		return $comment_a;
 	}
 	
+	/**
+	 * Function that return comments that were deleted
+	 * Can be done with a temp table and a left join (no need for array manipulation)
+	 *
+	 * @param           $newsId
+	 * @param array     $comment_id_a
+	 * @param \DateTime $dateupdate
+	 *
+	 * @return array
+	 */
 	public function getListOfFilterByDeletedAfterDate( $newsId, array $comment_id_a, \DateTime $dateupdate ) {
-		$inQuery = implode( ',', $comment_id_a );
-		$q       = $this->dao->prepare( 'SELECT NCC_id
- 										 FROM T_NEW_commentc
- 								 		 WHERE NCC_fk_NNC = :news AND NCC_id IN (' . $inQuery . ')' );
-		$q->bindValue( ':news', $newsId, \PDO::PARAM_INT );
-		$q->execute();
+		$vars = "";
+		foreach ( $comment_id_a as $key => $comment_id ) {
+			$vars .= ':var' . $key . ', ';
+			$parameters[ 'var' . $key ] = $comment_id;
+		}
+		$vars = rtrim( $vars, ", " );
+		$sql = "SELECT NCC_id, NCC_content, NCC_dateupdate
+ 				FROM T_NEW_commentc
+ 				WHERE NCC_fk_NNC = :news AND NCC_id IN ($vars)";
+		$parameters['news'] = $newsId;
+		$q = $this->dao->prepare( $sql );
+		$q->execute( $parameters );
 		$q->setFetchMode( \PDO::FETCH_NUM );
 		
 		if ( !empty( $comment_a = $q->fetchAll() ) ) {
@@ -76,14 +92,21 @@ class CommentsManagerPDO extends CommentsManager {
 		return array_values( $comment_a );
 	}
 	
+	
 	public function getListOfFilterByUpdatedAfterDate( $newsId, array $comment_id_a, \DateTime $dateupdate ) {
-		$inQuery = implode( ',', $comment_id_a );
-		$q       = $this->dao->prepare( 'SELECT NCC_id, NCC_content, NCC_dateupdate
- 								  FROM T_NEW_commentc
- 								  WHERE NCC_fk_NNC = :news AND NCC_dateupdate > :date AND NCC_id IN (' . $inQuery . ')' );
-		$q->bindValue( ':news', $newsId, \PDO::PARAM_INT );
-		$q->bindValue( ':date', $dateupdate->format( 'Y-m-d H:i:s' ) );
-		$q->execute();
+		$vars = "";
+		foreach ( $comment_id_a as $key => $comment_id ) {
+			$vars .= ':var' . $key . ', ';
+			$parameters[ 'var' . $key ] = $comment_id;
+		}
+		$vars = rtrim( $vars, ", " );
+		$sql = "SELECT NCC_id, NCC_content, NCC_dateupdate
+ 				FROM T_NEW_commentc
+ 				WHERE NCC_fk_NNC = :news AND NCC_dateupdate > :date AND NCC_id IN ($vars)";
+		$parameters['news'] = $newsId;
+		$parameters['date'] = $dateupdate->format( 'Y-m-d H:i:s' );
+		$q = $this->dao->prepare( $sql );
+		$q->execute( $parameters );
 		$q->setFetchMode( \PDO::FETCH_ASSOC );
 		
 		$comment_a = $q->fetchAll();
@@ -92,7 +115,6 @@ class CommentsManagerPDO extends CommentsManager {
 			$comment[ 'NCC_dateupdate' ] = new \DateTime( $comment[ 'NCC_dateupdate' ] );
 			$comment_a[ $key ]           = new Comment( $comment );
 		}
-		
 		return $comment_a;
 	}
 	
