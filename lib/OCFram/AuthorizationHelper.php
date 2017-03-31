@@ -31,27 +31,31 @@ trait AuthorizationHelper {
 		// If there's a rule
 		if ( isset( $this->routes_rules[ $this->app->user()->getRole() . '|' . $action ] ) ) {
 			// If we are allowed
-			$this->checkCorrectRight($action);
+			if ( $this->routes_rules[ $this->app->user()->getRole() . '|' . $action ] ) {
+				$this->checkCorrectRight( $action );
+			}
 		}
 		// if there's no rule
 		else {
-			$this->checkCorrectRight($action);
+			$this->checkCorrectRight( $action );
+			
 			return true;
 		}
 	}
 	
-	private function checkCorrectRight($action){
-		if ($this->routes_rules[ $this->app->user()->getRole() . '|' . $action ]){
+	private function checkCorrectRight( $action ) {
+		if ( !empty( $this->action_rules ) ) {
 			foreach ( $this->action_rules[ $action ] as $action_rule ) {
 				if ( is_callable( [
 					$this,
 					$action_rule,
-				] ) ){
-					if (!$this->$action_rule()){
+				] ) ) {
+					if ( !$this->$action_rule() ) {
 						return false;
 					}
 				}
 			}
 		}
+		return true;
 	}
 }
