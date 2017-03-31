@@ -1,4 +1,6 @@
 <?php
+use App\Frontend\Modules\News\NewsController;
+
 /** @var \Entity\News $news */
 /** @var \OCFram\User $user */
 /** @var \Entity\Comment[] $comment_a */
@@ -7,18 +9,16 @@
 <p style="text-align: right;">
 	<small><em>Modifiée le <?= $news[ 'dateupdate' ]->format( 'd/m/Y à H\hi' ) ?></em></small>
 </p>
+<p>Par <em><?= htmlentities( $news[ 'fk_MEM_author' ][ 'username' ] ) ?></em>, le <?= $news[ 'dateadd' ]->format( 'd/m/Y à H\hi' ) ?></p>
 <?php if ( $news[ 'fk_MEM_admin' ] ): ?>
-	<p>
-		Par <em><?= htmlentities( $news[ 'fk_MEM_author' ][ 'username' ] ) ?></em>, le <?= $news[ 'dateadd' ]->format( 'd/m/Y à H\hi' ) ?>
-	</p>
+	<p>Modéré par <em><?= htmlentities( $news[ 'fk_MEM_admin' ][ 'username' ] ) ?></em></p>
 <?php endif; ?>
 
 <?php if ( $user->isAuthenticated() && $news[ 'fk_MEM_author' ][ 'username' ] == $user->getAttribute( 'user' )[ 'username' ] ): ?>
-	<p>Modéré par <em><?= htmlentities( $news[ 'fk_MEM_admin' ][ 'username' ] ) ?></em></p>
-	<a href="<?= \OCFram\RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'update', false, [ 'id' => $news[ 'id' ] ] ) ?>">Modifier la news</a>
+	<a href="<?= NewsController::getLinkTo( 'update', false, [ 'id' => $news[ 'id' ] ] ) ?>">Modifier la news</a>
+	<a href="<?= NewsController::getLinkTo( 'delete', false, [ 'id' => $news[ 'id' ] ] ) ?>">Supprimer la news</a>
 <?php endif; ?>
 
-<a href="<?= \OCFram\RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'delete', false, [ 'id' => $news[ 'id' ] ] ) ?>">Supprimer la news</a>
 <h2 class="news title"><?= htmlentities( $news[ 'title' ] ) ?></h2>
 
 <?php if ( $news[ 'dateadd' ] != $news[ 'dateupdate' ] ): ?>
@@ -32,7 +32,11 @@
 	<?php require 'includes/comment.form.php' ?>
 </div>
 
-<div id="commentList" class="<?= ( $empty ) ? 'hidden' : '' ?>" data-action="<?= \OCFram\RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'refreshCommentJson', 'json', [ 'id' => $news[ 'id' ] ] ) ?>" data-update="<?= date_create()->getTimestamp() ?>">
+<div id="commentList"
+	 class="<?= ( $empty ) ? 'hidden' : '' ?>"
+	 data-action="<?= NewsController::getLinkTo( 'refreshCommentJson', 'json', [ 'id' => $news[ 'id' ] ] ) ?>"
+	 data-update="<?= date_create()->getTimestamp() ?>"
+>
 	<?php foreach ( $comment_a as $comment ): ?>
 		<?php require 'includes/comment.part.php'; ?>
 	<?php endforeach; ?>

@@ -1,7 +1,9 @@
 <?php
 /** @var \Entity\Role[] $role_a */
+use App\Backend\Modules\Role\RoleController;
+
 ?>
-<p><a href="<?= \OCFram\RouterFactory::getRouter('Backend')->getUrl( 'Role', 'insert') ?>"><img src="/img/update.png" alt="Ajouter" />Ajouter un r&ocirc;le</a></p>
+<p><a href="<?= RoleController::getLinkTo( 'insert' ) ?>"><img src="/img/update.png" alt="Ajouter" />Ajouter un r&ocirc;le</a></p>
 
 <table>
 	<tr>
@@ -11,11 +13,11 @@
 	</tr>
 	<?php foreach ( $role_a as $role ): ?>
 		<tr>
-			<td><?= htmlentities($role[ 'name' ]) ?></td>
-			<td class="role content"><?= htmlentities($role[ 'description' ]) ?></td>
+			<td><?= htmlentities( $role[ 'name' ] ) ?></td>
+			<td class="role content"><?= htmlentities( $role[ 'description' ] ) ?></td>
 			<td>
-				<a href="<?= \OCFram\RouterFactory::getRouter('Backend')->getUrl( 'Role', 'update', false, ['id'=> $role[ 'id' ]]) ?>"><img src="/img/update.png" alt="Modifier" /></a>
-				<a href="<?= \OCFram\RouterFactory::getRouter('Backend')->getUrl( 'Role', 'delete', false, ['id'=> $role[ 'id' ]]) ?>"><img src="/img/delete.png" alt="Supprimer" /></a>
+				<a href="<?= RoleController::getLinkTo( 'update', null, [ 'id' => $role[ 'id' ] ] ) ?>"><img src="/img/update.png" alt="Modifier" /></a>
+				<a href="<?= RoleController::getLinkTo( 'delete', null, [ 'id' => $role[ 'id' ] ] ) ?>"><img src="/img/delete.png" alt="Supprimer" /></a>
 			</td>
 		</tr>
 	<?php endforeach; ?>

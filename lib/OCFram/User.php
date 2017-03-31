@@ -5,6 +5,10 @@ namespace OCFram;
 session_start();
 
 class User {
+	const DEFAULTROLE = 'visitor';
+	const AUTHENTICATEDROLE = 'user';
+	const ADMINROLE = 'admin';
+	
 	public function getAttribute( $attr ) {
 		return isset( $_SESSION[ $attr ] ) ? $_SESSION[ $attr ] : null;
 	}
@@ -33,11 +37,11 @@ class User {
 	}
 	
 	public function isAdmin() {
-		return $_SESSION[ 'role' ] == $this->getAdmin();
+		return $_SESSION[ 'role' ] == $this->encrypt(self::ADMINROLE);
 	}
 	
-	public function getAdmin(){
-		return $this->encrypt('admin');
+	public function getEncrypted($value){
+		return $this->encrypt($value);
 	}
 	
 	public function setAuthenticated( $authenticated = true ) {
@@ -47,7 +51,15 @@ class User {
 		$_SESSION[ 'auth' ] = $authenticated;
 	}
 	
-	public function setRole( $role = 'user' ) {
+	public function isRole($role){
+		return $_SESSION['role'] == $this->encrypt($role);
+	}
+	
+	public function getRole(){
+		return $_SESSION['role'];
+	}
+	
+	public function setRole( $role = self::AUTHENTICATEDROLE ) {
 		if ( !is_string( $role ) ) {
 			throw new \InvalidArgumentException( 'La valeur spécifiée à la méthode OCFram\User::setRole() doit être un string' );
 		}

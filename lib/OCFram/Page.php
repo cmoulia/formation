@@ -22,7 +22,7 @@ class Page extends ApplicationComponent {
 		if ( !file_exists( $this->contentFile ) ) {
 			throw new \RuntimeException( 'La vue spécifiée n\'existe pas: ' . $this->contentFile );
 		}
-		switch ($this->format){
+		switch ( $this->format ) {
 			case 'html':
 				return $this->getGeneratedPageHTML();
 				break;
@@ -30,9 +30,8 @@ class Page extends ApplicationComponent {
 				return $this->getGeneratedPageJSON();
 				break;
 			default:
-				throw new \RuntimeException('Le format '.$this->format.' n\est pas encore géré');
+				throw new \RuntimeException( 'Le format ' . $this->format . ' n\est pas encore géré' );
 		}
-		
 	}
 	
 	private function getGeneratedPageHTML() {
@@ -64,7 +63,7 @@ class Page extends ApplicationComponent {
 		
 		$content = require $this->contentFile;
 		
-		return json_encode(require __DIR__ . '/../../App/' . $this->app->name() . '/Templates/layout.json.php');
+		return json_encode( require __DIR__ . '/../../App/' . $this->app->name() . '/Templates/layout.json.php' );
 	}
 	
 	public function setContentFile( $contentFile ) {
@@ -86,4 +85,5 @@ class Page extends ApplicationComponent {
 		
 		$this->format = $format;
 	}
+
 }

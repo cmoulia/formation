@@ -1,4 +1,8 @@
-<h2>Connexion / <a href="<?= \OCFram\RouterFactory::getRouter('Frontend')->getUrl( 'Connexion', 'register') ?>">Inscription</a></h2>
+<?php
+use App\Frontend\Modules\Connexion\ConnexionController;
+
+?>
+<h2>Connexion / <a href="<?= ConnexionController::getLinkTo( 'register' ) ?>">Inscription</a></h2>
 
 <form action="" method="post">
 	<label>Pseudo</label>

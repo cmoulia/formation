@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cmoulia
- * Date: 27/02/2017
- * Time: 16:32
- */
-
 
 date_default_timezone_set( 'UTC' );
 
@@ -35,6 +28,9 @@ $formBuilderLoader->register();
 
 $appClass = 'App\\' . $_GET[ 'app' ] . '\\' . $_GET[ 'app' ] . 'Application';
 
-/** @var OCFRAM\Application $app */
+/** @var OCFram\Application $app */
 $app = new $appClass;
+if ( !$app->user()->isAuthenticated() ) {
+	$app->user()->setRole( \OCFram\User::DEFAULTROLE );
+}
 $app->run();

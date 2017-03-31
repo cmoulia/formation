@@ -1,6 +1,7 @@
 <?php
 
 return [
-	"texte" => "value_exemple",
+	"status" => "status_text",
+	"error_a" => "error array",
 	"content" => $content,
 ];

@@ -1,4 +1,9 @@
-<?php /** @var \OCFram\User $user */ ?>
+<?php
+/** @var \OCFram\User $user */
+/** @var \OCFram\MenuElement $element */
+use App\Frontend\Modules\News\NewsController;
+
+?>
 
 <!DOCTYPE HTML>
 <!--suppress HtmlUnknownTarget -->
@@ -15,29 +20,14 @@
 	<body>
 		<div id="wrap">
 			<header>
-				<h1><a href="<?= \OCFram\RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'index' ) ?>">Mon super site</a></h1>
+				<h1><a href="<?= NewsController::getLinkTo( 'index' ) ?>">Mon super site</a></h1>
 				<p><?= ( $user->getAttribute( 'user' ) ) ? 'Bienvenue ' . $user->getAttribute( 'user' )[ 'username' ] . ' : ' . $user->getAttribute( 'user' )[ 'firstname' ] . ' ' . $user->getAttribute( 'user' )[ 'lastname' ] : 'Bienvenue sur mon blog collaboratif !' ?></p>
 			</header>
-			
 			<nav>
 				<ul>
-					<?php if ( $user->isAuthenticated() && $user->isAdmin() ): ?>
-						<li><a href="<?= \OCFram\RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'index' ) ?>">Front Office</a></li>
-						<li><a href="<?= \OCFram\RouterFactory::getRouter( 'Backend' )->getUrl( 'News', 'index' ) ?>">Back Office</a></li>
-						<li><a href="<?= \OCFram\RouterFactory::getRouter( 'Frontend' )->getUrl( 'Connexion', 'logout' ) ?>">D&eacute;connexion</a></li>
-						<li><a href="<?= \OCFram\RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'insert' ) ?>">Ajouter une news</a></li>
-						<li><a href="<?= \OCFram\RouterFactory::getRouter( 'Backend' )->getUrl( 'Role', 'insert' ) ?>">Liste des r&ocirc;les</a></li>
-						<li><a href="<?= \OCFram\RouterFactory::getRouter( 'Backend' )->getUrl( 'User', 'index' ) ?>">Liste des utilisateurs</a></li>
-					<?php elseif ( $user->isAuthenticated() && !$user->isAdmin() ): ?>
-						<li><a href="<?= \OCFram\RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'index' ) ?>">Accueil</a></li>
-						<li><a href="<?= \OCFram\RouterFactory::getRouter( 'Frontend' )->getUrl( 'Connexion', 'logout' ) ?>">D&eacute;connexion</a></li>
-						<li><a href="<?= \OCFram\RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'insert' ) ?>">Ajouter une news</a></li>
-						<!--						<li><a href="/myaccount">Mon compte</a></li>-->
-					<?php else: ?>
-						<li><a href="<?= \OCFram\RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'index' ) ?>">Accueil</a></li>
-						<li><a href="<?= \OCFram\RouterFactory::getRouter( 'Frontend' )->getUrl( 'Connexion', 'login' ) ?>">Connexion</a></li>
-						<li><a href="<?= \OCFram\RouterFactory::getRouter( 'Frontend' )->getUrl( 'Connexion', 'register' ) ?>">Inscription</a></li>
-					<?php endif; ?>
+					<?php foreach ( $menu as $element ): ?>
+						<li><a href="<?= $element->link() ?>"><?= $element->label() ?></a></li>
+					<?php endforeach; ?>
 				</ul>
 			</nav>
 			<script src="/js/jquery-3.2.0.min.js"></script>

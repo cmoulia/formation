@@ -2,7 +2,9 @@
 
 namespace OCFram;
 
-abstract class BackController extends ApplicationComponent {
+use App\Frontend\Modules\News\NewsController;
+
+abstract class BackController extends ApplicationComponent implements LinkHelper {
 	protected $action   = '';
 	protected $module   = '';
 	protected $page     = null;
@@ -19,6 +21,8 @@ abstract class BackController extends ApplicationComponent {
 		$this->setAction( $action );
 		$this->setView( $action, $format );
 	}
+	
+	use AuthorizationHelper;
 	
 	public function setModule( $module ) {
 		if ( !is_string( $module ) || empty( $module ) ) {
@@ -40,11 +44,12 @@ abstract class BackController extends ApplicationComponent {
 		if ( !is_string( $view ) || empty( $view ) ) {
 			throw new \InvalidArgumentException( 'View has to be a valid string' );
 		}
-		if ($format != 'html')
-			$view = str_replace(ucfirst($format),'',$view);
+		if ( $format != 'html' ) {
+			$view = str_replace( ucfirst( $format ), '', $view );
+		}
 		$this->view = $view;
 		
-		$this->page->setContentFile( __DIR__ . '/../../App/' . $this->app->name() . '/Modules/' . $this->module . '/Views/' . $this->view .'.'.$format. '.php' );
+		$this->page->setContentFile( __DIR__ . '/../../App/' . $this->app->name() . '/Modules/' . $this->module . '/Views/' . $this->view . '.' . $format . '.php' );
 	}
 	
 	public function execute() {
@@ -55,7 +60,7 @@ abstract class BackController extends ApplicationComponent {
 			$method,
 		] )
 		) {
-			throw new \RuntimeException( 'Action "' . $this->action . '" is not defined for this module: '.$this->module );
+			throw new \RuntimeException( 'Action "' . $this->action . '" is not defined for this module: ' . $this->module );
 		}
 		
 		$this->$method( $this->app->httpRequest() );
@@ -63,5 +68,12 @@ abstract class BackController extends ApplicationComponent {
 	
 	public function page() {
 		return $this->page;
+	}
+	
+	protected function checkAccess( $action ) {
+		if ( !$this->checkRights( $action ) ) {
+			$this->app->user()->setFlash( 'Access Forbidden !' );
+			$this->app->httpResponse()->redirect( NewsController::getLinkTo( 'index' ) );
+		}
 	}
 }

@@ -4,6 +4,7 @@ namespace App\Frontend\Modules\News;
 
 use \Entity\News;
 use FormBuilder\NewsFormBuilder;
+use OCFram\Application;
 use \OCFram\BackController;
 use OCFram\Field;
 use \OCFram\Form;
@@ -14,8 +15,23 @@ use \OCFram\FormHandler;
 use OCFram\Page;
 use OCFram\Router;
 use OCFram\RouterFactory;
+use OCFram\User;
 
 class NewsController extends BackController {
+	public function __construct( Application $app, $module, $action, $format ) {
+		parent::__construct( $app, $module, $action, $format );
+		
+		$defaultroleencrypted = $app->user()->getEncrypted( User::DEFAULTROLE );
+		
+		$this->addRouteRule( $defaultroleencrypted, 'delete', false );
+		$this->addRouteRule( $defaultroleencrypted, 'deleteComment', false );
+		$this->addRouteRule( $defaultroleencrypted, 'deleteCommentJson', false );
+		$this->addRouteRule( $defaultroleencrypted, 'insert', false );
+		$this->addRouteRule( $defaultroleencrypted, 'update', false );
+		$this->addRouteRule( $defaultroleencrypted, 'updateComment', false );
+		parent::checkAccess( $action );
+	}
+	
 	public function executeDelete( HTTPRequest $request ) {
 		/** @var News $news */
 		$news = $this->managers->getManagerOf( 'News' )->getUnique( $request->getData( 'id' ) );
@@ -28,7 +44,7 @@ class NewsController extends BackController {
 		// If requested news is not his own
 		if ( $news->fk_MEM_author() != $this->app->user()->getAttribute( 'user' )[ 'id' ] ) {
 			$this->app->user()->setFlash( 'Vous n\'êtes pas autorisé à supprimer cette news' );
-			$this->app->httpResponse()->redirect( RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'index' ) );
+			$this->app->httpResponse()->redirect( self::getLinkTo( 'index' ) );
 		}
 		
 		// We delete the news (automatically delete the comments)
@@ -47,7 +63,7 @@ class NewsController extends BackController {
 		
 		$this->app->user()->setFlash( 'Le commentaire a bien été supprimé !' );
 		
-		$this->app->httpResponse()->redirect( RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'show', false, [ 'id' => $newsId ] ) );
+		$this->app->httpResponse()->redirect( self::getLinkTo( 'index', null, [ 'id' => $newsId ] ) );
 	}
 	
 	public function executeDeleteCommentJson( HTTPRequest $request ) {
@@ -139,10 +155,10 @@ class NewsController extends BackController {
 			$routes = [];
 			if ( $this->app->user()->isAuthenticated() ) {
 				$routes = [
-					"update"      => RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'updateComment', false, [ 'id' => $comment[ 'id' ] ] ),
+					"update"      => self::getLinkTo( 'updateComment', null, [ 'id' => $comment[ 'id' ] ] ),
 					"update_text" => ( $this->app->user()->isAdmin() ) ? 'Modérer' : 'Modifier',
-					"delete"      => RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'deleteComment', false, [ 'id' => $comment[ 'id' ] ] ),
-					"delete_json" => RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'deleteCommentJson', 'json', [ 'id' => $comment[ 'id' ] ] ),
+					"delete"      => self::getLinkTo( 'deleteComment', null, [ 'id' => $comment[ 'id' ] ] ),
+					"delete_json" => self::getLinkTo( 'deleteCommentJson', 'json', [ 'id' => $comment[ 'id' ] ] ),
 					"delete_text" => 'Supprimer',
 				];
 			}
@@ -179,12 +195,12 @@ class NewsController extends BackController {
 					 || $this->app->user()->getAttribute( 'user' )[ 'id' ] == $comment_new[ 'fk_MEM_author' ]
 				) {
 					$route_a[ $comment_new[ 'id' ] ] = array(
-						"update"      => RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'updateComment', false, [ 'id' => $comment_new[ 'id' ] ] ),
+						"update"      => self::getLinkTo( 'updateComment', null, [ 'id' => $comment_new[ 'id' ] ] ),
 						"update_text" => ( $this->app->user()->isAdmin()
 										   && ( $comment_new_author_a[ $comment_new[ 'id' ] ] ) ? $comment_new_author_a[ $comment_new[ 'id' ] ][ 'username' ]
 							: null != $this->app->user()->getAttribute( 'user' )[ 'username' ] ) ? 'Modérer' : 'Modifier',
-						"delete"      => RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'deleteComment', false, [ 'id' => $comment_new[ 'id' ] ] ),
-						"delete_json" => RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'deleteCommentJson', 'json', [ 'id' => $comment_new[ 'id' ] ] ),
+						"delete"      => self::getLinkTo( 'deleteComment', false, [ 'id' => $comment_new[ 'id' ] ] ),
+						"delete_json" => self::getLinkTo( 'deleteCommentJson', 'json', [ 'id' => $comment_new[ 'id' ] ] ),
 						"delete_text" => 'Supprimer',
 					);
 				}
@@ -209,7 +225,7 @@ class NewsController extends BackController {
 		
 		if ( empty( $news ) ) {
 			$this->app->user()->setFlash( 'La news n\'existe pas' );
-			$this->app->httpResponse()->redirect( RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'index' ) );
+			$this->app->httpResponse()->redirect( self::getLinkTo( 'index' ) );
 		}
 		
 		// We get the data linked to the foreign key
@@ -247,7 +263,7 @@ class NewsController extends BackController {
 		// If requested news is not his own
 		if ( $news->fk_MEM_author() != $this->app->user()->getAttribute( 'user' )[ 'id' ] ) {
 			$this->app->user()->setFlash( 'Vous n\'êtes pas autorisé à modifier cette news' );
-			$this->app->httpResponse()->redirect( RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'index' ) );
+			$this->app->httpResponse()->redirect( self::getLinkTo( 'index' ) );
 		}
 		
 		$this->processNewsForm( $request );
@@ -295,7 +311,7 @@ class NewsController extends BackController {
 		
 		if ( $formHandler->process() ) {
 			$this->app->user()->setFlash( $isNew ? 'La news a bien été ajoutée !' : 'La news a bien été modifiée !' );
-			$this->app->httpResponse()->redirect( RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'index' ) );
+			$this->app->httpResponse()->redirect( self::getLinkTo( 'index' ) );
 		}
 		
 		$this->page->addVar( 'form', $form->createView() );
@@ -341,9 +357,14 @@ class NewsController extends BackController {
 		
 		if ( $formHandler->process() ) {
 			$this->app->user()->setFlash( $isNew ? 'Le commentaire a bien été ajouté' : 'Le commentaire a bien été modifié' );
-			$this->app->httpResponse()->redirect( RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'show', false, [ 'id' => $comment->fk_NNC() ] ) );
+			$this->app->httpResponse()->redirect( self::getLinkTo( 'show', null, [ 'id' => $comment->fk_NNC() ] ) );
 		}
 		
 		$this->page->addVar( 'form', $form->createView() );
+	}
+	
+	static public function getLinkTo( $action, $format = 'html', array $args = [] ) {
+		//		return RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'index' );
+		return RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', $action, is_null( $format ) ? 'html' : $format, $args );
 	}
 }

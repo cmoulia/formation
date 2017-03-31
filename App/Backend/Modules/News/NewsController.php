@@ -2,6 +2,7 @@
 
 namespace App\Backend\Modules\News;
 
+use \App\Frontend\Modules\News\NewsController as FrontNewsController;
 use Entity\Comment;
 use Entity\News;
 use FormBuilder\CommentFormBuilder;
@@ -74,9 +75,8 @@ class NewsController extends BackController {
 		
 		if ( $formHandler->process() ) {
 			$this->app->user()->setFlash( $news->isNew() ? 'La news a bien été ajoutée !' : 'La news a bien été modérée !' );
-			$this->app->httpResponse()->redirect( RouterFactory::getRouter( 'Backend' )->getUrl( 'News', 'index' ) );
+			$this->app->httpResponse()->redirect( self::getLinkTo( 'index' ) );
 		}
-		
 		
 		$this->page->addVar( 'form', $form->createView() );
 	}
@@ -107,9 +107,14 @@ class NewsController extends BackController {
 		
 		if ( $formHandler->process() ) {
 			$this->app->user()->setFlash( 'Le commentaire a bien été modifié' );
-			$this->app->httpResponse()->redirect( RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'show', false, [ 'id' => $comment->fk_NNC() ] ) );
+			$this->app->httpResponse()->redirect( FrontNewsController::getLinkTo( 'show', null, [ 'id' => $comment->fk_NNC() ] ) );
 		}
 		
 		$this->page->addVar( 'form', $form->createView() );
+	}
+	
+	static function getLinkTo( $action, $format = 'html', array $args = [] ) {
+		//		return RouterFactory::getRouter( 'Backend' )->getUrl( 'News', 'index' );
+		return RouterFactory::getRouter( 'Backend' )->getUrl( 'News', $action, is_null( $format ) ? 'html' : $format, $args );
 	}
 }

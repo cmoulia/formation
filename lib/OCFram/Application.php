@@ -2,11 +2,16 @@
 namespace OCFram;
 
 abstract class Application {
+	/** @var HTTPRequest $httpRequest */
 	protected $httpRequest;
+	/** @var HTTPResponse $httpResponse */
 	protected $httpResponse;
-	protected $name;
+	/** @var User $user */
 	protected $user;
+	/** @var Config $config */
 	protected $config;
+	protected $name;
+	protected $menu = [];
 	
 	public function __construct() {
 		$this->httpRequest  = new HTTPRequest( $this );
@@ -44,10 +49,16 @@ abstract class Application {
 	
 	// GETTERS //
 	
+	/**
+	 * @return HTTPRequest
+	 */
 	public function httpRequest() {
 		return $this->httpRequest;
 	}
 	
+	/**
+	 * @return HTTPResponse
+	 */
 	public function httpResponse() {
 		return $this->httpResponse;
 	}
@@ -56,10 +67,16 @@ abstract class Application {
 		return $this->name;
 	}
 	
+	/**
+	 * @return Config
+	 */
 	public function config() {
 		return $this->config;
 	}
 	
+	/**
+	 * @return User
+	 */
 	public function user() {
 		return $this->user;
 	}

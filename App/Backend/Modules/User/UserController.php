@@ -2,9 +2,9 @@
 
 namespace App\Backend\Modules\User;
 
+use App\Backend\Modules\News\NewsController;
 use Entity\User;
 use FormBuilder\AdminUserFormBuilder;
-use FormBuilder\UserFormBuilder;
 use \OCFram\BackController;
 use \OCFram\FormHandler;
 use \OCFram\HTTPRequest;
@@ -13,7 +13,7 @@ use OCFram\RouterFactory;
 class UserController extends BackController {
 	public function execute404( HTTPRequest $request ) {
 		$this->app->user()->setFlash( '404 Not Found !' );
-		$this->app->httpResponse()->redirect( RouterFactory::getRouter( 'Backend' )->getUrl( 'News', 'index' ) );
+		$this->app->httpResponse()->redirect( NewsController::getLinkTo( 'index' ) );
 	}
 	
 	public function executeDelete( HTTPRequest $request ) {
@@ -23,7 +23,7 @@ class UserController extends BackController {
 		
 		$this->app->user()->setFlash( 'L\'utilisateur a bien été supprimé !' );
 		
-		$this->app->httpResponse()->redirect( RouterFactory::getRouter( 'Backend' )->getUrl( 'User', 'index' ) );
+		$this->app->httpResponse()->redirect( self::getLinkTo( 'index' ) );
 	}
 	
 	public function executeIndex( HTTPRequest $request ) {
@@ -87,9 +87,14 @@ class UserController extends BackController {
 		
 		if ( $formHandler->process() ) {
 			$this->app->user()->setFlash( $isNew ? 'L\'utilisateur a bien été ajouté !' : 'L\'utilisateur a bien été modifié !' );
-			$this->app->httpResponse()->redirect( RouterFactory::getRouter( 'Backend' )->getUrl( 'User', 'index' ) );
+			$this->app->httpResponse()->redirect( self::getLinkTo( 'index' ) );
 		}
 		
 		$this->page->addVar( 'form', $form->createView() );
+	}
+	
+	static function getLinkTo( $action, $format = 'html', array $args = [] ) {
+		//		return RouterFactory::getRouter( 'Backend' )->getUrl( 'User', 'index' );
+		return RouterFactory::getRouter( 'Backend' )->getUrl( 'User', $action, is_null( $format ) ? 'html' : $format, $args );
 	}
 }

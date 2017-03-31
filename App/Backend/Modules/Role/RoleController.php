@@ -2,6 +2,7 @@
 
 namespace App\Backend\Modules\Role;
 
+use App\Backend\Modules\News\NewsController;
 use Entity\Role;
 use FormBuilder\RoleFormBuilder;
 use OCFram\BackController;
@@ -12,8 +13,10 @@ use OCFram\RouterFactory;
 class RoleController extends BackController {
 	public function executeDelete( HTTPRequest $request ) {
 		$this->managers->getManagerOf( 'Role' )->delete( $request->getData( 'id' ) );
+		
 		$this->app->user()->setFlash( 'Le rôle a bien été supprimé !' );
-		$this->app->httpResponse()->redirect( RouterFactory::getRouter('Backend')->getUrl( 'Roles', 'index' ) );
+		
+		$this->app->httpResponse()->redirect( self::getLinkTo( 'index' ) );
 	}
 	
 	public function executeIndex( HTTPRequest $request ) {
@@ -54,7 +57,7 @@ class RoleController extends BackController {
 			}
 		}
 		
-		$formBuilder = new RoleFormBuilder( $role, $this->managers->getManagerOf('Role'),$this->app->user()->isAuthenticated() );
+		$formBuilder = new RoleFormBuilder( $role, $this->managers->getManagerOf( 'Role' ), $this->app->user()->isAuthenticated() );
 		$formBuilder->build();
 		
 		$form = $formBuilder->form();
@@ -63,9 +66,14 @@ class RoleController extends BackController {
 		
 		if ( $formHandler->process() ) {
 			$this->app->user()->setFlash( $role->isNew() ? 'Le rôle a bien été ajouté !' : 'Le rôle a bien été modifié !' );
-			$this->app->httpResponse()->redirect( RouterFactory::getRouter('Backend')->getUrl( 'News', 'index' ) );
+			$this->app->httpResponse()->redirect( NewsController::getLinkTo( 'index' ) );
 		}
 		
 		$this->page->addVar( 'form', $form->createView() );
+	}
+	
+	static function getLinkTo( $action, $format = 'html', array $args = [] ) {
+		//		return RouterFactory::getRouter( 'Backend' )->getUrl( 'Role', 'index' );
+		return RouterFactory::getRouter( 'Backend' )->getUrl( 'Role', $action, is_null( $format ) ? 'html' : $format, $args );
 	}
 }

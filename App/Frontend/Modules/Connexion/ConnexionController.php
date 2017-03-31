@@ -2,6 +2,8 @@
 
 namespace App\Frontend\Modules\Connexion;
 
+use App\Frontend\Modules\News\NewsController as FrontNewsController;
+use App\Backend\Modules\News\NewsController as BackNewsController;
 use Entity\User;
 use FormBuilder\UserFormBuilder;
 use OCFram\BackController;
@@ -11,17 +13,17 @@ use OCFram\RouterFactory;
 
 class ConnexionController extends BackController {
 	public function execute404( HTTPRequest $request ) {
-		$this->app->user()->setFlash('404 Not Found !');
-		$this->app->httpResponse()->redirect( RouterFactory::getRouter('Frontend')->getUrl( 'News', 'index') );
+		$this->app->user()->setFlash( '404 Not Found !' );
+		$this->app->httpResponse()->redirect( FrontNewsController::getLinkTo( 'index' ) );
 	}
 	
 	public function executeLogin( HTTPRequest $request ) {
 		if ( $this->app->user()->isAuthenticated() && $this->app->user()->isAdmin() ) {
 			$this->app->user()->setFlash( 'Vous êtes déjà connecté' );
-			$this->app->httpResponse()->redirect( RouterFactory::getRouter('Backend')->getUrl( 'News', 'index') );
+			$this->app->httpResponse()->redirect( BackNewsController::getLinkTo( 'index' ) );
 		}
 		if ( $this->app->user()->isAuthenticated() && !$this->app->user()->isAdmin() ) {
-			$this->app->httpResponse()->redirect( RouterFactory::getRouter('Frontend')->getUrl( 'News', 'index') );
+			$this->app->httpResponse()->redirect( FrontNewsController::getLinkTo( 'index' ) );
 		}
 		
 		$this->page->addVar( 'title', 'Connexion' );
@@ -42,7 +44,7 @@ class ConnexionController extends BackController {
 					$this->app->user()->setFlash( 'Connexion réussie' );
 					if ( ( $user->fk_MRC() == 1 ) ) {
 						$this->app->user()->setRole( 'admin' );
-						$this->app->httpResponse()->redirect( RouterFactory::getRouter('Backend')->getUrl( 'News', 'index') );
+						$this->app->httpResponse()->redirect( BackNewsController::getLinkTo( 'index' ) );
 					}
 					else {
 						$this->app->user()->setRole();
@@ -62,7 +64,7 @@ class ConnexionController extends BackController {
 	public function executeLogout( HTTPRequest $request ) {
 		session_unset();
 		session_destroy();
-		$this->app->httpResponse()->redirect( RouterFactory::getRouter('Frontend')->getUrl( 'News', 'index') );
+		$this->app->httpResponse()->redirect( FrontNewsController::getLinkTo( 'index' ) );
 	}
 	
 	public function executeRegister( HTTPRequest $request ) {
@@ -98,7 +100,7 @@ class ConnexionController extends BackController {
 			$isNew = false;
 			// L'identifiant de l\'utilisateur est transmis si on veut le modifier
 			if ( $request->getExists( 'id' ) ) {
-				$user  = $this->managers->getManagerOf( 'User' )->getUnique( $request->getData( 'id' ) );
+				$user = $this->managers->getManagerOf( 'User' )->getUnique( $request->getData( 'id' ) );
 			}
 			else {
 				$user = new User;
@@ -122,9 +124,14 @@ class ConnexionController extends BackController {
 			}
 			$this->app->user()->setAttribute( 'user', $user );
 			
-			$this->app->httpResponse()->redirect( RouterFactory::getRouter('Frontend')->getUrl( 'News', 'index') );
+			$this->app->httpResponse()->redirect( FrontNewsController::getLinkTo( 'index' ) );
 		}
 		
 		$this->page->addVar( 'form', $form->createView() );
+	}
+	
+	static public function getLinkTo( $action, $format = 'html', array $args = [] ) {
+		//		return RouterFactory::getRouter( 'Frontend' )->getUrl( 'Connexion', 'index' );
+		return RouterFactory::getRouter( 'Frontend' )->getUrl( 'Connexion', $action, is_null( $format ) ? 'html' : $format, $args );
 	}
 }
