@@ -42,7 +42,12 @@ abstract class Application {
 		// We get our controller and instanciate it
 		$controllerClass = 'App\\' . $this->name . '\\Modules\\' . $matchedRoute->module() . '\\' . $matchedRoute->module() . 'Controller';
 		
-		return new $controllerClass( $this, $matchedRoute->module(), $matchedRoute->action(), $matchedRoute->format() );
+		/** @var BackController $Controller */
+		$Controller = new $controllerClass( $this, $matchedRoute->module(), $matchedRoute->action(), $matchedRoute->format() );
+		
+		$Controller->authorizer()->checkFilter();
+		
+		return $Controller;
 	}
 	
 	abstract public function run();

@@ -2,14 +2,13 @@
 
 namespace OCFram;
 
-use App\Frontend\Modules\News\NewsController;
-
 abstract class BackController extends ApplicationComponent implements LinkHelper {
-	protected $action   = '';
-	protected $module   = '';
-	protected $page     = null;
-	protected $view     = '';
-	protected $managers = null;
+	protected $action     = '';
+	protected $module     = '';
+	protected $page       = null;
+	protected $view       = '';
+	protected $managers   = null;
+	protected $authorizer = null;
 	
 	public function __construct( Application $app, $module, $action, $format ) {
 		parent::__construct( $app );
@@ -20,9 +19,16 @@ abstract class BackController extends ApplicationComponent implements LinkHelper
 		$this->setModule( $module );
 		$this->setAction( $action );
 		$this->setView( $action, $format );
+		$this->setAuthorizer( new Authorizer( $app ) );
+		
+		if ( $this instanceof Filterable ) {
+			$filter = $this->getFilterableFilter();
+			if ( null === $filter ) {
+				throw new \Exception( 'Filter are not defined for action: ' . $action );
+			}
+			$this->authorizer()->addFilter( $filter );
+		}
 	}
-	
-	use AuthorizationHelper;
 	
 	public function setModule( $module ) {
 		if ( !is_string( $module ) || empty( $module ) ) {
@@ -52,6 +58,10 @@ abstract class BackController extends ApplicationComponent implements LinkHelper
 		$this->page->setContentFile( __DIR__ . '/../../App/' . $this->app->name() . '/Modules/' . $this->module . '/Views/' . $this->view . '.' . $format . '.php' );
 	}
 	
+	public function setAuthorizer(Authorizer $authorizer){
+		$this->authorizer = $authorizer;
+	}
+	
 	public function execute() {
 		$method = 'execute' . ucfirst( $this->action );
 		
@@ -66,14 +76,11 @@ abstract class BackController extends ApplicationComponent implements LinkHelper
 		$this->$method( $this->app->httpRequest() );
 	}
 	
-	public function page() {
-		return $this->page;
+	public function authorizer(){
+		return $this->authorizer;
 	}
 	
-	protected function checkAccess( $action ) {
-		if ( !$this->checkRights( $action ) ) {
-			$this->app->user()->setFlash( 'Access Forbidden !' );
-			$this->app->httpResponse()->redirect( NewsController::getLinkTo( 'index' ) );
-		}
+	public function page() {
+		return $this->page;
 	}
 }

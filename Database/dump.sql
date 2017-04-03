@@ -33,7 +33,7 @@ CREATE TABLE `T_MEM_memberc` (
   `MEM_birthdate` date DEFAULT NULL,
   `MEM_dateregister` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`MEM_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COMMENT='Liste des membres';
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COMMENT='Liste des membres';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,9 +41,7 @@ CREATE TABLE `T_MEM_memberc` (
 --
 
 LOCK TABLES `T_MEM_memberc` WRITE;
-/*!40000 ALTER TABLE `T_MEM_memberc` DISABLE KEYS */;
-INSERT INTO `T_MEM_memberc` VALUES (1,2,'Tom','Pape','t.pape@dreamcentury.com','tpape','mdp','1995-03-03','2017-03-01 15:36:15'),(2,1,'Super','Admin','admin@dreamcentury.com','admin','mdp','2017-03-23','2017-02-28 15:37:09'),(7,2,'Guillaume','Stenek','g.stenek@dreamcentury.com','gstenek','pass','1994-07-31','2017-03-22 11:38:16'),(8,2,'Clément','Moulia','c.moulia@dreamcentury.com','cmoulia','pass','2017-03-23','2017-03-22 11:43:24'),(10,2,'prenom','nom','a@a.com','mat','mdp','2017-03-24','2017-03-23 18:23:00'),(12,2,'Prénom','Nom','a@b.com','user','password','2017-03-24','2017-03-24 10:14:32'),(13,2,'Firstname','Lastname','a@c.com','newuser','pass','2017-03-24','2017-03-24 10:51:37'),(14,2,'Pre','Nom','b@a.com','newtest','mdp','2017-03-24','2017-03-24 10:56:42');
-/*!40000 ALTER TABLE `T_MEM_memberc` ENABLE KEYS */;
+INSERT INTO `T_MEM_memberc` VALUES (1,2,'Tom','Pape','t.pape@dreamcentury.com','tpape','mdp','1995-03-03','2017-03-01 15:36:15'),(2,1,'Super','Admin','admin@dreamcentury.com','admin','mdp','2017-03-23','2017-02-28 15:37:09'),(7,2,'Guillaume','Stenek','g.stenek@dreamcentury.com','gstenek','pass','1994-07-31','2017-03-22 11:38:16'),(8,2,'Clément','Moulia','c.moulia@dreamcentury.com','cmoulia','pass','2017-03-23','2017-03-22 11:43:24'),(10,2,'prenom','nom','a@a.com','mat','mdp','2017-03-24','2017-03-23 18:23:00'),(12,2,'Prénom','Nom','a@b.com','user','password','2017-03-24','2017-03-24 10:14:32'),(13,2,'Firstname','Lastname','a@c.com','newuser','pass','2017-03-24','2017-03-24 10:51:37'),(14,2,'Pre','Nom','b@a.com','newtest','mdp','2017-03-27','2017-03-24 10:56:42');
 UNLOCK TABLES;
 
 --
@@ -66,9 +64,7 @@ CREATE TABLE `T_MEM_rolec` (
 --
 
 LOCK TABLES `T_MEM_rolec` WRITE;
-/*!40000 ALTER TABLE `T_MEM_rolec` DISABLE KEYS */;
 INSERT INTO `T_MEM_rolec` VALUES (1,'admin','Tous les droits'),(2,'user','Ajout de news, et édition');
-/*!40000 ALTER TABLE `T_MEM_rolec` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -86,8 +82,9 @@ CREATE TABLE `T_NEW_commentc` (
   `NCC_fk_MEM_admin` int(11) DEFAULT NULL,
   `NCC_content` text NOT NULL,
   `NCC_dateadd` datetime NOT NULL,
+  `NCC_dateupdate` datetime DEFAULT NULL,
   PRIMARY KEY (`NCC_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7712 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8038 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -95,9 +92,7 @@ CREATE TABLE `T_NEW_commentc` (
 --
 
 LOCK TABLES `T_NEW_commentc` WRITE;
-/*!40000 ALTER TABLE `T_NEW_commentc` DISABLE KEYS */;
-INSERT INTO `T_NEW_commentc` VALUES (1,5,'Tom',NULL,NULL,'Commentaire','2017-02-28 17:09:12'),(2,5,'Tom',NULL,NULL,'Commentaire','2017-03-21 07:31:38'),(7707,6,'tpape\'',NULL,NULL,'fegfr','2017-03-24 14:35:07'),(7711,16,NULL,2,NULL,'zrazrezazrazrezazrazrezazrazrezazrazrezazrazrezazrazrezazrazrezazrazrezazrazrezazrazrezazrazrezazrazrezazrazrezazrazrezazrazrezazrazrezazrazrezazrazrezazrazrezazrazrezazrazrezazrazrezazrazrezazrazrezazrazrezazrazrezazrazrezazrazrezazrazrezazrazrezazrazrezazrazrezazrazrezazrazrezazrazrezazrazreza','2017-03-24 18:14:19');
-/*!40000 ALTER TABLE `T_NEW_commentc` ENABLE KEYS */;
+INSERT INTO `T_NEW_commentc` VALUES (1,5,'Tom',NULL,NULL,'Commentaire','2017-02-28 17:09:12',NULL),(2,5,'Tom',NULL,NULL,'Commentaire','2017-03-21 07:31:38',NULL),(7707,6,'tpape\'',NULL,NULL,'fegfr','2017-03-24 14:35:07',NULL),(7962,16,'gsgtr',NULL,2,'grsgrgp123456','2017-03-29 13:17:36','2017-03-30 08:55:46'),(7995,16,NULL,2,2,'grgsgfd','2017-03-30 10:08:44','2017-03-30 10:15:52'),(7999,16,NULL,2,2,'nouveaucommentaire','2017-03-30 10:23:45','2017-03-30 10:37:05'),(8011,16,'auteur',NULL,NULL,'commentaire','2017-03-30 12:42:43',NULL),(8036,16,NULL,2,NULL,'fbf','2017-03-30 14:40:52',NULL),(8037,16,NULL,1,NULL,'frsgr','2017-03-30 16:39:41',NULL);
 UNLOCK TABLES;
 
 --
@@ -124,9 +119,7 @@ CREATE TABLE `T_NEW_newsc` (
 --
 
 LOCK TABLES `T_NEW_newsc` WRITE;
-/*!40000 ALTER TABLE `T_NEW_newsc` DISABLE KEYS */;
 INSERT INTO `T_NEW_newsc` VALUES (1,1,NULL,'Top 5 des façons les plus marrantes de se fail en PHP','Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod\r\ntempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,\r\nquis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo\r\nconsequat. Duis aute irure dolor in reprehenderit in voluptate velit esse\r\ncillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non\r\nproident, sunt in culpa qui officia deserunt mollit anim id est laborum.','2017-02-28 14:32:56','2017-02-28 14:32:56'),(2,2,NULL,'Vous n\'en croirai pas vos yeux lorsque vous découvrirez comment cet homme à ','Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod\r\ntempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,\r\nquis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo\r\nconsequat. Duis aute irure dolor in reprehenderit in voluptate velit esse\r\ncillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non\r\nproident, sunt in culpa qui officia deserunt mollit anim id est laborum.','2017-02-28 14:32:56','2017-02-28 14:32:56'),(3,7,NULL,'TITRE ACCROCHEUR : L’ASTUCE INFAILLIBLE (LA DIX VA VOUS FAIRE PLEURER)','Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod\r\ntempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,\r\nquis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo\r\nconsequat. Duis aute irure dolor in reprehenderit in voluptate velit esse\r\ncillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non\r\nproident, sunt in culpa qui officia deserunt mollit anim id est laborum.','2017-02-28 14:32:56','2017-02-28 14:32:56'),(4,8,NULL,'26 choses qui parleront à tous ceux qui ont bossé en centre d’appels','Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod\r\ntempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,\r\nquis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo\r\nconsequat. Duis aute irure dolor in reprehenderit in voluptate velit esse\r\ncillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non\r\nproident, sunt in culpa qui officia deserunt mollit anim id est laborum.','2017-02-28 14:32:56','2017-02-28 14:32:56'),(5,7,NULL,'L’incroyable road trip de 111 jours d’une famille de l’Inde jusqu’à la France','Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod\r\ntempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,\r\nquis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo\r\nconsequat. Duis aute irure dolor in reprehenderit in voluptate velit esse\r\ncillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non\r\nproident, sunt in culpa qui officia deserunt mollit anim id est laborum.','2017-02-28 14:32:56','2017-02-28 14:32:56'),(6,2,2,'News','Contenu','2017-03-23 09:39:34','2017-03-23 12:07:18'),(16,1,2,'gregeg','bttbtrb','2017-03-24 14:52:15','2017-03-24 16:41:51');
-/*!40000 ALTER TABLE `T_NEW_newsc` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -138,4 +131,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-03-24 19:34:45
+-- Dump completed on 2017-03-31 18:06:38

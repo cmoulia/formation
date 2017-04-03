@@ -10,8 +10,6 @@ use App\Frontend\Modules\Connexion\ConnexionController;
 use \OCFram\Application;
 use OCFram\Menu;
 use OCFram\MenuElement;
-use OCFram\MenuHelper;
-use OCFram\User;
 
 class BackendApplication extends Application {
 	public function __construct() {
@@ -19,8 +17,6 @@ class BackendApplication extends Application {
 		
 		$this->name = 'Backend';
 	}
-	
-	use MenuHelper;
 	
 	public function run() {
 		if ( $this->user->isAuthenticated() && $this->user->isAdmin() ) {
@@ -33,20 +29,19 @@ class BackendApplication extends Application {
 		$controller->execute();
 		
 		$this->httpResponse->setPage( $controller->page() );
-		$this->generateMenu();
-		$controller->page()->addVar( 'menu', $this->getMenu( $this->user )->elements() );
+		$controller->page()->addVar( 'menu', self::generateAdminMenu( $this ) );
 		$this->httpResponse->send();
 	}
 	
-	private function generateMenu() {
-		$adminmenu = new Menu( $this, User::ADMINROLE );
-		$adminmenu->addElement( new MenuElement( 'Front Office', FrontNewsController::getLinkTo( 'index' ), 0 ) );
-		$adminmenu->addElement( new MenuElement( 'Back Office', BackNewsController::getLinkTo( 'index' ), 0 ) );
-		$adminmenu->addElement( new MenuElement( 'Déconnexion', ConnexionController::getLinkTo( 'logout' ), 0 ) );
-		$adminmenu->addElement( new MenuElement( 'Ajouter une news', FrontNewsController::getLinkTo( 'insert' ), 0 ) );
-		$adminmenu->addElement( new MenuElement( 'Liste des rôles', RoleController::getLinkTo( 'index' ), 0 ) );
-		$adminmenu->addElement( new MenuElement( 'Liste des utilisateurs', UserController::getLinkTo( 'index' ), 0 ) );
+	static public function generateAdminMenu( $instance ) {
+		$menu = new Menu( $instance );
+		$menu->addElement( new MenuElement( 'Front Office', FrontNewsController::getLinkTo( 'index' ) ) );
+		$menu->addElement( new MenuElement( 'Back Office', BackNewsController::getLinkTo( 'index' ) ) );
+		$menu->addElement( new MenuElement( 'Déconnexion', ConnexionController::getLinkTo( 'logout' ) ) );
+		$menu->addElement( new MenuElement( 'Ajouter une news', FrontNewsController::getLinkTo( 'insert' ) ) );
+		$menu->addElement( new MenuElement( 'Liste des rôles', RoleController::getLinkTo( 'index' ) ) );
+		$menu->addElement( new MenuElement( 'Liste des utilisateurs', UserController::getLinkTo( 'index' ) ) );
 		
-		$this->addMenu( $adminmenu );
+		return $menu->elements();
 	}
 }

@@ -2,11 +2,13 @@
 
 namespace App\Frontend\Modules\News;
 
+use App\Frontend\FrontendApplication;
 use \Entity\News;
 use FormBuilder\NewsFormBuilder;
 use OCFram\Application;
 use \OCFram\BackController;
 use OCFram\Field;
+use OCFram\Filterable;
 use \OCFram\Form;
 use \OCFram\HTTPRequest;
 use \Entity\Comment;
@@ -17,19 +19,43 @@ use OCFram\Router;
 use OCFram\RouterFactory;
 use OCFram\User;
 
-class NewsController extends BackController {
-	public function __construct( Application $app, $module, $action, $format ) {
-		parent::__construct( $app, $module, $action, $format );
+class NewsController extends BackController implements Filterable {
+	public function getFilterableFilter() {
+		switch ( $this->action ) {
+			case "index":
+			case "insertComment":
+			case "insertCommentJson":
+			case "refreshCommentJson":
+			case "show":
+				return [];
+				break;
+			case "delete":
+			case "update":
+				return [
+					FrontendApplication::buildGuestFilter( $this->app ),
+					FrontendApplication::buildOwnNewsFilter(
+						$this->app,
+						'Impossible de modifier les news des autres membres.',
+						$this->managers->getManagerOf( 'News' )->getUnique( $this->app()->httpRequest()->getData( 'id' ) )
+					),
+				];
+				break;
+			case "deleteComment":
+			case "deleteCommentJson":
+			case "updateComment":
+			case "updateCommentJson":
+				return [
+					FrontendApplication::buildGuestFilter( $this->app ),
+					FrontendApplication::buildOwnCommentFilter(
+						$this->app,
+						'Impossible de modifier les commantires des autres membres.',
+						$this->managers->getManagerOf( 'Comments' )->getUnique( $this->app()->httpRequest()->getData( 'id' ) )
+					),
+				];
+				break;
+		}
 		
-		$defaultroleencrypted = $app->user()->getEncrypted( User::DEFAULTROLE );
-		
-		$this->addRouteRule( $defaultroleencrypted, 'delete', false );
-		$this->addRouteRule( $defaultroleencrypted, 'deleteComment', false );
-		$this->addRouteRule( $defaultroleencrypted, 'deleteCommentJson', false );
-		$this->addRouteRule( $defaultroleencrypted, 'insert', false );
-		$this->addRouteRule( $defaultroleencrypted, 'update', false );
-		$this->addRouteRule( $defaultroleencrypted, 'updateComment', false );
-		parent::checkAccess( $action );
+		return null;
 	}
 	
 	public function executeDelete( HTTPRequest $request ) {

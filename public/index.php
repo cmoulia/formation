@@ -23,6 +23,9 @@ $modelLoader->register();
 $entityLoader = new SplClassLoader( 'Entity', __DIR__ . '/../lib/vendors' );
 $entityLoader->register();
 
+$filterLoader = new SplClassLoader( 'Filter', __DIR__ . '/../lib/vendors' );
+$filterLoader->register();
+
 $formBuilderLoader = new SplClassLoader( 'FormBuilder', __DIR__ . '/../lib/vendors' );
 $formBuilderLoader->register();
 
