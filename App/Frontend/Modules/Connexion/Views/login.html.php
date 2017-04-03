@@ -2,7 +2,7 @@
 use App\Frontend\Modules\Connexion\ConnexionController;
 
 ?>
-<h2>Connexion / <a href="<?= ConnexionController::getLinkTo( 'register' ) ?>">Inscription</a></h2>
+<h2>Connexion / <a href="<?= ConnexionController::getLinkToRegister() ?>">Inscription</a></h2>
 
 <form action="" method="post">
 	<label>Pseudo</label>

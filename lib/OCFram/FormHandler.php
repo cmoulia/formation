@@ -15,7 +15,7 @@ class FormHandler {
 	/** @var HTTPRequest $request */
 	protected $request;
 	
-	public function __construct( Form $form, Manager $manager, HTTPRequest $request ) {
+	public function __construct( Form $form, ManagerCached $manager, HTTPRequest $request ) {
 		$this->setForm( $form );
 		$this->setManager( $manager );
 		$this->setRequest( $request );
@@ -25,7 +25,7 @@ class FormHandler {
 		$this->form = $form;
 	}
 	
-	public function setManager( Manager $manager ) {
+	public function setManager( ManagerCached $manager ) {
 		$this->manager = $manager;
 	}
 	

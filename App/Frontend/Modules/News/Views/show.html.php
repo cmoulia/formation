@@ -15,8 +15,8 @@ use App\Frontend\Modules\News\NewsController;
 <?php endif; ?>
 
 <?php if ( $user->isAuthenticated() && $news[ 'fk_MEM_author' ][ 'username' ] == $user->getAttribute( 'user' )[ 'username' ] ): ?>
-	<a href="<?= NewsController::getLinkTo( 'update', false, [ 'id' => $news[ 'id' ] ] ) ?>">Modifier la news</a>
-	<a href="<?= NewsController::getLinkTo( 'delete', false, [ 'id' => $news[ 'id' ] ] ) ?>">Supprimer la news</a>
+	<a href="<?= NewsController::getLinkToUpdate( $news[ 'id' ] ) ?>">Modifier la news</a>
+	<a href="<?= NewsController::getLinkToDelete( $news[ 'id' ] ) ?>">Supprimer la news</a>
 <?php endif; ?>
 
 <h2 class="news title"><?= htmlentities( $news[ 'title' ] ) ?></h2>
@@ -34,7 +34,7 @@ use App\Frontend\Modules\News\NewsController;
 
 <div id="commentList"
 	 class="<?= ( $empty ) ? 'hidden' : '' ?>"
-	 data-action="<?= NewsController::getLinkTo( 'refreshCommentJson', 'json', [ 'id' => $news[ 'id' ] ] ) ?>"
+	 data-action="<?= NewsController::getLinkToRefreshCommentJson( $news[ 'id' ] ) ?>"
 	 data-update="<?= date_create()->getTimestamp() ?>"
 >
 	<?php foreach ( $comment_a as $comment ): ?>

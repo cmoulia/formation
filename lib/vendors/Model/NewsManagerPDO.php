@@ -5,6 +5,8 @@ namespace Model;
 use \Entity\News;
 
 class NewsManagerPDO extends NewsManager {
+	/** @var \PDO $dao */
+	protected $dao;
 	/**
 	 * @param int $limit
 	 * @param int $offset
@@ -40,7 +42,7 @@ class NewsManagerPDO extends NewsManager {
 		}
 		
 		$requete->closeCursor();
-		
+//		var_dump($news_a);
 		return $news_a;
 	}
 	

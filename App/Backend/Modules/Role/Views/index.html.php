@@ -3,7 +3,7 @@
 use App\Backend\Modules\Role\RoleController;
 
 ?>
-<p><a href="<?= RoleController::getLinkTo( 'insert' ) ?>"><img src="/img/update.png" alt="Ajouter" />Ajouter un r&ocirc;le</a></p>
+<p><a href="<?= RoleController::getLinkToInsert() ?>"><img src="/img/update.png" alt="Ajouter" />Ajouter un r&ocirc;le</a></p>
 
 <table>
 	<tr>
@@ -16,8 +16,8 @@ use App\Backend\Modules\Role\RoleController;
 			<td><?= htmlentities( $role[ 'name' ] ) ?></td>
 			<td class="role content"><?= htmlentities( $role[ 'description' ] ) ?></td>
 			<td>
-				<a href="<?= RoleController::getLinkTo( 'update', null, [ 'id' => $role[ 'id' ] ] ) ?>"><img src="/img/update.png" alt="Modifier" /></a>
-				<a href="<?= RoleController::getLinkTo( 'delete', null, [ 'id' => $role[ 'id' ] ] ) ?>"><img src="/img/delete.png" alt="Supprimer" /></a>
+				<a href="<?= RoleController::getLinkToUpdate( $role[ 'id' ] ) ?>"><img src="/img/update.png" alt="Modifier" /></a>
+				<a href="<?= RoleController::getLinkToDelete( $role[ 'id' ] ) ?>"><img src="/img/delete.png" alt="Supprimer" /></a>
 			</td>
 		</tr>
 	<?php endforeach; ?>

@@ -16,7 +16,7 @@ class RoleController extends BackController {
 		
 		$this->app->user()->setFlash( 'Le rôle a bien été supprimé !' );
 		
-		$this->app->httpResponse()->redirect( self::getLinkTo( 'index' ) );
+		$this->app->httpResponse()->redirect( self::getLinkToIndex() );
 	}
 	
 	public function executeIndex( HTTPRequest $request ) {
@@ -66,14 +66,25 @@ class RoleController extends BackController {
 		
 		if ( $formHandler->process() ) {
 			$this->app->user()->setFlash( $role->isNew() ? 'Le rôle a bien été ajouté !' : 'Le rôle a bien été modifié !' );
-			$this->app->httpResponse()->redirect( NewsController::getLinkTo( 'index' ) );
+			$this->app->httpResponse()->redirect( NewsController::getLinkToIndex() );
 		}
 		
 		$this->page->addVar( 'form', $form->createView() );
 	}
 	
-	static function getLinkTo( $action, $format = 'html', array $args = [] ) {
-		//		return RouterFactory::getRouter( 'Backend' )->getUrl( 'Role', 'index' );
-		return RouterFactory::getRouter( 'Backend' )->getUrl( 'Role', $action, is_null( $format ) ? 'html' : $format, $args );
+	static function getLinkToIndex() {
+		return RouterFactory::getRouter( 'Backend' )->getUrl( 'Role', 'index' );
+	}
+	
+	static function getLinkToInsert() {
+		return RouterFactory::getRouter( 'Backend' )->getUrl( 'Role', 'insert' );
+	}
+	
+	static function getLinkToUpdate( $id ) {
+		return RouterFactory::getRouter( 'Backend' )->getUrl( 'Role', 'update', 'html', [ 'id' => $id ] );
+	}
+	
+	static function getLinkToDelete( $id ) {
+		return RouterFactory::getRouter( 'Backend' )->getUrl( 'Role', 'delete', 'html', [ 'id' => $id ] );
 	}
 }

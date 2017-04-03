@@ -5,7 +5,7 @@ use App\Backend\Modules\User\UserController;
 ?>
 <p style="text-align: center">Il y a actuellement <?= $nombreUsers ?> utilisateurs. En voici la liste :</p>
 
-<p><a href="<?= UserController::getLinkTo('insert') ?>"><img src="/img/update.png" alt="Ajouter" />Ajouter un utilisateur</a></p>
+<p><a href="<?= UserController::getLinkToInsert() ?>"><img src="/img/update.png" alt="Ajouter" />Ajouter un utilisateur</a></p>
 <table>
 	<tr>
 		<th>Username</th>
@@ -16,13 +16,13 @@ use App\Backend\Modules\User\UserController;
 	</tr>
 	<?php foreach ( $user_a as $user_ ): ?>
 		<tr>
-			<td><?= htmlentities( $user_[ 'username' ]) ?></td>
-			<td><?= htmlentities( $user_[ 'email' ]) ?></td>
-			<td><?= htmlentities( $user_[ 'firstname' ] . ' ' . $user_[ 'lastname' ]) ?></td>
-			<td><?= htmlentities( $user_[ 'dateregister' ]->format( 'd/m/Y à H\hi' )) ?></td>
+			<td><?= htmlentities( $user_[ 'username' ] ) ?></td>
+			<td><?= htmlentities( $user_[ 'email' ] ) ?></td>
+			<td><?= htmlentities( $user_[ 'firstname' ] . ' ' . $user_[ 'lastname' ] ) ?></td>
+			<td><?= htmlentities( $user_[ 'dateregister' ]->format( 'd/m/Y à H\hi' ) ) ?></td>
 			<td>
-				<a href="<?= UserController::getLinkTo('update', null, ['id'=> $user_[ 'id' ]]) ?>"><img src="/img/update.png" alt="Modifier" /></a>
-				<a href="<?= UserController::getLinkTo('delete', null, ['id'=> $user_[ 'id' ]]) ?>"><img src="/img/delete.png" alt="Supprimer" /></a>
+				<a href="<?= UserController::getLinkToUpdate( $user_[ 'id' ] ) ?>"><img src="/img/update.png" alt="Modifier" /></a>
+				<a href="<?= UserController::getLinkToDelete( $user_[ 'id' ] ) ?>"><img src="/img/delete.png" alt="Supprimer" /></a>
 			</td>
 		</tr>
 	<?php endforeach; ?>

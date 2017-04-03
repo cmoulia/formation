@@ -13,7 +13,7 @@ abstract class FormBuilder {
 	/** @var User $user */
 	protected $user;
 	
-	public function __construct( Entity $entity, Manager $manager, $user ) {
+	public function __construct( Entity $entity, ManagerCached $manager, $user ) {
 		$this->setUser( $user );
 		$this->setEntity( $entity );
 		$this->setForm( new Form( $entity ) );

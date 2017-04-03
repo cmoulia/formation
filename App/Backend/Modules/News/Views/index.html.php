@@ -19,8 +19,8 @@ use App\Backend\Modules\News\NewsController as BackNewsController;
 			<td>le <?= $news[ 'dateadd' ]->format( 'd/m/Y à H\hi' ) ?></td>
 			<td><?= ( $news[ 'dateadd' ] == $news[ 'dateupdate' ] ? '-' : 'le ' . $news[ 'dateupdate' ]->format( 'd/m/Y à H\hi' ) ) ?></td>
 			<td>
-				<a href="<?= BackNewsController::getLinkTo( 'update', null, [ 'id' => $news[ 'id' ] ] ) ?>"><img src="/img/update.png" alt="Modérer" /></a>
-				<a href="<?= BackNewsController::getLinkTo( 'delete', null, [ 'id' => $news[ 'id' ] ] ) ?>"><img src="/img/delete.png" alt="Supprimer" /></a>
+				<a href="<?= BackNewsController::getLinkToUpdate( $news[ 'id' ] ) ?>"><img src="/img/update.png" alt="Modérer" /></a>
+				<a href="<?= BackNewsController::getLinkToDelete( $news[ 'id' ] ) ?>"><img src="/img/delete.png" alt="Supprimer" /></a>
 			</td>
 		</tr>
 	<?php endforeach; ?>

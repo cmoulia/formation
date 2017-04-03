@@ -16,12 +16,12 @@ use App\Frontend\Modules\News\NewsController;
 		<?php endif; ?>
 		</span>
 		<?php if ( $user->isAuthenticated() && ( $user->isAdmin() || ( !$user->isAdmin() && $comment[ 'fk_MEM_author' ][ 'username' ] == $user->getAttribute( 'user' )[ 'username' ] ) ) ): ?>
-			- <a href="<?= NewsController::getLinkTo( 'updateComment', null, [ 'id' => $comment[ 'id' ] ] ) ?>">
+			- <a href="<?= NewsController::getLinkToUpdateComment( $comment[ 'id' ] ) ?>">
 				<?= ( $user->isAdmin() && $comment[ 'fk_MEM_author' ][ 'username' ] != $user->getAttribute( 'user' )[ 'username' ] ) ? 'Modérer' : 'Modifier' ?>
 			</a> |
-			<a href="<?= NewsController::getLinkTo( 'deleteComment', null, [ 'id' => $comment[ 'id' ] ] ) ?>"
+			<a href="<?= NewsController::getLinkToDeleteComment( $comment[ 'id' ] ) ?>"
 			   class="js-delete-comment"
-			   data-action="<?= NewsController::getLinkTo( 'deleteCommentJson', 'json', [ 'id' => $comment[ 'id' ] ] ) ?>">
+			   data-action="<?= NewsController::getLinkToDeleteCommentJson( $comment[ 'id' ] ) ?>">
 				Supprimer
 			</a>
 		<?php endif; ?>

@@ -14,16 +14,16 @@ use OCFram\RouterFactory;
 class ConnexionController extends BackController {
 	public function execute404( HTTPRequest $request ) {
 		$this->app->user()->setFlash( '404 Not Found !' );
-		$this->app->httpResponse()->redirect( FrontNewsController::getLinkTo( 'index' ) );
+		$this->app->httpResponse()->redirect( FrontNewsController::getLinkToIndex() );
 	}
 	
 	public function executeLogin( HTTPRequest $request ) {
 		if ( $this->app->user()->isAuthenticated() && $this->app->user()->isAdmin() ) {
 			$this->app->user()->setFlash( 'Vous êtes déjà connecté' );
-			$this->app->httpResponse()->redirect( BackNewsController::getLinkTo( 'index' ) );
+			$this->app->httpResponse()->redirect( BackNewsController::getLinkToIndex() );
 		}
 		if ( $this->app->user()->isAuthenticated() && !$this->app->user()->isAdmin() ) {
-			$this->app->httpResponse()->redirect( FrontNewsController::getLinkTo( 'index' ) );
+			$this->app->httpResponse()->redirect( FrontNewsController::getLinkToIndex() );
 		}
 		
 		$this->page->addVar( 'title', 'Connexion' );
@@ -44,7 +44,7 @@ class ConnexionController extends BackController {
 					$this->app->user()->setFlash( 'Connexion réussie' );
 					if ( ( $user->fk_MRC() == 1 ) ) {
 						$this->app->user()->setRole( 'admin' );
-						$this->app->httpResponse()->redirect( BackNewsController::getLinkTo( 'index' ) );
+						$this->app->httpResponse()->redirect( BackNewsController::getLinkToIndex() );
 					}
 					else {
 						$this->app->user()->setRole();
@@ -64,14 +64,14 @@ class ConnexionController extends BackController {
 	public function executeLogout( HTTPRequest $request ) {
 		session_unset();
 		session_destroy();
-		$this->app->httpResponse()->redirect( FrontNewsController::getLinkTo( 'index' ) );
+		$this->app->httpResponse()->redirect( FrontNewsController::getLinkToIndex() );
 	}
 	
 	public function executeRegister( HTTPRequest $request ) {
 		$this->processForm( $request );
 		
 		$this->page->addVar( 'title', 'Inscription' );
-	}
+	 }
 	
 	public function executeUpdate( HTTPRequest $request ) {
 		$this->processForm( $request );
@@ -124,14 +124,21 @@ class ConnexionController extends BackController {
 			}
 			$this->app->user()->setAttribute( 'user', $user );
 			
-			$this->app->httpResponse()->redirect( FrontNewsController::getLinkTo( 'index' ) );
+			$this->app->httpResponse()->redirect( FrontNewsController::getLinkToIndex() );
 		}
 		
 		$this->page->addVar( 'form', $form->createView() );
 	}
 	
-	static public function getLinkTo( $action, $format = 'html', array $args = [] ) {
-		//		return RouterFactory::getRouter( 'Frontend' )->getUrl( 'Connexion', 'index' );
-		return RouterFactory::getRouter( 'Frontend' )->getUrl( 'Connexion', $action, is_null( $format ) ? 'html' : $format, $args );
+	static public function getLinkToLogin() {
+		return RouterFactory::getRouter( 'Frontend' )->getUrl( 'Connexion', 'login' );
+	}
+	
+	static public function getLinkToLogout() {
+		return RouterFactory::getRouter( 'Frontend' )->getUrl( 'Connexion', 'logout' );
+	}
+	
+	static public function getLinkToRegister() {
+		return RouterFactory::getRouter( 'Frontend' )->getUrl( 'Connexion', 'register' );
 	}
 }

@@ -1,5 +1,6 @@
 <?php
 /** @var \OCFram\User $user */
+/** @var \OCFram\MenuElement $element */
 use App\Backend\Modules\News\NewsController;
 
 ?>
@@ -19,15 +20,17 @@ use App\Backend\Modules\News\NewsController;
 	<body>
 		<div id="wrap">
 			<header>
-				<h1><a href="<?= NewsController::getLinkTo( 'index' ) ?>">Mon super site</a></h1>
+				<h1><a href="<?= NewsController::getLinkToIndex() ?>">Mon super site</a></h1>
 				<p><?= ( $user->getAttribute( 'user' ) ) ? 'Bienvenue ' . $user->getAttribute( 'user' )[ 'firstname' ] . ' ' . $user->getAttribute( 'user' )[ 'lastname' ] : 'Espace Administrateur !' ?></p>
 			</header>
 			
 			<nav>
 				<ul>
-					<?php foreach ( $menu as $element ): ?>
-						<li><a href="<?= $element->link() ?>"><?= $element->label() ?></a></li>
-					<?php endforeach; ?>
+					<?php if (isset($menu)): ?>
+						<?php foreach ( $menu as $element ): ?>
+							<li><a href="<?= $element->link() ?>"><?= $element->label() ?></a></li>
+						<?php endforeach; ?>
+					<?php endif; ?>
 				</ul>
 			</nav>
 			

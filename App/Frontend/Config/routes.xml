@@ -3,10 +3,9 @@
 
 	<route url="/" module="News" action="index" ></route>
 	<route url="/news-([0-9]+)" module="News" action="show" vars="id" pattern="/news-{{id}}"></route>
-	<route url="/news-comment-([0-9]+)" module="News" action="insertComment" vars="news" pattern="/news-comment-{{news}}"></route>
-	<route url="/news-comment-([0-9]+)\.json" module="News" action="insertCommentJson" vars="news" pattern="/news-comment-{{news}}" format="json"></route>
+	<route url="/news-comment-([0-9]+)" module="News" action="insertComment" vars="id" pattern="/news-comment-{{id}}"></route>
+	<route url="/news-comment-([0-9]+)\.json" module="News" action="insertCommentJson" vars="id" pattern="/news-comment-{{id}}" format="json"></route>
 	<route url="/news-comment-update-([0-9]+)" module="News" action="updateComment" vars="id" pattern="/news-comment-update-{{id}}"></route>
-	<route url="/news-comment-update-([0-9]+)\.json" module="News" action="updateCommentJson" vars="id" pattern="/news-comment-update-{{id}}" format="json"></route>
 	<route url="/news-comment-delete-([0-9]+)" module="News" action="deleteComment" vars="id" pattern="/news-comment-delete-{{id}}"></route>
 	<route url="/news-comment-delete-([0-9]+)\.json" module="News" action="deleteCommentJson" vars="id" pattern="/news-comment-delete-{{id}}" format="json"></route>
 	<route url="/news-comment-refresh-([0-9]+)\.json" module="News" action="refreshCommentJson" vars="id" pattern="/news-comment-refresh-{{id}}" format="json"></route>

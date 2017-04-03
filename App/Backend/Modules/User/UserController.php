@@ -13,7 +13,7 @@ use OCFram\RouterFactory;
 class UserController extends BackController {
 	public function execute404( HTTPRequest $request ) {
 		$this->app->user()->setFlash( '404 Not Found !' );
-		$this->app->httpResponse()->redirect( NewsController::getLinkTo( 'index' ) );
+		$this->app->httpResponse()->redirect( NewsController::getLinkToIndex() );
 	}
 	
 	public function executeDelete( HTTPRequest $request ) {
@@ -23,7 +23,7 @@ class UserController extends BackController {
 		
 		$this->app->user()->setFlash( 'L\'utilisateur a bien été supprimé !' );
 		
-		$this->app->httpResponse()->redirect( self::getLinkTo( 'index' ) );
+		$this->app->httpResponse()->redirect( self::getLinkToIndex() );
 	}
 	
 	public function executeIndex( HTTPRequest $request ) {
@@ -87,14 +87,25 @@ class UserController extends BackController {
 		
 		if ( $formHandler->process() ) {
 			$this->app->user()->setFlash( $isNew ? 'L\'utilisateur a bien été ajouté !' : 'L\'utilisateur a bien été modifié !' );
-			$this->app->httpResponse()->redirect( self::getLinkTo( 'index' ) );
+			$this->app->httpResponse()->redirect( self::getLinkToIndex() );
 		}
 		
 		$this->page->addVar( 'form', $form->createView() );
 	}
 	
-	static function getLinkTo( $action, $format = 'html', array $args = [] ) {
-		//		return RouterFactory::getRouter( 'Backend' )->getUrl( 'User', 'index' );
-		return RouterFactory::getRouter( 'Backend' )->getUrl( 'User', $action, is_null( $format ) ? 'html' : $format, $args );
+	static function getLinkToIndex() {
+		return RouterFactory::getRouter( 'Backend' )->getUrl( 'User', 'index' );
+	}
+	
+	static function getLinkToInsert() {
+		return RouterFactory::getRouter( 'Backend' )->getUrl( 'User', 'insert' );
+	}
+	
+	static function getLinkToUpdate( $id ) {
+		return RouterFactory::getRouter( 'Backend' )->getUrl( 'User', 'update', [ 'id' => $id ] );
+	}
+	
+	static function getLinkToDelete( $id ) {
+		return RouterFactory::getRouter( 'Backend' )->getUrl( 'User', 'delete', [ 'id' => $id ] );
 	}
 }

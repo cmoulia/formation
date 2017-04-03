@@ -44,7 +44,7 @@ abstract class CommentsManager extends Manager {
 	/**
 	 * Méthode permettant de récupérer une liste de commentaires.
 	 *
-	 * @param News $newsId La news sur laquelle on veut récupérer les commentaires
+	 * @param int $newsId La news sur laquelle on veut récupérer les commentaires
 	 *
 	 * @return array
 	 */

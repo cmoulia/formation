@@ -5,52 +5,55 @@ namespace App\Frontend\Modules\News;
 use App\Frontend\FrontendApplication;
 use \Entity\News;
 use FormBuilder\NewsFormBuilder;
-use OCFram\Application;
 use \OCFram\BackController;
 use OCFram\Field;
 use OCFram\Filterable;
-use \OCFram\Form;
 use \OCFram\HTTPRequest;
 use \Entity\Comment;
 use \FormBuilder\CommentFormBuilder;
 use \OCFram\FormHandler;
-use OCFram\Page;
-use OCFram\Router;
 use OCFram\RouterFactory;
-use OCFram\User;
 
-class NewsController extends BackController implements Filterable {
+class NewsController extends BackController /*implements Filterable*/
+{
 	public function getFilterableFilter() {
 		switch ( $this->action ) {
 			case "index":
+			case "insert":
+				return [];
+				break;
 			case "insertComment":
 			case "insertCommentJson":
 			case "refreshCommentJson":
 			case "show":
-				return [];
+				return [
+					FrontendApplication::buildEntityNotFoundFilter( $this->app, $this->managers->getManagerOf( 'News' ), 'getUnique', $this->app()->httpRequest()
+																																		   ->getData( 'id' ) ),
+				];
 				break;
 			case "delete":
 			case "update":
 				return [
 					FrontendApplication::buildGuestFilter( $this->app ),
-					FrontendApplication::buildOwnNewsFilter(
-						$this->app,
-						'Impossible de modifier les news des autres membres.',
-						$this->managers->getManagerOf( 'News' )->getUnique( $this->app()->httpRequest()->getData( 'id' ) )
-					),
+					FrontendApplication::buildEntityNotFoundFilter( $this->app, $this->managers->getManagerOf( 'News' ), 'getUnique', $this->app()->httpRequest()
+																																		   ->getData( 'id' ) ),
+					FrontendApplication::buildOwnNewsFilter( $this->app, 'Impossible de modifier les news des autres membres.', $this->managers->getManagerOf( 'News' )
+																																			   ->getUnique( $this->app()
+																																								 ->httpRequest()
+																																								 ->getData( 'id' ) ) ),
 				];
 				break;
 			case "deleteComment":
-			case "deleteCommentJson":
 			case "updateComment":
-			case "updateCommentJson":
 				return [
 					FrontendApplication::buildGuestFilter( $this->app ),
-					FrontendApplication::buildOwnCommentFilter(
-						$this->app,
-						'Impossible de modifier les commantires des autres membres.',
-						$this->managers->getManagerOf( 'Comments' )->getUnique( $this->app()->httpRequest()->getData( 'id' ) )
-					),
+					FrontendApplication::buildEntityNotFoundFilter( $this->app, $this->managers->getManagerOf( 'Comments' ), 'getUnique', $this->app()->httpRequest()
+																																			   ->getData( 'id' ) ),
+					FrontendApplication::buildOwnCommentFilter( $this->app, 'Impossible de modifier les commentaires des autres membres.', $this->managers->getManagerOf( 'Comments' )
+																																						  ->getUnique( $this->app()
+																																											->httpRequest()
+																																											->getData( 'id' ) ) ),
+				
 				];
 				break;
 		}
@@ -62,17 +65,6 @@ class NewsController extends BackController implements Filterable {
 		/** @var News $news */
 		$news = $this->managers->getManagerOf( 'News' )->getUnique( $request->getData( 'id' ) );
 		
-		// If requested news doesn't exist
-		if ( empty( $news ) ) {
-			$this->app->httpResponse()->redirect404();
-		}
-		
-		// If requested news is not his own
-		if ( $news->fk_MEM_author() != $this->app->user()->getAttribute( 'user' )[ 'id' ] ) {
-			$this->app->user()->setFlash( 'Vous n\'êtes pas autorisé à supprimer cette news' );
-			$this->app->httpResponse()->redirect( self::getLinkTo( 'index' ) );
-		}
-		
 		// We delete the news (automatically delete the comments)
 		$this->managers->getManagerOf( 'News' )->delete( $news->id() );
 		
@@ -83,13 +75,13 @@ class NewsController extends BackController implements Filterable {
 	}
 	
 	public function executeDeleteComment( HTTPRequest $request ) {
-		// We first get the newsId from the comment, to redirect the user after
+		// We first get the newsId from the comment before it's deleted, to redirect the user after
 		$newsId = $this->managers->getManagerOf( 'Comments' )->getNews( $request->getData( 'id' ) );
 		$this->managers->getManagerOf( 'Comments' )->delete( $request->getData( 'id' ) );
 		
 		$this->app->user()->setFlash( 'Le commentaire a bien été supprimé !' );
 		
-		$this->app->httpResponse()->redirect( self::getLinkTo( 'index', null, [ 'id' => $newsId ] ) );
+		$this->app->httpResponse()->redirect( self::getLinkToShow( $newsId ) );
 	}
 	
 	public function executeDeleteCommentJson( HTTPRequest $request ) {
@@ -126,8 +118,12 @@ class NewsController extends BackController implements Filterable {
 				$news->setContent( $content );
 				
 				// We get the data linked to the foreign key
-				$news[ 'fk_MEM_author' ] = $this->managers->getManagerOf( 'User' )->getUnique( $news[ 'fk_MEM_author' ] );
-				$news[ 'fk_MEM_admin' ]  = $this->managers->getManagerOf( 'User' )->getUnique( $news[ 'fk_MEM_admin' ] );
+				if ( $news[ 'fk_MEM_author' ] ) {
+					$news[ 'fk_MEM_author' ] = $this->managers->getManagerOf( 'User' )->getUnique( $news[ 'fk_MEM_author' ] );
+				}
+				if ( $news[ 'fk_MEM_admin' ] ) {
+					$news[ 'fk_MEM_admin' ] = $this->managers->getManagerOf( 'User' )->getUnique( $news[ 'fk_MEM_admin' ] );
+				}
 			}
 		}
 		
@@ -155,7 +151,7 @@ class NewsController extends BackController implements Filterable {
 	public function executeInsertCommentJson( HTTPRequest $request ) {
 		if ( $request->method() == 'POST' ) {
 			$comment = new Comment( [
-				'fk_NNC'        => $request->getData( 'news' ),
+				'fk_NNC'        => $request->getData( 'id' ),
 				'author'        => $request->postData( 'author' ),
 				'fk_MEM_author' => $this->app->user()->getAttribute( 'user' )[ 'id' ],
 				'content'       => $request->postData( 'content' ),
@@ -181,10 +177,10 @@ class NewsController extends BackController implements Filterable {
 			$routes = [];
 			if ( $this->app->user()->isAuthenticated() ) {
 				$routes = [
-					"update"      => self::getLinkTo( 'updateComment', null, [ 'id' => $comment[ 'id' ] ] ),
+					"update"      => self::getLinkToUpdateComment( $comment[ 'id' ] ),
 					"update_text" => ( $this->app->user()->isAdmin() ) ? 'Modérer' : 'Modifier',
-					"delete"      => self::getLinkTo( 'deleteComment', null, [ 'id' => $comment[ 'id' ] ] ),
-					"delete_json" => self::getLinkTo( 'deleteCommentJson', 'json', [ 'id' => $comment[ 'id' ] ] ),
+					"delete"      => self::getLinkToDeleteComment( $comment[ 'id' ] ),
+					"delete_json" => self::getLinkToDeleteCommentJson( $comment[ 'id' ] ),
 					"delete_text" => 'Supprimer',
 				];
 			}
@@ -208,7 +204,6 @@ class NewsController extends BackController implements Filterable {
 		$dateupdate->setTimestamp( $request->postData( 'date' ) );
 		$newsid = $request->getData( 'id' );
 		
-		//		var_dump($page_comments, $dateupdate, $newsid);die;
 		$comment_new_a        = $this->managers->getManagerOf( 'Comments' )->getListOfFilterByAfterDate( $newsid, $dateupdate );
 		$route_a              = array();
 		$comment_new_author_a = array();
@@ -221,12 +216,12 @@ class NewsController extends BackController implements Filterable {
 					 || $this->app->user()->getAttribute( 'user' )[ 'id' ] == $comment_new[ 'fk_MEM_author' ]
 				) {
 					$route_a[ $comment_new[ 'id' ] ] = array(
-						"update"      => self::getLinkTo( 'updateComment', null, [ 'id' => $comment_new[ 'id' ] ] ),
+						"update"      => self::getLinkToUpdateComment( $comment_new[ 'id' ] ),
 						"update_text" => ( $this->app->user()->isAdmin()
 										   && ( $comment_new_author_a[ $comment_new[ 'id' ] ] ) ? $comment_new_author_a[ $comment_new[ 'id' ] ][ 'username' ]
 							: null != $this->app->user()->getAttribute( 'user' )[ 'username' ] ) ? 'Modérer' : 'Modifier',
-						"delete"      => self::getLinkTo( 'deleteComment', false, [ 'id' => $comment_new[ 'id' ] ] ),
-						"delete_json" => self::getLinkTo( 'deleteCommentJson', 'json', [ 'id' => $comment_new[ 'id' ] ] ),
+						"delete"      => self::getLinkToDeleteComment( $comment_new[ 'id' ] ),
+						"delete_json" => self::getLinkToDeleteCommentJson( $comment_new[ 'id' ] ),
 						"delete_text" => 'Supprimer',
 					);
 				}
@@ -249,21 +244,24 @@ class NewsController extends BackController implements Filterable {
 		/** @var News $news */
 		$news = $this->managers->getManagerOf( 'News' )->getUnique( $request->getData( 'id' ) );
 		
-		if ( empty( $news ) ) {
-			$this->app->user()->setFlash( 'La news n\'existe pas' );
-			$this->app->httpResponse()->redirect( self::getLinkTo( 'index' ) );
-		}
-		
 		// We get the data linked to the foreign key
-		$news[ 'fk_MEM_author' ] = $this->managers->getManagerOf( 'User' )->getUnique( $news[ 'fk_MEM_author' ] );
-		$news[ 'fk_MEM_admin' ]  = $this->managers->getManagerOf( 'User' )->getUnique( $news[ 'fk_MEM_admin' ] );
+		if ( $news[ 'fk_MEM_author' ] ) {
+			$news[ 'fk_MEM_author' ] = $this->managers->getManagerOf( 'User' )->getUnique( $news[ 'fk_MEM_author' ] );
+		}
+		if ( $news[ 'fk_MEM_admin' ] ) {
+			$news[ 'fk_MEM_admin' ] = $this->managers->getManagerOf( 'User' )->getUnique( $news[ 'fk_MEM_admin' ] );
+		}
 		
 		$comment_a = $this->managers->getManagerOf( 'Comments' )->getListOf( $news->id() );
 		
 		// We get the data linked to the foreign key
 		foreach ( $comment_a as $comment ) {
-			$comment[ 'fk_MEM_author' ] = $this->managers->getManagerOf( 'User' )->getUnique( $comment[ 'fk_MEM_author' ] );
-			$comment[ 'fk_MEM_admin' ]  = $this->managers->getManagerOf( 'User' )->getUnique( $comment[ 'fk_MEM_admin' ] );
+			if ( $comment[ 'fk_MEM_author' ] ) {
+				$comment[ 'fk_MEM_author' ] = $this->managers->getManagerOf( 'User' )->getUnique( $comment[ 'fk_MEM_author' ] );
+			}
+			if ( $comment[ 'fk_MEM_admin' ] ) {
+				$comment[ 'fk_MEM_admin' ] = $this->managers->getManagerOf( 'User' )->getUnique( $comment[ 'fk_MEM_admin' ] );
+			}
 		}
 		
 		$formBuilder = new CommentFormBuilder( new Comment, $this->managers->getManagerOf( 'User' ), $this->app->user() );
@@ -278,21 +276,8 @@ class NewsController extends BackController implements Filterable {
 	}
 	
 	public function executeUpdate( HTTPRequest $request ) {
-		/** @var News $news */
-		$news = $this->managers->getManagerOf( 'News' )->getUnique( $request->getData( 'id' ) );
-		
-		// If requested news doesn't exist
-		if ( empty( $news ) ) {
-			$this->app->httpResponse()->redirect404();
-		}
-		
-		// If requested news is not his own
-		if ( $news->fk_MEM_author() != $this->app->user()->getAttribute( 'user' )[ 'id' ] ) {
-			$this->app->user()->setFlash( 'Vous n\'êtes pas autorisé à modifier cette news' );
-			$this->app->httpResponse()->redirect( self::getLinkTo( 'index' ) );
-		}
-		
 		$this->processNewsForm( $request );
+		
 		$this->page->addVar( 'title', 'Modification d\'une news' );
 	}
 	
@@ -337,7 +322,7 @@ class NewsController extends BackController implements Filterable {
 		
 		if ( $formHandler->process() ) {
 			$this->app->user()->setFlash( $isNew ? 'La news a bien été ajoutée !' : 'La news a bien été modifiée !' );
-			$this->app->httpResponse()->redirect( self::getLinkTo( 'index' ) );
+			$this->app->httpResponse()->redirect( self::getLinkToIndex() );
 		}
 		
 		$this->page->addVar( 'form', $form->createView() );
@@ -347,7 +332,7 @@ class NewsController extends BackController implements Filterable {
 		$isNew = true;
 		if ( $request->method() == 'POST' ) {
 			$comment = new Comment( [
-				'fk_NNC'        => $request->getData( 'news' ),
+				'fk_NNC'        => $request->getData( 'id' ),
 				'author'        => $request->postData( 'author' ),
 				'fk_MEM_author' => ( $this->app->user()->isAdmin() ) ? null : $this->app->user()->getAttribute( 'user' )[ 'id' ],
 				'fk_MEM_admin'  => ( $this->app->user()->isAdmin() ) ? $this->app->user()->getAttribute( 'user' )[ 'id' ] : null,
@@ -383,14 +368,55 @@ class NewsController extends BackController implements Filterable {
 		
 		if ( $formHandler->process() ) {
 			$this->app->user()->setFlash( $isNew ? 'Le commentaire a bien été ajouté' : 'Le commentaire a bien été modifié' );
-			$this->app->httpResponse()->redirect( self::getLinkTo( 'show', null, [ 'id' => $comment->fk_NNC() ] ) );
+			$this->app->httpResponse()->redirect( self::getLinkToShow( null, $comment->fk_NNC() ) );
 		}
 		
 		$this->page->addVar( 'form', $form->createView() );
 	}
 	
-	static public function getLinkTo( $action, $format = 'html', array $args = [] ) {
-		//		return RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'index' );
-		return RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', $action, is_null( $format ) ? 'html' : $format, $args );
+	//region getLinkTo Functions
+	static public function getLinkToDelete( $id ) {
+		return RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'delete', 'html', [ 'id' => $id ] );
 	}
+	
+	static public function getLinkToDeleteComment( $id ) {
+		return RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'deleteComment', 'html', [ 'id' => $id ] );
+	}
+	
+	static public function getLinkToDeleteCommentJson( $id ) {
+		return RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'deleteCommentJson', 'json', [ 'id' => $id ] );
+	}
+	
+	static public function getLinkToIndex() {
+		return RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'index' );
+	}
+	
+	static public function getLinkToInsert() {
+		return RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'insert' );
+	}
+	
+	static public function getLinkToInsertComment( $id ) {
+		return RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'insertComment', 'html', [ 'id' => $id ] );
+	}
+	
+	static public function getLinkToInsertCommentJson( $id ) {
+		return RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'insertCommentJson', 'json', [ 'id' => $id ] );
+	}
+	
+	static public function getLinkToRefreshCommentJson( $id ) {
+		return RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'refreshCommentJson', 'json', [ 'id' => $id ] );
+	}
+	
+	static public function getLinkToShow( $id ) {
+		return RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'show', 'html', [ 'id' => $id ] );
+	}
+	
+	static public function getLinkToUpdate( $id ) {
+		return RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'update', 'html', [ 'id' => $id ] );
+	}
+	
+	static public function getLinkToUpdateComment( $id ) {
+		return RouterFactory::getRouter( 'Frontend' )->getUrl( 'News', 'updateComment', 'html', [ 'id' => $id ] );
+	}
+	//endregion
 }

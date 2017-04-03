@@ -23,7 +23,7 @@ class BackendApplication extends Application {
 			$controller = $this->getController();
 		}
 		else {
-			$this->httpResponse()->redirect( ConnexionController::getLinkTo( 'login' ) );
+			$this->httpResponse()->redirect( ConnexionController::getLinkToLogin() );
 		}
 		
 		$controller->execute();
@@ -35,12 +35,12 @@ class BackendApplication extends Application {
 	
 	static public function generateAdminMenu( $instance ) {
 		$menu = new Menu( $instance );
-		$menu->addElement( new MenuElement( 'Front Office', FrontNewsController::getLinkTo( 'index' ) ) );
-		$menu->addElement( new MenuElement( 'Back Office', BackNewsController::getLinkTo( 'index' ) ) );
-		$menu->addElement( new MenuElement( 'Déconnexion', ConnexionController::getLinkTo( 'logout' ) ) );
-		$menu->addElement( new MenuElement( 'Ajouter une news', FrontNewsController::getLinkTo( 'insert' ) ) );
-		$menu->addElement( new MenuElement( 'Liste des rôles', RoleController::getLinkTo( 'index' ) ) );
-		$menu->addElement( new MenuElement( 'Liste des utilisateurs', UserController::getLinkTo( 'index' ) ) );
+		$menu->addElement( new MenuElement( 'Front Office', FrontNewsController::getLinkToIndex() ) );
+		$menu->addElement( new MenuElement( 'Back Office', BackNewsController::getLinkToIndex() ) );
+		$menu->addElement( new MenuElement( 'Déconnexion', ConnexionController::getLinkToLogout() ) );
+		$menu->addElement( new MenuElement( 'Ajouter une news', FrontNewsController::getLinkToInsert() ) );
+		$menu->addElement( new MenuElement( 'Liste des rôles', RoleController::getLinkToIndex() ) );
+		$menu->addElement( new MenuElement( 'Liste des utilisateurs', UserController::getLinkToIndex() ) );
 		
 		return $menu->elements();
 	}

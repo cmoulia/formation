@@ -4,17 +4,15 @@ namespace OCFram;
 
 use JsonSerializable;
 
-abstract class Entity implements \ArrayAccess, JsonSerializable  {
-	protected $errors = [];
-	protected $id;
-	protected $prefix;
+abstract class Entity implements \ArrayAccess, JsonSerializable {
+	protected $errors = [], $id, $prefix, $References = [];
 	
 	public function __construct( array $data_a = [] ) {
 		if ( !empty( $data_a ) ) {
 			foreach ( $data_a as $key => $data ) {
-				if ($key != str_replace($this->prefix, '', $key)){
-					$data_a[ str_replace($this->prefix, '', $key)] = $data;
-					unset( $data_a[ $key]);
+				if ( $key != str_replace( $this->prefix, '', $key ) ) {
+					$data_a[ str_replace( $this->prefix, '', $key ) ] = $data;
+					unset( $data_a[ $key ] );
 				}
 			}
 			$this->hydrate( $data_a );
@@ -40,6 +38,7 @@ abstract class Entity implements \ArrayAccess, JsonSerializable  {
 		$this->id = (int)$id;
 	}
 	
+	//region ArrayAccess
 	public function offsetGet( $var ) {
 		if ( isset( $this->$var )
 			 && is_callable( [
@@ -77,4 +76,5 @@ abstract class Entity implements \ArrayAccess, JsonSerializable  {
 	public function offsetUnset( $var ) {
 		throw new \Exception( 'Unable to delete the value' );
 	}
+	//endregion
 }

@@ -2,7 +2,7 @@
 
 namespace OCFram;
 
-abstract class BackController extends ApplicationComponent implements LinkHelper {
+abstract class BackController extends ApplicationComponent {
 	protected $action     = '';
 	protected $module     = '';
 	protected $page       = null;

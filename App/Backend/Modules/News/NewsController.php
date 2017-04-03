@@ -75,7 +75,7 @@ class NewsController extends BackController {
 		
 		if ( $formHandler->process() ) {
 			$this->app->user()->setFlash( $news->isNew() ? 'La news a bien été ajoutée !' : 'La news a bien été modérée !' );
-			$this->app->httpResponse()->redirect( self::getLinkTo( 'index' ) );
+			$this->app->httpResponse()->redirect( self::getLinkToIndex() );
 		}
 		
 		$this->page->addVar( 'form', $form->createView() );
@@ -107,14 +107,21 @@ class NewsController extends BackController {
 		
 		if ( $formHandler->process() ) {
 			$this->app->user()->setFlash( 'Le commentaire a bien été modifié' );
-			$this->app->httpResponse()->redirect( FrontNewsController::getLinkTo( 'show', null, [ 'id' => $comment->fk_NNC() ] ) );
+			$this->app->httpResponse()->redirect( FrontNewsController::getLinkToShow( $comment->fk_NNC() ) );
 		}
 		
 		$this->page->addVar( 'form', $form->createView() );
 	}
 	
-	static function getLinkTo( $action, $format = 'html', array $args = [] ) {
-		//		return RouterFactory::getRouter( 'Backend' )->getUrl( 'News', 'index' );
-		return RouterFactory::getRouter( 'Backend' )->getUrl( 'News', $action, is_null( $format ) ? 'html' : $format, $args );
+	static function getLinkToIndex() {
+		return RouterFactory::getRouter( 'Backend' )->getUrl( 'News', 'index' );
+	}
+	
+	static function getLinkToUpdate( $id ) {
+		return RouterFactory::getRouter( 'Backend' )->getUrl( 'News', 'update', 'html', [ 'id' => $id ] );
+	}
+	
+	static function getLinkToDelete( $id ) {
+		return RouterFactory::getRouter( 'Backend' )->getUrl( 'News', 'delete', 'html', [ 'id' => $id ] );
 	}
 }
